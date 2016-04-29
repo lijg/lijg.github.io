@@ -1,8 +1,10 @@
 ---
 title: 交叉编译OProfile到Android步骤
 date: 2015-02-11 20:15:09
-tags: Oprofile
-categories: Android
+tags: 
+- Oprofile
+categories: 
+- Android
 ---
 
 # 1 第一次编译profile

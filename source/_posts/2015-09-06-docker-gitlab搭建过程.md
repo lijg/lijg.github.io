@@ -1,8 +1,10 @@
 ---
 title: docker-gitlab搭建过程
 date: 2015-09-06 20:10:44
-tags: Docker
-categories: Linux
+tags: 
+- Docker
+categories: 
+- Linux
 ---
 
 > 建议使用gogs替代gitlab

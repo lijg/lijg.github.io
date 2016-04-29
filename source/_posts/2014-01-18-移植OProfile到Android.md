@@ -1,8 +1,11 @@
 ---
 title: 移植OProfile到Android
 date: 2014-01-18 21:44:40
-tags: Oprofile 性能
-categories: Android
+tags: 
+- Oprofile 
+- 性能
+categories:
+- Android
 ---
 
 1 第一次编译popt

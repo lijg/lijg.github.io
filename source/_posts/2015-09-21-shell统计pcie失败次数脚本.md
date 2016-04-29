@@ -1,8 +1,10 @@
 ---
 title: shell统计pcie失败次数脚本
 date: 2015-09-21 19:08
-tags: PCIe
-categories: Linux
+tags: 
+- PCIE
+categories: 
+- Linux
 ---
 
 shell脚本中，统计pcie检测失败次数。

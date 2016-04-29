@@ -2,7 +2,8 @@
 title: 2013-12-26-修改hosts文件访问google(备忘)
 date: 2013-12-26 17:09
 tags:
-categories: 杂
+categories: 
+- 杂
 ---
 
 下载Android代码经常连不到google，将以下代码加入/etc/hosts中，解决网址不能访问问题

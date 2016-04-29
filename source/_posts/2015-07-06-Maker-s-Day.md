@@ -2,7 +2,8 @@
 title: Maker's Day
 date: 2015-07-06 19:39:47
 tags:
-categories: 杂
+categories: 
+- 杂
 ---
 
 - Maker Day - 每年一次，N 小时，小组协作，高效完成一款产品(模块、小制作等)，可多小组PK 

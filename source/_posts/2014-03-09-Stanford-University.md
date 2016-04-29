@@ -2,7 +2,8 @@
 title: Stanford University
 date: 2014-03-09 23:46:07:15
 tags:
-categories: 杂
+categories: 
+- 杂
 ---
 
 今天来到了Stanford University，参观的国外的第一所大学。中午吃完饭从Saratoga出发，乘57换乘522到大学门口下的。

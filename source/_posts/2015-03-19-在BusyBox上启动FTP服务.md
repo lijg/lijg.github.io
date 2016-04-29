@@ -1,8 +1,10 @@
 ---
 title: 在BusyBox上启动FTP服务
 date: 2015-03-19 18:10:06
-tags: busybox
-categories: Linux
+tags: 
+- busybox
+categories: 
+- Linux
 ---
 
 BusyBox上自带ftp服务器——`ftpd`(Anonymous FTP Server)，没有身份验证功能，可以作为一个简易的传输文件的措施使用。

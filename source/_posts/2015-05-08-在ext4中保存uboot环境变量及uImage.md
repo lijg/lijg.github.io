@@ -1,8 +1,10 @@
 ---
 title: 在ext4中保存uboot环境变量及uImage
 date: 2015-05-08 22:19:57
-tags: uboot
-categories: Linux
+tags: 
+- uboot
+categories: 
+- Linux
 ---
 
 在上一篇文章[《制作嵌入式Linux系统SD卡》](/post/zhi-zuo-qian-ru-shi-linuxxi-tong-sdqia)中，uImage、DTB及uboot的env都是通过dd烧录到sd卡上的，而不是在ext4分区中。这样每次升级uImage或dtb的时候，都需要拔下sd卡再烧录，稍显麻烦。如果uImage和dtb等都可以放在ext4分区中，就可以直接在启动后修改文件来升级内核或设备树了。

@@ -1,8 +1,11 @@
 ---
 title: Centos架设SVN服务器
 date: 2016-01-04 09:43:34
-tags: Centos SVN
-categories: Linux
+tags: 
+- Centos 
+- SVN
+categories: 
+- Linux
 ---
 
 ## 1. 安装工具

@@ -2,7 +2,8 @@
 title: 2013-03-23-用Intent切换Activity
 date: 2013-03-23 09:38:48
 tags:
-categories: Android
+categories: 
+- Android
 ---
 
 An intent is an abstract description of an operation to be performed. It can be used with startActivity to launch an Activity, broadcastIntent to send it to any interested BroadcastReceiver components, and startService(Intent) or bindService(Intent, ServiceConnection, int) to communicate with a background Service.

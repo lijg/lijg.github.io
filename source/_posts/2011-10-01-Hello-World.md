@@ -1,8 +1,9 @@
 ---
-title: 2013-01-02-Hello World
-date: 2013-01-02 21:36:49
+title: Hello World
+date: 2011-10-01 21:36:49
 tags:
-categories: 杂
+categories: 
+- 杂
 ---
 程序猿的第一篇文章大抵都是Hello World吧
 

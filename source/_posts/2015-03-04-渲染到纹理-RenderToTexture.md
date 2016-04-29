@@ -1,8 +1,14 @@
 ---
 title: 渲染到纹理(RenderToTexture)
 date: 2015-03-04 21:09:07
-tags: 纹理 GPU OpenGL GLES RTT
-categories: Linux
+tags: 
+- 纹理 
+- GPU 
+- OpenGL 
+- GLES 
+- RTT
+categories: 
+- Linux
 ---
 
 渲染到纹理(RenderToTexture, RTT)，顾名思义就是把渲染目标从帧缓存变成一个纹理。这样就可以实现使一个场景经过多次GPU运算（中间过程都使用RTT），最后一次完全处理完后再渲染到屏幕上。

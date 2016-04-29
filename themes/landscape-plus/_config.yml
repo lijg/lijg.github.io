@@ -13,11 +13,11 @@ mathjax: true
 # Sidebar
 sidebar: right
 widgets:
+- recent_posts
 - category
 # - tag
 - tagcloud
 - archive
-- recent_posts
 # - links
 
 # Links

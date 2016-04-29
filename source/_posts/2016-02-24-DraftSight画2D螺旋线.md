@@ -1,8 +1,12 @@
 ---
 title: DraftSight画2D螺旋线
 date: 2016-02-24 14:26:30
-tags: PCB Python DraftSight
-categories: 硬件
+tags: 
+- PCB 
+- Python 
+- DraftSight
+categories: 
+- 硬件
 ---
 
 DraftSight是3DS公司（达索系统集团）的一套2D制图软件。类似于AutoCAD，但有免费版（Free），所以在做PCB时，经常拿来画一些外框、异形线之类的。跟AutoCAD相比，少了一些专用的命令，比如画2D螺旋线。好在DraftSight可以使用脚本编程，这样，通过样条曲线画多个线段的方法来模拟2D螺旋线。

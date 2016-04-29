@@ -1,8 +1,10 @@
 ---
 title: Python序列化模块Pickle
 date: 2015-06-04 20:50:52
-tags: Python
-categories: Linux
+tags: 
+- Python
+categories: 
+- Linux
 ---
 
 最近在写一个基于文件计数器，脚本每执行一次记一次数，计数结果在文件中存储，用来统计开发板开关机次数。

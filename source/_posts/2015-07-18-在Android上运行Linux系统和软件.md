@@ -2,7 +2,8 @@
 title: 在Android上运行Linux系统和软件
 date: 2015-07-18 16:22:46
 tags: 
-categories: Android
+categories: 
+- Android
 ---
 
 `chroot`，即`change root directory`(更改`root`目录)。在`linux`系统中，系统默认的目录结构都是以`/`，即是以根(root)开始的。而在使用`chroot`之后，系统的目录结构将以指定的位置作为`/`位置。

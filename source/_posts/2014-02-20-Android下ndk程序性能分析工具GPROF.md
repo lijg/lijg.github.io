@@ -1,8 +1,11 @@
 ---
 title: Android下ndk程序性能分析工具GPROF
 date: 2014-02-20 14:50:10
-tags: gprof ndk
-categories: Android
+tags: 
+- gprof
+- ndk
+categories: 
+- Android
 ---
 
 由于oprofile在imx6上bug多多，很不好用，因此又找到了新的性能测试工具gprof。

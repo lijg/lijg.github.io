@@ -1,8 +1,10 @@
 ---
 title: Android进入Recovery模式流程分析
 date: 2014-11-14 19:52:14
-tags: Recovery
-categories: Android
+tags: 
+- Recovery
+categories: 
+- Android
 ---
 
 # 1 介绍

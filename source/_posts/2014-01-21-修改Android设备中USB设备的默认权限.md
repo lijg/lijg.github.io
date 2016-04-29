@@ -1,8 +1,10 @@
 ---
 title: 2014-01-21-修改Android设备中USB设备的默认权限
 date: 2014-01-21 21:06:40
-tags: USB
-categories: Android
+tags: 
+- USB
+categories: 
+- Android
 ---
 
 在Android设备中，有时想简单粗暴地将所有usb设备的权限设置成777（这样任何应用都不用权限就可以使用USB设备了），方法如下：
