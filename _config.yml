@@ -74,7 +74,7 @@ disqus_shortname:
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: https://github.com/ljgabc/ljgabc.github.io.git
+  repo: https://github.com/lijg/lijg.github.io.git
 
 sitemap:
     path: sitemap.xml
