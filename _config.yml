@@ -68,7 +68,7 @@ theme: landscape-plus
 #theme: next
 
 # disqus
-disqus_shortname: ljgabc
+disqus_shortname:
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
