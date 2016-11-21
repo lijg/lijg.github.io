@@ -1,0 +1,343 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>交叉编译Python-3.4.2 | LJGABC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="交叉编译Python-3.4.2到ARM方法及步骤，备忘。
+#0 准备
+编译环境目录结构如下12345678910111213~/work├── build│   ├── lib        // 编译生成的依赖库文件│   └── python     // 编译生成的python文件└── src    ├── bzip2-1.0.6    ├── gdbm-1.11    ├── ncur">
+<meta property="og:type" content="article">
+<meta property="og:title" content="交叉编译Python-3.4.2">
+<meta property="og:url" content="http://ljgabc.com/2015/04/24/2015-04-24-交叉编译Python-3-4-2/index.html">
+<meta property="og:site_name" content="LJGABC">
+<meta property="og:description" content="交叉编译Python-3.4.2到ARM方法及步骤，备忘。
+#0 准备
+编译环境目录结构如下12345678910111213~/work├── build│   ├── lib        // 编译生成的依赖库文件│   └── python     // 编译生成的python文件└── src    ├── bzip2-1.0.6    ├── gdbm-1.11    ├── ncur">
+<meta property="og:updated_time" content="2016-11-20T14:29:41.203Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="交叉编译Python-3.4.2">
+<meta name="twitter:description" content="交叉编译Python-3.4.2到ARM方法及步骤，备忘。
+#0 准备
+编译环境目录结构如下12345678910111213~/work├── build│   ├── lib        // 编译生成的依赖库文件│   └── python     // 编译生成的python文件└── src    ├── bzip2-1.0.6    ├── gdbm-1.11    ├── ncur">
+  
+    <link rel="alternative" href="/atom.xml" title="LJGABC" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">LJGABC</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">嵌入式全栈工程师</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="ljgabc.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-2015-04-24-交叉编译Python-3-4-2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/04/24/2015-04-24-交叉编译Python-3-4-2/" class="article-date">
+  <time datetime="2015-04-24T11:47:29.000Z" itemprop="datePublished">2015-04-24</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      交叉编译Python-3.4.2
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>交叉编译Python-3.4.2到ARM方法及步骤，备忘。</p>
+<p>#0 准备</p>
+<p>编译环境目录结构如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">~/work</div><div class="line">├── build</div><div class="line">│   ├── lib        // 编译生成的依赖库文件</div><div class="line">│   └── python     // 编译生成的python文件</div><div class="line">└── src</div><div class="line">    ├── bzip2-1.0.6</div><div class="line">    ├── gdbm-1.11</div><div class="line">    ├── ncurses-5.9</div><div class="line">    ├── openssl-1.0.2a</div><div class="line">    ├── Python-3.4.2</div><div class="line">    ├── readline-6.3</div><div class="line">    ├── sqlite-autoconf-3080500</div><div class="line">    └── xz-5.0.5</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">export WORKDIR=~/work</div><div class="line">export HOST=arm-linux-gnueabi</div><div class="line">export PREFIX=$WORKDIR/build/lib</div><div class="line">export PREFIX_PYTHON=$WORKDIR/build/python</div><div class="line"></div><div class="line">export CFLAGS=&quot;-I$PREFIX/include&quot;</div><div class="line">export LDFLAGS=&quot;-L$PREFIX/lib&quot;</div></pre></td></tr></table></figure>
+<p>#1 编译ncurses-5.9</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">./configure --prefix=$PREFIX --host=$HOST</div><div class="line">make &amp;&amp; make install</div></pre></td></tr></table></figure>
+<p>#2 编译readline库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">bash_cv_wcwidth_broken=no ./configure --prefix=$PREFIX --host=$HOST --enable-shared=no --with-curses=ncurses</div><div class="line">make &amp;&amp; make install</div></pre></td></tr></table></figure></p>
+<p>#3 编译bzip2库<br>修改Makefile，patch如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div></pre></td><td class="code"><pre><div class="line">--- Makefile.old    2015-04-24 15:36:49.420543465 +0800</div><div class="line">+++ Makefile    2015-04-24 15:41:00.436534604 +0800</div><div class="line">@@ -15,16 +15,17 @@</div><div class="line"> SHELL=/bin/sh</div><div class="line"> </div><div class="line"> # To assist in cross-compiling</div><div class="line">-CC=gcc</div><div class="line">-AR=ar</div><div class="line">-RANLIB=ranlib</div><div class="line">+CROSS_COMPILE=arm-linux-gnueabi-</div><div class="line">+CC=$(CROSS_COMPILE)gcc</div><div class="line">+AR=$(CROSS_COMPILE)ar</div><div class="line">+RANLIB=$(CROSS_COMPILE)ranlib</div><div class="line"> LDFLAGS=</div><div class="line"> </div><div class="line"> BIGFILES=-D_FILE_OFFSET_BITS=64</div><div class="line"> CFLAGS=-Wall -Winline -O2 -g $(BIGFILES)</div><div class="line"> </div><div class="line"> # Where you want it installed when you do &apos;make install&apos;</div><div class="line">-PREFIX=/usr/local</div><div class="line">+#PREFIX=/usr/local</div><div class="line"> </div><div class="line"> </div><div class="line"> OBJS= blocksort.o  \</div><div class="line">@@ -35,7 +36,7 @@</div><div class="line">       decompress.o \</div><div class="line">       bzlib.o</div><div class="line"> </div><div class="line">-all: libbz2.a bzip2 bzip2recover test</div><div class="line">+all: libbz2.a</div><div class="line"> </div><div class="line"> bzip2: libbz2.a bzip2.o</div><div class="line">    $(CC) $(CFLAGS) $(LDFLAGS) -o bzip2 bzip2.o -L. -lbz2</div><div class="line">@@ -69,44 +70,13 @@</div><div class="line">    cmp sample3.tst sample3.ref</div><div class="line">    @cat words3</div><div class="line"> </div><div class="line">-install: bzip2 bzip2recover</div><div class="line">-   if ( test ! -d $(PREFIX)/bin ) ; then mkdir -p $(PREFIX)/bin ; fi</div><div class="line">+install: libbz2.a</div><div class="line">    if ( test ! -d $(PREFIX)/lib ) ; then mkdir -p $(PREFIX)/lib ; fi</div><div class="line">-   if ( test ! -d $(PREFIX)/man ) ; then mkdir -p $(PREFIX)/man ; fi</div><div class="line">-   if ( test ! -d $(PREFIX)/man/man1 ) ; then mkdir -p $(PREFIX)/man/man1 ; fi</div><div class="line">    if ( test ! -d $(PREFIX)/include ) ; then mkdir -p $(PREFIX)/include ; fi</div><div class="line">-   cp -f bzip2 $(PREFIX)/bin/bzip2</div><div class="line">-   cp -f bzip2 $(PREFIX)/bin/bunzip2</div><div class="line">-   cp -f bzip2 $(PREFIX)/bin/bzcat</div><div class="line">-   cp -f bzip2recover $(PREFIX)/bin/bzip2recover</div><div class="line">-   chmod a+x $(PREFIX)/bin/bzip2</div><div class="line">-   chmod a+x $(PREFIX)/bin/bunzip2</div><div class="line">-   chmod a+x $(PREFIX)/bin/bzcat</div><div class="line">-   chmod a+x $(PREFIX)/bin/bzip2recover</div><div class="line">-   cp -f bzip2.1 $(PREFIX)/man/man1</div><div class="line">-   chmod a+r $(PREFIX)/man/man1/bzip2.1</div><div class="line">    cp -f bzlib.h $(PREFIX)/include</div><div class="line">    chmod a+r $(PREFIX)/include/bzlib.h</div><div class="line">    cp -f libbz2.a $(PREFIX)/lib</div><div class="line">    chmod a+r $(PREFIX)/lib/libbz2.a</div><div class="line">-   cp -f bzgrep $(PREFIX)/bin/bzgrep</div><div class="line">-   ln -s -f $(PREFIX)/bin/bzgrep $(PREFIX)/bin/bzegrep</div><div class="line">-   ln -s -f $(PREFIX)/bin/bzgrep $(PREFIX)/bin/bzfgrep</div><div class="line">-   chmod a+x $(PREFIX)/bin/bzgrep</div><div class="line">-   cp -f bzmore $(PREFIX)/bin/bzmore</div><div class="line">-   ln -s -f $(PREFIX)/bin/bzmore $(PREFIX)/bin/bzless</div><div class="line">-   chmod a+x $(PREFIX)/bin/bzmore</div><div class="line">-   cp -f bzdiff $(PREFIX)/bin/bzdiff</div><div class="line">-   ln -s -f $(PREFIX)/bin/bzdiff $(PREFIX)/bin/bzcmp</div><div class="line">-   chmod a+x $(PREFIX)/bin/bzdiff</div><div class="line">-   cp -f bzgrep.1 bzmore.1 bzdiff.1 $(PREFIX)/man/man1</div><div class="line">-   chmod a+r $(PREFIX)/man/man1/bzgrep.1</div><div class="line">-   chmod a+r $(PREFIX)/man/man1/bzmore.1</div><div class="line">-   chmod a+r $(PREFIX)/man/man1/bzdiff.1</div><div class="line">-   echo &quot;.so man1/bzgrep.1&quot; &gt; $(PREFIX)/man/man1/bzegrep.1</div><div class="line">-   echo &quot;.so man1/bzgrep.1&quot; &gt; $(PREFIX)/man/man1/bzfgrep.1</div><div class="line">-   echo &quot;.so man1/bzmore.1&quot; &gt; $(PREFIX)/man/man1/bzless.1</div><div class="line">-   echo &quot;.so man1/bzdiff.1&quot; &gt; $(PREFIX)/man/man1/bzcmp.1</div><div class="line"> </div><div class="line"> clean: </div><div class="line">    rm -f *.o libbz2.a bzip2 bzip2recover \</div></pre></td></tr></table></figure></p>
+<p>编译<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">make &amp;&amp; make install</div></pre></td></tr></table></figure></p>
+<p>#4 编译gdbm库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">./configure --prefix=$PREFIX --host=$HOST --enable-libgdbm-compat --enable-shared=no</div><div class="line">make &amp;&amp; make install</div></pre></td></tr></table></figure></p>
+<p>#5 编译openssl库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">待添加...</div></pre></td></tr></table></figure></p>
+<p>#6 编译sqlite库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">./configure --prefix=$PREFIX --host=$HOST --enable-shared=no</div><div class="line">make &amp;&amp; make install</div></pre></td></tr></table></figure></p>
+<p>#7 编译xz<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">./configure --prefix=$PREFIX --host=$HOST --enable-shared=no</div><div class="line">make &amp;&amp; make install</div></pre></td></tr></table></figure></p>
+<p>#8 编译Python<br>先编译host版的python和pgen<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">./configure</div><div class="line">make BUILDPYTHON=hostpython hostpython PGEN=Parser/hostpgen Parser/hostpgen</div><div class="line">make distclean</div></pre></td></tr></table></figure></p>
+<p>打补丁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div></pre></td><td class="code"><pre><div class="line">diff -ru Python-3.4.2/Makefile.pre.in Python-3.4.2-android/Makefile.pre.in</div><div class="line">--- Python-3.4.2/Makefile.pre.in    2014-03-09 09:40:23.000000000 +0100</div><div class="line">+++ Python-3.4.2-android/Makefile.pre.in    2014-08-04 22:13:00.000000000 +0200</div><div class="line">@@ -674,7 +674,7 @@</div><div class="line"> $(GRAMMAR_H): $(GRAMMAR_INPUT) $(PGENSRCS)</div><div class="line">        @$(MKDIR_P) Include</div><div class="line">        $(MAKE) $(PGEN)</div><div class="line">-       $(PGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)</div><div class="line">+       $(HOSTPGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)</div><div class="line"> $(GRAMMAR_C): $(GRAMMAR_H) $(GRAMMAR_INPUT) $(PGENSRCS)</div><div class="line">        $(MAKE) $(GRAMMAR_H)</div><div class="line">        touch $(GRAMMAR_C)</div><div class="line">@@ -1243,6 +1243,7 @@</div><div class="line"> # Install the dynamically loadable modules</div><div class="line"> # This goes into $(exec_prefix)</div><div class="line"> sharedinstall: sharedmods</div><div class="line">+   CC=&apos;$(CC)&apos; LDSHARED=&apos;$(BLDSHARED)&apos; LDFLAGS=&apos;$(LDFLAGS)&apos; OPT=&apos;$(OPT)&apos; CROSS_COMPILE=&apos;$(CROSS_COMPILE)&apos; \</div><div class="line">    $(RUNSHARED) $(PYTHON_FOR_BUILD) $(srcdir)/setup.py install \</div><div class="line">        --prefix=$(prefix) \</div><div class="line">        --install-scripts=$(BINDIR) \</div><div class="line">diff -ru Python-3.4.2/configure Python-3.4.2-android/configure</div><div class="line">--- Python-3.4.2/configure  2014-03-09 09:40:34.000000000 +0100</div><div class="line">+++ Python-3.4.2-android/configure  2014-08-04 22:13:00.000000000 +0200</div><div class="line">@@ -2943,13 +2943,18 @@</div><div class="line">     &#123; $as_echo &quot;$as_me:$&#123;as_lineno-$LINENO&#125;: checking for python interpreter for cross build&quot; &gt;&amp;5</div><div class="line"> $as_echo_n &quot;checking for python interpreter for cross build... &quot; &gt;&amp;6; &#125;</div><div class="line">     if test -z &quot;$PYTHON_FOR_BUILD&quot;; then</div><div class="line">-        for interp in python$PACKAGE_VERSION python3 python; do</div><div class="line">-       which $interp &gt;/dev/null 2&gt;&amp;1 || continue</div><div class="line">-       if $interp -c &apos;import sys;sys.exit(not sys.version_info[:2] &gt;= (3,3))&apos;; then</div><div class="line">-           break</div><div class="line">-       fi</div><div class="line">-            interp=</div><div class="line">-   done</div><div class="line">+        if test ! -z &quot;$HOSTPYTHON&quot; &amp;&amp; PYTHONPATH=&quot;$ac_abs_confdir/Lib&quot; &quot;$HOSTPYTHON&quot; -S -c &apos;import sys;sys.exit(not sys.version_info[:2] &gt;= (3,3))&apos;; then</div><div class="line">+            interp=&quot;$HOSTPYTHON&quot;</div><div class="line">+        else</div><div class="line">+            for interp in python$PACKAGE_VERSION python3 python; do</div><div class="line">+           which $interp &gt;/dev/null 2&gt;&amp;1 || continue</div><div class="line">+           if $interp -c &apos;import sys;sys.exit(not sys.version_info[:2] &gt;= (3,3))&apos;; then</div><div class="line">+               break</div><div class="line">+           fi</div><div class="line">+                interp=</div><div class="line">+       done</div><div class="line">+        fi</div><div class="line">+</div><div class="line">         if test x$interp = x; then</div><div class="line">        as_fn_error $? &quot;python$PACKAGE_VERSION interpreter not found&quot; &quot;$LINENO&quot; 5</div><div class="line">    fi</div><div class="line">diff -ru Python-3.4.2/configure.ac Python-3.4.2-android/configure.ac</div><div class="line">--- Python-3.4.2/configure.ac   2014-03-09 09:40:34.000000000 +0100</div><div class="line">+++ Python-3.4.2-android/configure.ac   2014-08-04 22:13:00.000000000 +0200</div><div class="line">@@ -56,13 +56,18 @@</div><div class="line"> if test &quot;$cross_compiling&quot; = yes; then</div><div class="line">     AC_MSG_CHECKING([for python interpreter for cross build])</div><div class="line">     if test -z &quot;$PYTHON_FOR_BUILD&quot;; then</div><div class="line">-        for interp in python$PACKAGE_VERSION python3 python; do</div><div class="line">-       which $interp &gt;/dev/null 2&gt;&amp;1 || continue</div><div class="line">-       if $interp -c &apos;import sys;sys.exit(not sys.version_info@&lt;:@:2@:&gt;@ &gt;= (3,3))&apos;; then</div><div class="line">-           break</div><div class="line">-       fi</div><div class="line">-            interp=</div><div class="line">-   done</div><div class="line">+        if test ! -z &quot;$HOSTPYTHON&quot; &amp;&amp; PYTHONPATH=&quot;$ac_abs_confdir/Lib&quot; &quot;$HOSTPYTHON&quot; -S -c &apos;import sys;sys.exit(not sys.version_info@&lt;:@:2@:&gt;@ &gt;= (3,3))&apos;; then</div><div class="line">+            interp=&quot;$HOSTPYTHON&quot;</div><div class="line">+        else</div><div class="line">+            for interp in python$PACKAGE_VERSION python3 python; do</div><div class="line">+           which $interp &gt;/dev/null 2&gt;&amp;1 || continue</div><div class="line">+           if $interp -c &apos;import sys;sys.exit(not sys.version_info@&lt;:@:2@:&gt;@ &gt;= (3,3))&apos;; then</div><div class="line">+               break</div><div class="line">+           fi</div><div class="line">+                interp=</div><div class="line">+       done</div><div class="line">+        fi</div><div class="line">+</div><div class="line">         if test x$interp = x; then</div><div class="line">        AC_MSG_ERROR([python$PACKAGE_VERSION interpreter not found])</div><div class="line">    fi</div><div class="line"></div><div class="line">diff -ru Python-3.4.2/setup.py Python-3.4.2-android/setup.py</div><div class="line">--- Python-3.4.2/setup.py   2014-03-09 09:40:34.000000000 +0800</div><div class="line">+++ Python-3.4.2-android/setup.py   2014-08-04 22:13:00.000000000 +0800</div><div class="line">@@ -1060,7 +1060,7 @@</div><div class="line">                              &apos;/usr/local/include/sqlite3&apos;,</div><div class="line">                              ]</div><div class="line">         if cross_compiling:</div><div class="line">-            sqlite_inc_paths = []</div><div class="line">+            sqlite_inc_paths = [&apos;/home/lijg/work/build/lib/include&apos;]</div><div class="line">         MIN_SQLITE_VERSION_NUMBER = (3, 0, 8)</div><div class="line">         MIN_SQLITE_VERSION = &quot;.&quot;.join([str(x)</div><div class="line">                                     for x in MIN_SQLITE_VERSION_NUMBER])</div></pre></td></tr></table></figure></p>
+<p>编译arm版本的python</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">cat &gt; config.site &lt;&lt;-SITE</div><div class="line">    ac_cv_file__dev_ptmx=no</div><div class="line">    ac_cv_file__dev_ptc=no</div><div class="line">SITE</div><div class="line"></div><div class="line">./configure CROSS_COMPILE_TARGET=yes HOSTPYTHON=&quot;$(pwd)/hostpython&quot; CONFIG_SITE=config.site --prefix=$PREFIX_PYTHON --host=arm-linux-gnueabi --disable-ipv6 --without-ensurepip</div><div class="line"></div><div class="line">make CROSS_COMPILE_TARGET=yes HOSTPYTHON=&quot;$(pwd)/hostpython&quot; HOSTPGEN=&quot;$(pwd)/Parser/hostpgen&quot;</div><div class="line"></div><div class="line">make CROSS_COMPILE_TARGET=yes HOSTPYTHON=&quot;$(pwd)/hostpython&quot; HOSTPGEN=&quot;$(pwd)/Parser/hostpgen&quot; install</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2015/04/24/2015-04-24-交叉编译Python-3-4-2/" data-id="civs3rcw3005dyh3l7535ujmg" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2015/04/24/2015-04-24-交叉编译Python-3-4-2/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/嵌入式/">嵌入式</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/04/30/2015-04-30-Linux-Device-Tree/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          Linux Device Tree
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/04/23/2015-04-23-Android隐藏导航条/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">Android隐藏导航条</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2015/04/24/2015-04-24-交叉编译Python-3-4-2/" data-title="交叉编译Python-3.4.2" data-url="http://ljgabc.com/2015/04/24/2015-04-24-交叉编译Python-3-4-2/"></div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/11/21/2016-11-21-日出/">日出</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/20/2016-11-20-莲花山公园/">莲花山公园</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/15/2016-11-15-彩鹿/">彩鹿</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/14/2016-11-14-今晚的月亮/">今晚的月亮</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/06/2016-11-06-深圳湾夜骑/">深圳湾夜骑</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ASIC/">ASIC</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">47</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/摄影/">摄影</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂/">杂</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/硬件/">硬件</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件/">软件</a><span class="category-list-count">8</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BusyBox/" style="font-size: 10px;">BusyBox</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Catmul/" style="font-size: 10px;">Catmul</a> <a href="/tags/Centos/" style="font-size: 12.86px;">Centos</a> <a href="/tags/Debian/" style="font-size: 10px;">Debian</a> <a href="/tags/Device-Tree/" style="font-size: 10px;">Device Tree</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/DraftSight/" style="font-size: 10px;">DraftSight</a> <a href="/tags/EC/" style="font-size: 10px;">EC</a> <a href="/tags/Flask/" style="font-size: 11.43px;">Flask</a> <a href="/tags/GLES/" style="font-size: 10px;">GLES</a> <a href="/tags/GPU/" style="font-size: 10px;">GPU</a> <a href="/tags/Git/" style="font-size: 12.86px;">Git</a> <a href="/tags/HHVM/" style="font-size: 10px;">HHVM</a> <a href="/tags/I2C/" style="font-size: 10px;">I2C</a> <a href="/tags/LVM/" style="font-size: 11.43px;">LVM</a> <a href="/tags/MQTT/" style="font-size: 10px;">MQTT</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/OpenGL/" style="font-size: 10px;">OpenGL</a> <a href="/tags/OpenMP/" style="font-size: 10px;">OpenMP</a> <a href="/tags/Oprofile/" style="font-size: 12.86px;">Oprofile</a> <a href="/tags/PCB/" style="font-size: 10px;">PCB</a> <a href="/tags/PCIE/" style="font-size: 11.43px;">PCIE</a> <a href="/tags/PPTP/" style="font-size: 10px;">PPTP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/RTT/" style="font-size: 10px;">RTT</a> <a href="/tags/Recovery/" style="font-size: 10px;">Recovery</a> <a href="/tags/SVN/" style="font-size: 11.43px;">SVN</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/Typecho/" style="font-size: 10px;">Typecho</a> <a href="/tags/USB/" style="font-size: 11.43px;">USB</a> <a href="/tags/VIM/" style="font-size: 10px;">VIM</a> <a href="/tags/Verification/" style="font-size: 10px;">Verification</a> <a href="/tags/busybox/" style="font-size: 10px;">busybox</a> <a href="/tags/dropbear/" style="font-size: 10px;">dropbear</a> <a href="/tags/gprof/" style="font-size: 10px;">gprof</a> <a href="/tags/i-MX6/" style="font-size: 10px;">i.MX6</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/scp/" style="font-size: 10px;">scp</a> <a href="/tags/uboot/" style="font-size: 10px;">uboot</a> <a href="/tags/uwsgi/" style="font-size: 10px;">uwsgi</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/xterm/" style="font-size: 10px;">xterm</a> <a href="/tags/休眠/" style="font-size: 10px;">休眠</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/导航条/" style="font-size: 10px;">导航条</a> <a href="/tags/嵌入式/" style="font-size: 17.14px;">嵌入式</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/广播/" style="font-size: 10px;">广播</a> <a href="/tags/性能/" style="font-size: 11.43px;">性能</a> <a href="/tags/插值/" style="font-size: 10px;">插值</a> <a href="/tags/摄影/" style="font-size: 15.71px;">摄影</a> <a href="/tags/敏捷/" style="font-size: 11.43px;">敏捷</a> <a href="/tags/旅游/" style="font-size: 10px;">旅游</a> <a href="/tags/旅行/" style="font-size: 14.29px;">旅行</a> <a href="/tags/树莓派/" style="font-size: 14.29px;">树莓派</a> <a href="/tags/浪涌/" style="font-size: 10px;">浪涌</a> <a href="/tags/纹理/" style="font-size: 10px;">纹理</a> <a href="/tags/美食/" style="font-size: 10px;">美食</a> <a href="/tags/蓝牙/" style="font-size: 10px;">蓝牙</a> <a href="/tags/街拍/" style="font-size: 12.86px;">街拍</a> <a href="/tags/设备树/" style="font-size: 10px;">设备树</a> <a href="/tags/设计模式/" style="font-size: 18.57px;">设计模式</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">三月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">二月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">一月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">八月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03/">三月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Lee<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lijg"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"/css/bdshare.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

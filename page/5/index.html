@@ -1,0 +1,620 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>LJGABC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="嵌入式">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LJGABC">
+<meta property="og:url" content="http://ljgabc.com/page/5/index.html">
+<meta property="og:site_name" content="LJGABC">
+<meta property="og:description" content="嵌入式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LJGABC">
+<meta name="twitter:description" content="嵌入式">
+  
+    <link rel="alternative" href="/atom.xml" title="LJGABC" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">LJGABC</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">嵌入式全栈工程师</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="ljgabc.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main">
+  
+    <article id="post-2016-04-29-树莓派之MQTT" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/04/29/2016-04-29-树莓派之MQTT/" class="article-date">
+  <time datetime="2016-04-29T10:28:34.000Z" itemprop="datePublished">2016-04-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/29/2016-04-29-树莓派之MQTT/">树莓派之MQTT</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1 介绍"></a>1 介绍</h1><blockquote>
+<p>MQTT是一项异步消息传输协议，是IBM在分析了他们的客户在其业务中消息传递的情况（包括通过它传递数据）之后专门为物联网所定制的重要的轻量级消息传输协议。</p>
+<p>MQTT是轻量级基于代理的发布/订阅的消息传输协议，设计思想是开放、简单、轻量、易于实现。这些特点使它适用于受限环境。</p>
+</blockquote>
+<p>MQTT协议的特点：</p>
+<ul>
+<li>使用发布/订阅消息模式，提供一对多的消息发布，解除应用程序耦合。</li>
+<li>对负载内容屏蔽的消息传输。</li>
+<li>使用 TCP/IP 提供网络连接。</li>
+<li>有三种消息发布服务质量：<ul>
+<li>“至多一次”，消息发布完全依赖底层 TCP/IP 网络。会发生消息丢失或重复。这一级别可用于如下情况，环境传感器数据，丢失一次读记录无所谓，因为不久后还会有第二次发送。</li>
+<li>“至少一次”，确保消息到达，但消息重复可能会发生。</li>
+<li>“只有一次”，确保消息到达一次。这一级别可用于如下情况，在计费系统中，消息重复或丢失会导致不正确的结果。</li>
+</ul>
+</li>
+<li>小型传输，开销很小（固定长度的头部是 2 字节），协议交换最小化，以降低网络流量。</li>
+<li>使用 Last Will 和 Testament 特性通知有关各方客户端异常中断的机制。</li>
+</ul>
+<p>由于协议开销很小，且能很好的适应各种复杂网络，特别是受限网络，MQTT还经常被用来实现推送服务。设备使用长连接去建立一个客户端到服务器的双向数据通道，只要在连接建立后，一旦一方有数据更新，就可以马上通过双向的数据通道向对方发送数据，平时在没有数据时，通过一些心跳等机制维持通道连接。</p>
+<p>本文描述了如何使用MQTT协议控制树莓派的LED。框图如下：</p>
+<p><img src="/images/2016-04-29/MQTT.PNG" alt="框图"></p>
+<h1 id="2-步骤"><a href="#2-步骤" class="headerlink" title="2 步骤"></a>2 步骤</h1><h1 id="2-1-准备条件"><a href="#2-1-准备条件" class="headerlink" title="2.1 准备条件"></a>2.1 准备条件</h1><ul>
+<li>服务器一台，要求有独立IP地址或域名(能够在公网访问)；</li>
+<li>树莓派一台</li>
+<li>Android手机（目前只实现了Android APP）</li>
+<li>Widnows开发机器，预装Python</li>
+</ul>
+<h1 id="2-2-服务器配置"><a href="#2-2-服务器配置" class="headerlink" title="2.2 服务器配置"></a>2.2 服务器配置</h1><p>服务器需要安装MQTT服务器。目前网络上有很多MQTT服务器实现，我选用的是mosquitto。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install mosquitto</div></pre></td></tr></table></figure>
+<p>一般需要使用tls加密mqtt传输内容，已避免信息泄漏。由于条件有限，我使用了用户名/密码验证的方式，这种方式只实现了初步防御，并不是特别安全。</p>
+<p>编辑<code>/etc/mosquitto/mosquitto.conf</code>，添加以下配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># 不允许匿名访问</div><div class="line">allow_anonymous false</div><div class="line"></div><div class="line"># 密码文件存放路径</div><div class="line">password_file /etc/mosquitto/passwd</div></pre></td></tr></table></figure>
+<p>然后生成密码，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mosquitto_passwd -c /etc/mosquitto/passwd ljgabc</div><div class="line"># 输入密码</div></pre></td></tr></table></figure></p>
+<p>之后重启服务,<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">systemctl restart mosquitto.service</div></pre></td></tr></table></figure></p>
+<h1 id="2-3-树莓派配置"><a href="#2-3-树莓派配置" class="headerlink" title="2.3 树莓派配置"></a>2.3 树莓派配置</h1><p>安装MQTT客户端工具<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install paho-mqtt</div></pre></td></tr></table></figure></p>
+<p>客户端实现，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line">#! /usr/bin/python</div><div class="line"># -*- coding: utf-8 -*-</div><div class="line"></div><div class="line"># 引入RPi.GPIO库</div><div class="line">import RPi.GPIO as GPIO</div><div class="line"></div><div class="line"># 引入MQTT客户端</div><div class="line">import paho.mqtt.client as mqtt</div><div class="line"></div><div class="line">LED_PIN = 40</div><div class="line"></div><div class="line">def init():</div><div class="line">    GPIO.setmode(GPIO.BOARD)    # 使用`BOARD`编码</div><div class="line">    GPIO.setup(LED_PIN, GPIO.OUT, initial=GPIO.LOW)  # 使能LED_PIN作为输出接口，默认输出低电平</div><div class="line"></div><div class="line">    client = mqtt.Client()</div><div class="line">    client.on_connect = on_connect</div><div class="line">    client.on_message = on_message</div><div class="line">    client.username_pw_set(&apos;ljgabc&apos;, &apos;ljgabc&apos;)</div><div class="line">    return client</div><div class="line"></div><div class="line"># 设备连接上MQTT服务器时的回调函数</div><div class="line">def on_connect(client, userdata, flags, rc):</div><div class="line">    print(&quot;Connected with result code &quot;+str(rc))</div><div class="line">    # 订阅TOPIC</div><div class="line">    client.subscribe(&quot;ljgabc/led&quot;)</div><div class="line"></div><div class="line"># 收到订阅消息时的回调函数</div><div class="line">def on_message(client, userdata, msg):</div><div class="line">    &apos;&apos;&apos;</div><div class="line">    收到0时，关闭LED；收到1时打开LED；收到其他消息，不响应。</div><div class="line">    &apos;&apos;&apos;</div><div class="line">    print(msg.topic+&quot; &quot;+str(msg.payload))</div><div class="line">    try:</div><div class="line">        new_state = ord(msg.payload)</div><div class="line">        if new_state == 0 :</div><div class="line">            GPIO.OUTPUT(LED_PIN, GPIO.LOW)</div><div class="line">        else if new_state == 1:</div><div class="line">            GPIO.OUTPUT(LED_PIN, GPIO.HIGH)</div><div class="line">        else:</div><div class="line">            print(&apos;unknown msg&apos;)</div><div class="line">    except TypeError:</div><div class="line">        print(&apos;unknown msg&apos;)</div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    client = init()</div><div class="line">    client.connect(&quot;xxx.xxx.xxx.xxx&quot;)</div><div class="line">    client.loop_forever()</div></pre></td></tr></table></figure></p>
+<h1 id="2-4-测试"><a href="#2-4-测试" class="headerlink" title="2.4 测试"></a>2.4 测试</h1><p>在通过python测试</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">#!/usr/bin/python</div><div class="line"># -*- coding: utf-8 -*-</div><div class="line"></div><div class="line">import paho.mqtt.client as mqtt</div><div class="line">client = mqtt.Client()</div><div class="line">client.username_pw_set(&apos;ljgabc&apos;, &apos;ljgabc&apos;)</div><div class="line">client.connect(&quot;xxx.xxx.xxx.xxx&quot;)</div><div class="line"></div><div class="line"># 关闭LED</div><div class="line">client.publish(&apos;ljgabc/led&apos;, 0)</div><div class="line"></div><div class="line"># 打开LED</div><div class="line">client.publish(&apos;ljgabc/led&apos;, 0)</div></pre></td></tr></table></figure>
+<p>可以看到树莓派已经能够正常的打开和关闭LED</p>
+<h1 id="2-5-Android-APP"><a href="#2-5-Android-APP" class="headerlink" title="2.5 Android APP"></a>2.5 Android APP</h1><p>android程序见<a href="github.com">github</a></p>
+<h1 id="2-6-WebChat"><a href="#2-6-WebChat" class="headerlink" title="2.6 WebChat"></a>2.6 WebChat</h1><p>待续。。。</p>
+<h1 id="2-7-WebPage"><a href="#2-7-WebPage" class="headerlink" title="2.7 WebPage"></a>2.7 WebPage</h1><p>待续。。。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2016/04/29/2016-04-29-树莓派之MQTT/" data-id="civs3rd0p009ayh3l5kt4kamw" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2016/04/29/2016-04-29-树莓派之MQTT/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MQTT/">MQTT</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/树莓派/">树莓派</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2016-04-29-nginx-flask-uwsgi配置" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/04/29/2016-04-29-nginx-flask-uwsgi配置/" class="article-date">
+  <time datetime="2016-04-29T10:03:11.000Z" itemprop="datePublished">2016-04-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/29/2016-04-29-nginx-flask-uwsgi配置/">nginx+flask+uwsgi配置</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-Nginx"><a href="#1-Nginx" class="headerlink" title="1 Nginx"></a>1 Nginx</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install nginx</div></pre></td></tr></table></figure>
+<p>修改<code>/etc/nginx/flask.conf</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">    listion 80;</div><div class="line">    server_name domain_name;</div><div class="line">    localtion / &#123;</div><div class="line">        include uwsgi_params;</div><div class="line">        uwsgi_pass 127.0.0.1:8889;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>启动<code>nginx</code>服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">systemctl enable nginx.service</div><div class="line">systemctl start nginx.service</div></pre></td></tr></table></figure></p>
+<h1 id="2-uWSGI"><a href="#2-uWSGI" class="headerlink" title="2 uWSGI"></a>2 uWSGI</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install uwsgi uwsgi-plugin-python</div></pre></td></tr></table></figure>
+<p>编辑<code>/etc/uwsgi.ini</code>，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[uwsgi]</div><div class="line">uid = uwsgi</div><div class="line">gid = uwsgi</div><div class="line">pidfile = /run/uwsgi/uwsgi.pid</div><div class="line">emperor = /etc/uwsgi.d</div><div class="line">stats = /run/uwsgi/stats.sock</div><div class="line">emperor-tyrant = true</div><div class="line">cap = setgid,setuid</div></pre></td></tr></table></figure></p>
+<p>编辑<code>/etc/uwsgi.d/flask.ini</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">[uwsgi]</div><div class="line">uid = nginx</div><div class="line">gid = nginx</div><div class="line"></div><div class="line">disable-logging = true</div><div class="line"></div><div class="line">socket = 127.0.0.1:8888</div><div class="line"></div><div class="line">single-interpreter = true</div><div class="line">master = true</div><div class="line">plugin = python</div><div class="line"></div><div class="line">app = hello</div><div class="line">module = hello</div><div class="line">callable = app</div><div class="line"></div><div class="line">virtualenv = /var/www/flask-ve</div><div class="line">pythonpath = /var/www/flask</div><div class="line">chdir = /var/www/flask</div></pre></td></tr></table></figure></p>
+<p>启动<code>uWSGI</code>服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">systemctl enable uwsgi.service</div><div class="line">systemctl start uwsgi.service</div></pre></td></tr></table></figure></p>
+<h1 id="3-Flask"><a href="#3-Flask" class="headerlink" title="3 Flask"></a>3 Flask</h1><p>创建<code>virtualenv</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">cd /var/www</div><div class="line">virtualenv flask-ve</div><div class="line">source flask-ve/bin/activate</div><div class="line">pip install flask</div></pre></td></tr></table></figure></p>
+<p>创建<code>app</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">cd /var/www</div><div class="line">mkdir flask</div><div class="line">cd flask</div><div class="line">echo &gt;&gt; hello.py &lt;&lt; EOF</div><div class="line">#!/usr/bin/python</div><div class="line"># -*- coding: utf-8 -*-</div><div class="line"></div><div class="line">from flask import Flask</div><div class="line"></div><div class="line">app = Flask(__name__)</div><div class="line"></div><div class="line">@app.route(&apos;/&apos;):</div><div class="line">    return &apos;Hello World!&apos;</div></pre></td></tr></table></figure></p>
+<p>完。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2016/04/29/2016-04-29-nginx-flask-uwsgi配置/" data-id="civs3rd0f0090yh3li0ea07pk" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2016/04/29/2016-04-29-nginx-flask-uwsgi配置/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Flask/">Flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Nginx/">Nginx</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/uwsgi/">uwsgi</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2016-04-26-LVM磁盘扩容一例" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/04/26/2016-04-26-LVM磁盘扩容一例/" class="article-date">
+  <time datetime="2016-04-26T07:03:24.000Z" itemprop="datePublished">2016-04-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/26/2016-04-26-LVM磁盘扩容一例/">LVM磁盘扩容一例</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>先前用VirtualBox给Debian只分配了20G的硬盘容量，今天编译QT的时候磁盘容量不足，需要将根分区扩容。</p>
+<h1 id="1-准备磁盘"><a href="#1-准备磁盘" class="headerlink" title="1 准备磁盘"></a>1 准备磁盘</h1><p>首先，用VboxManager给修改磁盘容量<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 修改磁盘容量上限为100G</div><div class="line">D:\VirtualBox\VBoxManage.exe modifyhd &quot;E:\VirtualMachines\Debian\Debian.vdi&quot; --resize 102400</div></pre></td></tr></table></figure></p>
+<p>启动Debian虚拟机，使用cfdisk工具，可以看到磁盘容量已经由20G变为100G，多出来的容量成为自由空间（未分配）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cfdisk /dev/sda</div></pre></td></tr></table></figure></p>
+<p>在自由空间上新建分区，保存。此时的磁盘分区情况如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">/dev/sda1   100M  /boot分区</div><div class="line">/dev/sda2   20G   分给debianvbox-vg</div><div class="line">/dev/sda3   80G</div></pre></td></tr></table></figure></p>
+<h1 id="2-扩容"><a href="#2-扩容" class="headerlink" title="2 扩容"></a>2 扩容</h1><p>首先查看一下现有的PV<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"># pvdisplay</div><div class="line"></div><div class="line">--- Physical volume ---</div><div class="line"> PV Name    /dev/sda2</div><div class="line"> VG Name    debianvbox-vg</div><div class="line"> PV Size    19.8Gib</div><div class="line"> ....</div></pre></td></tr></table></figure></p>
+<p>查看VG<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># vgdisplay</div><div class="line">--- Volume group ---</div><div class="line"> VG Name    debianvbox-vg</div><div class="line"> ...</div><div class="line"> VG Size    19.8Gib</div><div class="line"> ...</div></pre></td></tr></table></figure></p>
+<p>将/dev/sd3加入VG<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vgextend debianvbox-vg /dev/sda3</div></pre></td></tr></table></figure></p>
+<p>确认PV和VG<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"># pvdisplay</div><div class="line">--- Physical volume ---</div><div class="line"> PV Name    /dev/sda2</div><div class="line"> VG Name    debianvbox-vg</div><div class="line"> PV Size    19.8Gib</div><div class="line"> ....</div><div class="line"></div><div class="line">--- Physical volume ---</div><div class="line"> PV Name    /dev/sda3</div><div class="line"> VG Name    debianvbox-vg</div><div class="line"> PV Size    80Gib</div><div class="line"> ....</div></pre></td></tr></table></figure></p>
+<p>查看LV<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"># lvdisplay</div><div class="line">--- Ligical volume ---</div><div class="line"> LV PATH    /dev/debianvbox-vg/root</div><div class="line"> LV Name    root</div><div class="line"> VG Name    debianvbox-vg</div><div class="line"> ...</div><div class="line"> LV Size    19.8G</div><div class="line"> ...</div><div class="line"></div><div class="line">--- Ligical volume ---</div><div class="line"> LV PATH    /dev/debianvbox-vg/swap</div><div class="line"> LV Name    swap</div><div class="line"> VG Name    debianvbox-vg</div><div class="line"> ...</div><div class="line"> LV Size    1.0G</div><div class="line"> ...</div></pre></td></tr></table></figure></p>
+<p>扩容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">lvresize -L 80G /dev/debianvbox-vg/root</div></pre></td></tr></table></figure></p>
+<p>修改磁盘容量大小<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">resize2fs /dev/debianvobx-vg/root</div></pre></td></tr></table></figure></p>
+<p>完。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2016/04/26/2016-04-26-LVM磁盘扩容一例/" data-id="civs3rd0j0093yh3lll8g2k19" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2016/04/26/2016-04-26-LVM磁盘扩容一例/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LVM/">LVM</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2016-03-12-蓝牙入门概念" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/03/12/2016-03-12-蓝牙入门概念/" class="article-date">
+  <time datetime="2016-03-12T10:00:27.000Z" itemprop="datePublished">2016-03-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/硬件/">硬件</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/03/12/2016-03-12-蓝牙入门概念/">蓝牙入门概念</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>低功耗蓝牙(BLE)协议是一个多层协议，官方的介绍比较复杂，这里只挑两个必须掌握的介绍一下，GAP和GATT。</p>
+<p><img src="/images/2016-04-14/19-42-54.jpg" alt="Image"></p>
+<h1 id="1-GAP"><a href="#1-GAP" class="headerlink" title="1 GAP"></a>1 GAP</h1><p>GAP全称是通用访问规范(Generic Access Profile)，通过名字就可以猜到这个是管理底层连接的。</p>
+<p>GAP中规定了以下几个术语：</p>
+<h2 id="1-1-角色"><a href="#1-1-角色" class="headerlink" title="1.1 角色"></a>1.1 角色</h2><p>BLE可以看做是一个主从式结构，一个主机（集中器），一个设备。比如，蓝牙手环应用，手机是主机（集中器），蓝牙手环是设备。</p>
+<p>现在的手机一般都支持两种模式，既可以当主机，又可以当设备。但在某个确定的场景中，只能是一种身份。</p>
+<p>Nordic提供的协议栈中（底层库），S110是只支持设备模式，S120只支持主机模式，S130两者都支持。</p>
+<h2 id="1-2-广播"><a href="#1-2-广播" class="headerlink" title="1.2 广播"></a>1.2 广播</h2><p>广播是<code>设备</code>发起的活动。</p>
+<p>设备想要被主机搜扫到，必须发起广播。有一些参数用来设置广播的信息（如设备名等）、间隔等信息。 设备在广播时，所有可见范围内的主机都可以接收到广播信息，从而发现设备。</p>
+<p>主机接收到广播后，相当于建立起的初步联系，此时两者可以沟通以获取更多的信息，这个过程叫扫描回应。</p>
+<h2 id="1-3-扫描"><a href="#1-3-扫描" class="headerlink" title="1.3 扫描"></a>1.3 扫描</h2><p>扫描是<code>主机</code>发起的活动。扫描其实就是主机让自己出去接收广播的状态，从而发现设备。</p>
+<p>扫描一般不会一直持续下去，一般在手机上系统扫描一段时间就会自动停止。当选定某一个设备连接时也自动停止扫描。</p>
+<h2 id="1-4-连接"><a href="#1-4-连接" class="headerlink" title="1.4 连接"></a>1.4 连接</h2><p>主机想要连接到一个设备时，发起一个连接请求。</p>
+<p>之后两者根据协议建立连接，都是底层的一些协议规定，就不细讲了。</p>
+<h1 id="2-GATT"><a href="#2-GATT" class="headerlink" title="2 GATT"></a>2 GATT</h1><p>GATT全称是通用属性配置文件(Generic Attribute Profile)，是用来描述设备或主机的各种属性的。而属性就是各种可以读写的信息，主机和设备之间就靠读写这些属性来沟通。</p>
+<p>比如，一个蓝牙设备可以用一个可读写的特性（特性与属性的区别见下文）来表征一个LED的开关。当手机和蓝牙设备建立连接后可以向这个特性写入0或者1。蓝牙设备就可以通过特性的值来打开或关闭LED。</p>
+<p><img src="/images/2016-04-14/19-43-35.jpg" alt="Image"></p>
+<p>GATT中规定了以下几个术语：</p>
+<h2 id="2-1-角色"><a href="#2-1-角色" class="headerlink" title="2.1 角色"></a>2.1 角色</h2><p>GATT中也分为两个角色，GATT服务器和GATT客户端。</p>
+<p>提供属性的设备称为GATT服务器，访问GATT服务器而获得属性的设备称为GATT客户端。</p>
+<p>比如之前的例子，手机通过访问蓝牙设备的属性来控制LED，所以蓝牙设备就是GATT服务器，手机就是GATT客户端。</p>
+<h2 id="2-2-属性"><a href="#2-2-属性" class="headerlink" title="2.2 属性"></a>2.2 属性</h2><p>属性是GATT服务器中最基本的单元。GATT服务器将其所有的属性组成一个属性表。</p>
+<p>一个属性包含句柄、UUID、值：</p>
+<ul>
+<li>句柄是属性在GATT表中的索引。我们一般用不到</li>
+<li>UUID是属性的ID，包含了属性值的类型等信息</li>
+<li>可能有多个属性拥有同一个UUID</li>
+</ul>
+<h2 id="2-3-特性"><a href="#2-3-特性" class="headerlink" title="2.3 特性"></a>2.3 特性</h2><p>一个特性至少包含2个属性：一个属性用于声明(又叫描述符)，一个属性用于存放特性的值。</p>
+<p>存放特性值的属性就是真正传输的数据，声明属性用来确定该特性是否可读写、是否可以发起通知（类似于向主机发起中断）等信息。</p>
+<p>比如，LED状态就是一个特性，该特性可读写。</p>
+<h2 id="2-4-描述符"><a href="#2-4-描述符" class="headerlink" title="2.4 描述符"></a>2.4 描述符</h2><p>描述符就是用于声明的属性。 有一个特别的描述符值得特别地提起：客户端特性配置描述符(Client Characteristic Configuration Descriptor，CCCD)，这个描述符是给任何支持通知或指示功能的特性额外增加的。在CCCD中写入“1”使能通知功能，写入“2”使能指示功能，写入“0”同时禁止通知和指示功能。</p>
+<p>在S110协议栈中，对任何使能了通知功能或是指示功能的特性，协议栈将自动加入这个类型的描述符。</p>
+<h2 id="2-5-服务"><a href="#2-5-服务" class="headerlink" title="2.5 服务"></a>2.5 服务</h2><p>一个服务包含一个或多个特性，这些特性是逻辑上相关的集合体。</p>
+<p>GATT服务一般包含几块具有相关的功能，比如特定传感器的读取和设置，人机接口的输入输出。组织具有相关的特性到服务中既实用又有效，因为它使得逻辑上和用户数据上的边界变得更加清晰，同时它也有助于不同应用程序间代码的重用。</p>
+<h2 id="2-6-数据配置文件"><a href="#2-6-数据配置文件" class="headerlink" title="2.6 数据配置文件"></a>2.6 数据配置文件</h2><p>一个profile文件可以包含一个或者多个服务，一个profile文件包含需要的服务的信息或者为对等设备如何交互的配置文件的选项信息。</p>
+<p>其实就是层层封装，目的是为应用提供方便，也更好的重用。</p>
+<h1 id="3-其他"><a href="#3-其他" class="headerlink" title="3 其他"></a>3 其他</h1><h2 id="3-1-标准服务、定制服务"><a href="#3-1-标准服务、定制服务" class="headerlink" title="3.1 标准服务、定制服务"></a>3.1 标准服务、定制服务</h2><p>标准服务就是蓝牙技术联盟（SIG）事先定义好的一些服务。<br>定制服务就是你自己开发的服务。</p>
+<h2 id="3-2-UUID"><a href="#3-2-UUID" class="headerlink" title="3.2 UUID"></a>3.2 UUID</h2><p>UUID有128bit, 如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">0x00001234-0000-1000-8000-00805F9B34FB</div></pre></td></tr></table></figure></p>
+<p>一般使用的时候，会先生成一个基本UUID，比如<code>0x0000xxxx-0000-1000-8000-00805F9B34FB</code>，然后根据需要定义16bit的<code>xxxx</code>，生成完成的UUID。</p>
+<p>目的可能是为了更好的区分，比如一个公司使用相同的基本UUID，然后通过不同的<code>xxxx</code>来区分不同的服务、特性等。</p>
+<h2 id="3-3-操作类型-性质"><a href="#3-3-操作类型-性质" class="headerlink" title="3.3 操作类型(性质)"></a>3.3 操作类型(性质)</h2><p>特性的操作类型有：</p>
+<ul>
+<li>写</li>
+<li>没有回应的写</li>
+<li>读</li>
+<li>通知</li>
+<li>指示（有回应的通知）</li>
+</ul>
+<p>通过字面意思就可以理解，比如LED特性，需要写和读性质。如果设备有事件需要上报，比如按键等，就需要通知或者指示性质。通知就是上报完就没事了，指示的话还需要主机给个响应。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2016/03/12/2016-03-12-蓝牙入门概念/" data-id="civs3rd0m0096yh3lqpvb5j52" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2016/03/12/2016-03-12-蓝牙入门概念/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/蓝牙/">蓝牙</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2016-02-29-简单的开机浪涌抑制电路" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/29/2016-02-29-简单的开机浪涌抑制电路/" class="article-date">
+  <time datetime="2016-02-29T09:19:28.000Z" itemprop="datePublished">2016-02-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/硬件/">硬件</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/02/29/2016-02-29-简单的开机浪涌抑制电路/">简单的开机浪涌抑制电路</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="1-浪涌电路"><a href="#1-浪涌电路" class="headerlink" title="1 浪涌电路"></a>1 浪涌电路</h2><p><strong>浪涌电流</strong>是指远远超出正常工作电流的瞬间电流。对于一般的电路，开机瞬间，各个元件尚未进入正常的工作状态，所有电容都开始充电，造成的结果就是开机瞬间的工作电流远远大于正常工作电流，甚至达到5~10倍以上。</p>
+<p>浪涌电流会造成输入电源电压波形塌陷，使得供电质量变差，甚至会影响其他用电设备的工作以及使保护电路动作。例如在若干次浪涌电流冲击下，使得输入保险丝发生过载熔断，为避免这类现象发生，不得不选用更高额定电流的保险丝。这样的后果是正常工作时，主电路发生过载时，保险丝不能即使熔断，起不到保护作用，造成主电路器件不可恢复性的损坏。同时，过大的浪涌电流还会影响接插件的触电可靠性，产生很高的di/dt和dv/dt等，因此必须对浪涌电流加以抑制。</p>
+<h2 id="2-抑制方法"><a href="#2-抑制方法" class="headerlink" title="2 抑制方法"></a>2 抑制方法</h2><h3 id="2-1-使用热敏电阻"><a href="#2-1-使用热敏电阻" class="headerlink" title="2.1 使用热敏电阻"></a>2.1 使用热敏电阻</h3><p>抑制浪涌电流就是在开机瞬间，使电流缓慢上升，类似于电源中的延时启动电路。一种简单的方法就是在环路中串入一个热敏电阻。热敏电阻在未工作时电阻值较大，所以在刚刚开机时可以抑制冲击电流；正常工作后，热敏电阻因电流产生的热，使电阻值下降，所以不会影响电路的正常运行。</p>
+<p>由于热敏电路在正常工作后仍然有一定的阻抗，造成电源供电能力下降，也白白浪费了能量。而且当工作电流较大时，热敏电阻上的功率也会很大。</p>
+<h3 id="2-2-使用MOSFET"><a href="#2-2-使用MOSFET" class="headerlink" title="2.2 使用MOSFET"></a>2.2 使用MOSFET</h3><p>在电路回路中串联一个MOSFET，在开机时，使MOSFET缓慢导通，等效电阻缓慢减小，从而使电路电流缓慢上升。当电路正常工作时，MOSFET的等效电路只有几个毫欧，所以产生的压降和功耗可以忽略不计。具体电路如下所示：</p>
+<p><img src="/images/2016-02-29/17-34-05.jpg" alt="Image"></p>
+<p>使MOSFET缓慢导通的方法是使用RC电路，由于电容电压不能突变，所以开机瞬间，P沟道MOSGET栅级电压等于源级电压，VGS=0，MOSFET截止。电源通过R405给电容充电，栅级电压缓慢下降，VGS缓慢增大，MOSFET缓慢导通，使得整个回路电流缓慢增大，不至于产生浪涌电流。</p>
+<p>通过调节RC的充电时间，可以调节MOSFET栅级电压的曲线，从而实现调节电路电流上升曲线的斜率。</p>
+<p>使用两个电容的作用是，当任何一个电容被击穿后，剩下的一个电容和电阻仍然能够起到抑制浪涌电流的作用，不至于烧坏保险丝或电源。</p>
+<p>二极管的作用是，电源关短瞬间，电容上端电压为0，下端电压为-VCC，此时，电容可以通过二极管迅速放电。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2016/02/29/2016-02-29-简单的开机浪涌抑制电路/" data-id="civs3rd0d008yyh3l4w5gzoxu" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2016/02/29/2016-02-29-简单的开机浪涌抑制电路/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/浪涌/">浪涌</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
+    </nav>
+  
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/11/21/2016-11-21-日出/">日出</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/20/2016-11-20-莲花山公园/">莲花山公园</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/15/2016-11-15-彩鹿/">彩鹿</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/14/2016-11-14-今晚的月亮/">今晚的月亮</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/06/2016-11-06-深圳湾夜骑/">深圳湾夜骑</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ASIC/">ASIC</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">47</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/摄影/">摄影</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂/">杂</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/硬件/">硬件</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件/">软件</a><span class="category-list-count">8</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BusyBox/" style="font-size: 10px;">BusyBox</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Catmul/" style="font-size: 10px;">Catmul</a> <a href="/tags/Centos/" style="font-size: 12.86px;">Centos</a> <a href="/tags/Debian/" style="font-size: 10px;">Debian</a> <a href="/tags/Device-Tree/" style="font-size: 10px;">Device Tree</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/DraftSight/" style="font-size: 10px;">DraftSight</a> <a href="/tags/EC/" style="font-size: 10px;">EC</a> <a href="/tags/Flask/" style="font-size: 11.43px;">Flask</a> <a href="/tags/GLES/" style="font-size: 10px;">GLES</a> <a href="/tags/GPU/" style="font-size: 10px;">GPU</a> <a href="/tags/Git/" style="font-size: 12.86px;">Git</a> <a href="/tags/HHVM/" style="font-size: 10px;">HHVM</a> <a href="/tags/I2C/" style="font-size: 10px;">I2C</a> <a href="/tags/LVM/" style="font-size: 11.43px;">LVM</a> <a href="/tags/MQTT/" style="font-size: 10px;">MQTT</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/OpenGL/" style="font-size: 10px;">OpenGL</a> <a href="/tags/OpenMP/" style="font-size: 10px;">OpenMP</a> <a href="/tags/Oprofile/" style="font-size: 12.86px;">Oprofile</a> <a href="/tags/PCB/" style="font-size: 10px;">PCB</a> <a href="/tags/PCIE/" style="font-size: 11.43px;">PCIE</a> <a href="/tags/PPTP/" style="font-size: 10px;">PPTP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/RTT/" style="font-size: 10px;">RTT</a> <a href="/tags/Recovery/" style="font-size: 10px;">Recovery</a> <a href="/tags/SVN/" style="font-size: 11.43px;">SVN</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/Typecho/" style="font-size: 10px;">Typecho</a> <a href="/tags/USB/" style="font-size: 11.43px;">USB</a> <a href="/tags/VIM/" style="font-size: 10px;">VIM</a> <a href="/tags/Verification/" style="font-size: 10px;">Verification</a> <a href="/tags/busybox/" style="font-size: 10px;">busybox</a> <a href="/tags/dropbear/" style="font-size: 10px;">dropbear</a> <a href="/tags/gprof/" style="font-size: 10px;">gprof</a> <a href="/tags/i-MX6/" style="font-size: 10px;">i.MX6</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/scp/" style="font-size: 10px;">scp</a> <a href="/tags/uboot/" style="font-size: 10px;">uboot</a> <a href="/tags/uwsgi/" style="font-size: 10px;">uwsgi</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/xterm/" style="font-size: 10px;">xterm</a> <a href="/tags/休眠/" style="font-size: 10px;">休眠</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/导航条/" style="font-size: 10px;">导航条</a> <a href="/tags/嵌入式/" style="font-size: 17.14px;">嵌入式</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/广播/" style="font-size: 10px;">广播</a> <a href="/tags/性能/" style="font-size: 11.43px;">性能</a> <a href="/tags/插值/" style="font-size: 10px;">插值</a> <a href="/tags/摄影/" style="font-size: 15.71px;">摄影</a> <a href="/tags/敏捷/" style="font-size: 11.43px;">敏捷</a> <a href="/tags/旅游/" style="font-size: 10px;">旅游</a> <a href="/tags/旅行/" style="font-size: 14.29px;">旅行</a> <a href="/tags/树莓派/" style="font-size: 14.29px;">树莓派</a> <a href="/tags/浪涌/" style="font-size: 10px;">浪涌</a> <a href="/tags/纹理/" style="font-size: 10px;">纹理</a> <a href="/tags/美食/" style="font-size: 10px;">美食</a> <a href="/tags/蓝牙/" style="font-size: 10px;">蓝牙</a> <a href="/tags/街拍/" style="font-size: 12.86px;">街拍</a> <a href="/tags/设备树/" style="font-size: 10px;">设备树</a> <a href="/tags/设计模式/" style="font-size: 18.57px;">设计模式</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">三月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">二月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">一月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">八月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03/">三月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Lee<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lijg"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"/css/bdshare.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

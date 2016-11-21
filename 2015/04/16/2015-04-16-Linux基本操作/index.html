@@ -1,0 +1,431 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Linux基本操作 | LJGABC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="最近做了一个Linux基本命令分享交流活动。之后将PPT总结整理了一下，记录在此。
+
+查找帮助
+man 命令
+
+1man find
+
+目录结构
+
+绝对路径、相对路径
+绝对路径：路径的写法一定由根目录/写起，例如/usr/local/mysql，这就是绝对路径。
+相对路径：路径的写法不是由根目录/写起，例如，用户当前在/usr目录下,要进入/usr/local/mysql，只需要cd local/m">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux基本操作">
+<meta property="og:url" content="http://ljgabc.com/2015/04/16/2015-04-16-Linux基本操作/index.html">
+<meta property="og:site_name" content="LJGABC">
+<meta property="og:description" content="最近做了一个Linux基本命令分享交流活动。之后将PPT总结整理了一下，记录在此。
+
+查找帮助
+man 命令
+
+1man find
+
+目录结构
+
+绝对路径、相对路径
+绝对路径：路径的写法一定由根目录/写起，例如/usr/local/mysql，这就是绝对路径。
+相对路径：路径的写法不是由根目录/写起，例如，用户当前在/usr目录下,要进入/usr/local/mysql，只需要cd local/m">
+<meta property="og:image" content="http://ljgabc.com/images/2016-02-17/18-16-22.jpg">
+<meta property="og:updated_time" content="2016-11-20T14:29:41.203Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux基本操作">
+<meta name="twitter:description" content="最近做了一个Linux基本命令分享交流活动。之后将PPT总结整理了一下，记录在此。
+
+查找帮助
+man 命令
+
+1man find
+
+目录结构
+
+绝对路径、相对路径
+绝对路径：路径的写法一定由根目录/写起，例如/usr/local/mysql，这就是绝对路径。
+相对路径：路径的写法不是由根目录/写起，例如，用户当前在/usr目录下,要进入/usr/local/mysql，只需要cd local/m">
+<meta name="twitter:image" content="http://ljgabc.com/images/2016-02-17/18-16-22.jpg">
+  
+    <link rel="alternative" href="/atom.xml" title="LJGABC" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">LJGABC</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">嵌入式全栈工程师</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="ljgabc.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-2015-04-16-Linux基本操作" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/04/16/2015-04-16-Linux基本操作/" class="article-date">
+  <time datetime="2015-04-16T13:21:04.000Z" itemprop="datePublished">2015-04-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Linux基本操作
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近做了一个Linux基本命令分享交流活动。之后将PPT总结整理了一下，记录在此。</p>
+<hr>
+<h3 id="查找帮助"><a href="#查找帮助" class="headerlink" title="查找帮助"></a>查找帮助</h3><blockquote>
+<p>man 命令</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">man find</div></pre></td></tr></table></figure>
+<hr>
+<h3 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h3><p><img src="/images/2016-02-17/18-16-22.jpg" alt="目录结构"></p>
+<hr>
+<h3 id="绝对路径、相对路径"><a href="#绝对路径、相对路径" class="headerlink" title="绝对路径、相对路径"></a>绝对路径、相对路径</h3><blockquote>
+<p>绝对路径：路径的写法一定由根目录<code>/</code>写起，例如<code>/usr/local/mysql</code>，这就是绝对路径。</p>
+<p>相对路径：路径的写法不是由根目录<code>/</code>写起，例如，用户当前在<code>/usr</code>目录下,要进入<code>/usr/local/mysql</code>，只需要<code>cd local/mysql</code>即可。这里用的就是相对路径。</p>
+</blockquote>
+<p>有两个特殊的相对路径，<code>.</code>和<code>..</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">.   指当前目录，例如cd local/mysql，等于cd ./local/mysql</div><div class="line">..  指当前目录的上级目录</div></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="当前路径"><a href="#当前路径" class="headerlink" title="当前路径"></a>当前路径</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">名称</div><div class="line">    pwd - 打印用户当前所在路径</div><div class="line"></div><div class="line">用法</div><div class="line">    pwd [选项]</div><div class="line"></div><div class="line">说明</div><div class="line">    -P  如果目录是链接的话，显示为真正目录</div></pre></td></tr></table></figure>
+<hr>
+<h3 id="切换路径"><a href="#切换路径" class="headerlink" title="切换路径"></a>切换路径</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">名称</div><div class="line">    cd - 切换当前路径</div><div class="line"></div><div class="line">用法</div><div class="line">    cd  [目录]</div><div class="line"></div><div class="line">说明</div><div class="line">    -P  如果目录是链接的话，显示为真正目录</div></pre></td></tr></table></figure>
+<hr>
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><ol>
+<li>ls</li>
+<li>rm</li>
+<li>cp</li>
+<li>mv</li>
+<li>chmod</li>
+<li>mkdir</li>
+<li>find</li>
+<li>grep</li>
+<li>tar</li>
+<li>cat</li>
+</ol>
+<hr>
+<h3 id="ls"><a href="#ls" class="headerlink" title="ls"></a>ls</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">名称</div><div class="line">    ls - 查看目录内容</div><div class="line"></div><div class="line">用法</div><div class="line">    ls [选项] [文件/目录]</div><div class="line"></div><div class="line">说明</div><div class="line">    列出[文件/目录]包含哪些文件（如果是文件，只列出文件名）；</div><div class="line">    如果不指定[文件/目录]，则默认列出当前文件夹中的文件；</div><div class="line">       </div><div class="line">选项</div><div class="line">    -a  显示隐藏文件</div><div class="line"></div><div class="line">    -A  与-a类似，比-a少了`.`和`..`两个文件</div><div class="line"></div><div class="line">    -h  必须和-l一起使用，打印文件大小时使用(KB,MB,GB)</div><div class="line"></div><div class="line">    -l  列出文件的详细信息(权限、所有者、组、大小、最后修改时间等)</div></pre></td></tr></table></figure>
+<h3 id="ls的例子"><a href="#ls的例子" class="headerlink" title="ls的例子"></a>ls的例子</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ls          列出当前目录文件</div><div class="line">ls /home    列出/home目录下的文件</div><div class="line">ls -l       列出当前目录的详细文件列表</div><div class="line">ls -la      列出当前目录的详细文件列表，包含隐藏文件</div></pre></td></tr></table></figure>
+<hr>
+<h3 id="rm"><a href="#rm" class="headerlink" title="rm"></a>rm</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">名称</div><div class="line">    rm - 删除文件或文件夹</div><div class="line"></div><div class="line">用法</div><div class="line">    rm [选项] 文件/文件夹</div><div class="line"></div><div class="line">说明</div><div class="line">    rm用来删除指定文件。默认情况下不能删除文件夹。</div><div class="line"></div><div class="line">选项</div><div class="line">    -f  强制删除（不警告、不报错）</div><div class="line"></div><div class="line">    -i  删除前让用户确认是否删除</div><div class="line"></div><div class="line">    -r, -R</div><div class="line">        删除文件夹及其内容</div></pre></td></tr></table></figure>
+<h3 id="rm的例子"><a href="#rm的例子" class="headerlink" title="rm的例子"></a>rm的例子</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">rm a.txt    删除a.txt</div><div class="line">rm -i a.txt 删除a.txt,删除之前先确认</div><div class="line">rm -f a.txt 强制删除a.txt,即使a.txt不存在也不报错</div><div class="line">rm -rf abc  删除abc文件夹及其文件</div></pre></td></tr></table></figure>
+<hr>
+<h3 id="cp"><a href="#cp" class="headerlink" title="cp"></a>cp</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">名称</div><div class="line">    cp - 拷贝文件/目录</div><div class="line"></div><div class="line">用法</div><div class="line">    cp [选项] 源文件 目的文件</div><div class="line"></div><div class="line">说明</div><div class="line">    将`源文件`拷贝到`目的文件`。默认不能拷贝文件夹。</div><div class="line"></div><div class="line">选项</div><div class="line">    -r  拷贝文件夹。</div></pre></td></tr></table></figure>
+<h3 id="cp的例子"><a href="#cp的例子" class="headerlink" title="cp的例子"></a>cp的例子</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cp a.txt abc/b.txt</div><div class="line">cp -r abc def</div></pre></td></tr></table></figure>
+<hr>
+<h2 id="mv"><a href="#mv" class="headerlink" title="mv"></a>mv</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">名称</div><div class="line">    mv - 移动/重命名 文件/目录</div><div class="line"></div><div class="line">用法</div><div class="line">    mv [选项] 源文件/目录  目的文件/目录</div><div class="line"></div><div class="line">说明</div><div class="line">    将`源文件/目录`重命名为`新文件/目录`，</div><div class="line">    如果源文件和目的文件不在同一个目录，则相当于剪切</div><div class="line"></div><div class="line">选项</div><div class="line">    -f  如果目的地址已经存在文件，则直接覆盖而不提示</div><div class="line"></div><div class="line">    -i  覆盖之前先要求用户确认</div><div class="line"></div><div class="line">    -n  不覆盖已有文件</div><div class="line">    如果同时指定多个以上3个选项，以最后一个为准。</div></pre></td></tr></table></figure>
+<h3 id="mv的例子"><a href="#mv的例子" class="headerlink" title="mv的例子"></a>mv的例子</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mv a.txt b.txt</div><div class="line">mv a.txt abc/a.txt</div><div class="line">mv a.txt abc/</div></pre></td></tr></table></figure>
+<hr>
+<h3 id="chmod"><a href="#chmod" class="headerlink" title="chmod"></a>chmod</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">名称</div><div class="line">    chmod - 修改文件/目录的属性</div><div class="line"></div><div class="line">用法</div><div class="line">    chmod [选项]  模式  文件/目录</div><div class="line"></div><div class="line">说明</div><div class="line">    将文件/目录的属性设置为指定的模式。如果是目录的话，</div><div class="line">    默认只改变该目录权限，而目录中的文件权限不变。</div><div class="line">       </div><div class="line">选项</div><div class="line">    -R  改变文件夹及其子目录中的文件权限。</div><div class="line">              </div><div class="line">模式</div><div class="line">    文件权限表示</div></pre></td></tr></table></figure>
+<h3 id="文件权限"><a href="#文件权限" class="headerlink" title="文件权限"></a>文件权限</h3><ul>
+<li>Linux中一个文件的权限分为u(所有者)、g(所在组权限)、o(其他人)三部分权限。</li>
+<li>每部分权限又包含r(读)、w(写)、x(执行)的权限。</li>
+<li><p>通过<code>ls -l</code>查看一个文件时，其权限信息表示如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">-rwxrw-r-- 1 lijg lijg 0 3月 13 18:53 a.txt</div></pre></td></tr></table></figure>
+<p>第一个字符’-‘代表该文件是一个普通文件。接下来的9个字符分别表示u(所有者)、g(所在组权限)、o(其他人)的权限。<br>每三个字符可以用一个8进制数表示,如果该位有权限为1,无则为0.因此，a.txt的权限还可以表示为764。</p>
+</li>
+</ul>
+<h3 id="chmod的例子"><a href="#chmod的例子" class="headerlink" title="chmod的例子"></a>chmod的例子</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">chmod u+rwx a.txt</div><div class="line">chmod g-r a.txt</div><div class="line">chmod o+x a.txt</div><div class="line">chmod a+rwx a.txt (a代表所有人)</div><div class="line">     </div><div class="line">chmod 777 a.txt (rwxrwxrwx)</div><div class="line">chmod 760 a.txt (rwxrw----)</div></pre></td></tr></table></figure>
+<hr>
+<h3 id="mkdir"><a href="#mkdir" class="headerlink" title="mkdir"></a>mkdir</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">名称</div><div class="line">    mkdir - 创建目录</div><div class="line"></div><div class="line">用法</div><div class="line">    mkdir [选项]  目录</div><div class="line"></div><div class="line">说明</div><div class="line">    创建目录(如果不存在的话)。</div><div class="line"></div><div class="line">选项</div><div class="line">    -p  如果创建的目录的父目录不存在的话，一起创建。</div></pre></td></tr></table></figure>
+<h3 id="mkdir的例子"><a href="#mkdir的例子" class="headerlink" title="mkdir的例子"></a>mkdir的例子</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mkdir abc</div><div class="line">mkdir -p abc/def/ghi</div></pre></td></tr></table></figure>
+<hr>
+<h3 id="find"><a href="#find" class="headerlink" title="find"></a>find</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">名称</div><div class="line">    find - 搜索文件并执行对应的动作（默认动作是打印出文件名）</div><div class="line"></div><div class="line">用法</div><div class="line">    find [选项] [路径] [表达式]</div><div class="line"></div><div class="line">说明</div><div class="line">    在给定路径中搜索与表达式匹配的文件。</div></pre></td></tr></table></figure>
+<h3 id="find的例子"><a href="#find的例子" class="headerlink" title="find的例子"></a>find的例子</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">find . -name &quot;*.cpp&quot;</div><div class="line">在当前目录下搜索所有以.cpp结尾的文件并打印到屏幕上</div><div class="line"></div><div class="line">find . -name &quot;*.cpp&quot; -print</div><div class="line">与上条命令效果一样</div><div class="line"></div><div class="line">find . -name &quot;*.cpp&quot; -o -name &quot;*.h&quot;</div><div class="line">在当前目录下搜索所有以.cpp结尾或以.h结尾的文件</div><div class="line">        </div><div class="line">find . -name &quot;*.tmp&quot; -exec rm -rf &#123;&#125; \;</div><div class="line">删除当前目录下所有以.tmp结尾的文件</div></pre></td></tr></table></figure>
+<hr>
+<h3 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">名称</div><div class="line">    grep, egrep, fgrep, rgrep - 在文件中查找匹配的内容</div><div class="line"></div><div class="line">用法</div><div class="line">    grep [选项] 正则表达式 [文件]</div><div class="line"></div><div class="line">说明</div><div class="line">    grep 在给定的文件中(如果没有给定，则从标准输入中)</div><div class="line">    搜索与给定的表达式匹配的行。默认情况下将匹配的行打印到屏幕上。</div><div class="line"></div><div class="line">选项</div><div class="line">    -i  匹配时忽略大小写。</div><div class="line">    -H  打印时包含对应的文件名。</div></pre></td></tr></table></figure>
+<h3 id="grep的例子"><a href="#grep的例子" class="headerlink" title="grep的例子"></a>grep的例子</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">grep -i &apos;abc&apos; a.txt</div><div class="line"></div><div class="line">更多情况是与find一起使用，在多个文件中查找指定的内容。</div><div class="line">如，忘记变量nCount在哪个文件中定义的</div><div class="line"></div><div class="line">find . -name *.cpp -exec grep -H &apos;nCount&apos; &#123;&#125; \;</div><div class="line">或</div><div class="line">find . -name *.cpp | xargs grep -H &apos;nCount&apos; &#123;&#125; \;</div><div class="line"></div><div class="line">打印出所有包含nCount的文件</div></pre></td></tr></table></figure>
+<hr>
+<h3 id="tar"><a href="#tar" class="headerlink" title="tar"></a>tar</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">名称</div><div class="line">    tar — 压缩、解压缩工具</div><div class="line"></div><div class="line">用法</div><div class="line">    tar [选项] [文件名] [文件名] ...</div><div class="line"></div><div class="line">说明</div><div class="line">    将文件压缩成压缩包或解压缩压缩包。</div></pre></td></tr></table></figure>
+<h3 id="tar的例子"><a href="#tar的例子" class="headerlink" title="tar的例子"></a>tar的例子</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">tar xvf abc.tar</div><div class="line">tar xvf abc.tar.gz</div><div class="line">tar xvf abc.tar.bz2</div><div class="line">tar xvf abc.tar.bz2 -C /home/lijg/abc</div><div class="line"></div><div class="line">tar cvf abc.tar abc def ghi </div><div class="line">将abc def ghi三个文件/目录打包成abc.tar</div></pre></td></tr></table></figure>
+<hr>
+<h3 id="cat"><a href="#cat" class="headerlink" title="cat"></a>cat</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">名称</div><div class="line">    cat - 显示文件内容</div><div class="line"></div><div class="line">用法</div><div class="line">    cat [选项]    文件</div><div class="line"></div><div class="line">说明</div><div class="line">    显示文件内容。</div><div class="line">       </div><div class="line">    如, cat a.txt</div></pre></td></tr></table></figure>
+<hr>
+<h3 id="环境变量PATH"><a href="#环境变量PATH" class="headerlink" title="环境变量PATH"></a>环境变量PATH</h3><p>PATH变量是linux搜索命令的一些目录集合，只有命令所在目录处于PATH变量中时，才可以直接输入执行。<br>PATH变量以冒号<code>:</code>分割.</p>
+<p>查看PATH变量，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">echo $PATH</div></pre></td></tr></table></figure></p>
+<p>设置PATH环境变量：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">bash:   export PATH=$PATH:/path/to/your/folder</div><div class="line">csh:    set path=&quot;$PATH&quot;:/path/to/your/folder</div></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="umask"><a href="#umask" class="headerlink" title="umask"></a>umask</h3><p>mask变量用来设置创建新文件时的默认属性(权限)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">lijg@linux:~$ umask</div><div class="line">0022</div><div class="line"></div><div class="line">lijg@linux:~$ touch abcd &amp;&amp; ls -l abcd</div><div class="line">-rw-r--r-- 1 lijg lijg 0  3月 13 15:40 abcd</div><div class="line"></div><div class="line">lijg@linux:~$ umask 077</div><div class="line"></div><div class="line">lijg@linux:~$ umask</div><div class="line">0077</div><div class="line"></div><div class="line">lijg@linux:~$ touch abcd &amp;&amp; ls -l abcd &amp;&amp; rm abcd</div><div class="line">-rw------- 1 lijg lijg 0  3月 13 15:42 abcd</div></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="alias"><a href="#alias" class="headerlink" title="alias"></a>alias</h3><p>alias 用于给命令设置别名<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">lijg@linux:~$ alias lll=&apos;ls -l&apos;</div><div class="line"></div><div class="line">lijg@linux:~$ lll</div><div class="line">total 24</div><div class="line">drwxr-xr-x  2 lijg lijg  4096  3月 13 15:44 ./</div><div class="line">drwxr-xr-x 59 lijg lijg 12288  3月 13 15:43 ../</div><div class="line">-rw-r--r--  1 lijg lijg     4  3月 13 15:18 a.cpp</div><div class="line">-rw-r--r--  1 lijg lijg     3  3月 13 15:18 a.h</div></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="Q-amp-A"><a href="#Q-amp-A" class="headerlink" title="Q &amp; A"></a>Q &amp; A</h3><p>Thansk</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2015/04/16/2015-04-16-Linux基本操作/" data-id="civs3rcvp004wyh3lztqz5f97" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2015/04/16/2015-04-16-Linux基本操作/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/04/17/2015-04-17-使用Python访问寄存器/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          使用Python访问寄存器
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/04/16/2015-04-16-制作嵌入式Linux系统SD卡/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">制作嵌入式Linux系统SD卡</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2015/04/16/2015-04-16-Linux基本操作/" data-title="Linux基本操作" data-url="http://ljgabc.com/2015/04/16/2015-04-16-Linux基本操作/"></div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/11/21/2016-11-21-日出/">日出</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/20/2016-11-20-莲花山公园/">莲花山公园</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/15/2016-11-15-彩鹿/">彩鹿</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/14/2016-11-14-今晚的月亮/">今晚的月亮</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/06/2016-11-06-深圳湾夜骑/">深圳湾夜骑</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ASIC/">ASIC</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">47</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/摄影/">摄影</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂/">杂</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/硬件/">硬件</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件/">软件</a><span class="category-list-count">8</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BusyBox/" style="font-size: 10px;">BusyBox</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Catmul/" style="font-size: 10px;">Catmul</a> <a href="/tags/Centos/" style="font-size: 12.86px;">Centos</a> <a href="/tags/Debian/" style="font-size: 10px;">Debian</a> <a href="/tags/Device-Tree/" style="font-size: 10px;">Device Tree</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/DraftSight/" style="font-size: 10px;">DraftSight</a> <a href="/tags/EC/" style="font-size: 10px;">EC</a> <a href="/tags/Flask/" style="font-size: 11.43px;">Flask</a> <a href="/tags/GLES/" style="font-size: 10px;">GLES</a> <a href="/tags/GPU/" style="font-size: 10px;">GPU</a> <a href="/tags/Git/" style="font-size: 12.86px;">Git</a> <a href="/tags/HHVM/" style="font-size: 10px;">HHVM</a> <a href="/tags/I2C/" style="font-size: 10px;">I2C</a> <a href="/tags/LVM/" style="font-size: 11.43px;">LVM</a> <a href="/tags/MQTT/" style="font-size: 10px;">MQTT</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/OpenGL/" style="font-size: 10px;">OpenGL</a> <a href="/tags/OpenMP/" style="font-size: 10px;">OpenMP</a> <a href="/tags/Oprofile/" style="font-size: 12.86px;">Oprofile</a> <a href="/tags/PCB/" style="font-size: 10px;">PCB</a> <a href="/tags/PCIE/" style="font-size: 11.43px;">PCIE</a> <a href="/tags/PPTP/" style="font-size: 10px;">PPTP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/RTT/" style="font-size: 10px;">RTT</a> <a href="/tags/Recovery/" style="font-size: 10px;">Recovery</a> <a href="/tags/SVN/" style="font-size: 11.43px;">SVN</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/Typecho/" style="font-size: 10px;">Typecho</a> <a href="/tags/USB/" style="font-size: 11.43px;">USB</a> <a href="/tags/VIM/" style="font-size: 10px;">VIM</a> <a href="/tags/Verification/" style="font-size: 10px;">Verification</a> <a href="/tags/busybox/" style="font-size: 10px;">busybox</a> <a href="/tags/dropbear/" style="font-size: 10px;">dropbear</a> <a href="/tags/gprof/" style="font-size: 10px;">gprof</a> <a href="/tags/i-MX6/" style="font-size: 10px;">i.MX6</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/scp/" style="font-size: 10px;">scp</a> <a href="/tags/uboot/" style="font-size: 10px;">uboot</a> <a href="/tags/uwsgi/" style="font-size: 10px;">uwsgi</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/xterm/" style="font-size: 10px;">xterm</a> <a href="/tags/休眠/" style="font-size: 10px;">休眠</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/导航条/" style="font-size: 10px;">导航条</a> <a href="/tags/嵌入式/" style="font-size: 17.14px;">嵌入式</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/广播/" style="font-size: 10px;">广播</a> <a href="/tags/性能/" style="font-size: 11.43px;">性能</a> <a href="/tags/插值/" style="font-size: 10px;">插值</a> <a href="/tags/摄影/" style="font-size: 15.71px;">摄影</a> <a href="/tags/敏捷/" style="font-size: 11.43px;">敏捷</a> <a href="/tags/旅游/" style="font-size: 10px;">旅游</a> <a href="/tags/旅行/" style="font-size: 14.29px;">旅行</a> <a href="/tags/树莓派/" style="font-size: 14.29px;">树莓派</a> <a href="/tags/浪涌/" style="font-size: 10px;">浪涌</a> <a href="/tags/纹理/" style="font-size: 10px;">纹理</a> <a href="/tags/美食/" style="font-size: 10px;">美食</a> <a href="/tags/蓝牙/" style="font-size: 10px;">蓝牙</a> <a href="/tags/街拍/" style="font-size: 12.86px;">街拍</a> <a href="/tags/设备树/" style="font-size: 10px;">设备树</a> <a href="/tags/设计模式/" style="font-size: 18.57px;">设计模式</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">三月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">二月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">一月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">八月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03/">三月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Lee<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lijg"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"/css/bdshare.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

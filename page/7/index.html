@@ -1,0 +1,560 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>LJGABC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="嵌入式">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LJGABC">
+<meta property="og:url" content="http://ljgabc.com/page/7/index.html">
+<meta property="og:site_name" content="LJGABC">
+<meta property="og:description" content="嵌入式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LJGABC">
+<meta name="twitter:description" content="嵌入式">
+  
+    <link rel="alternative" href="/atom.xml" title="LJGABC" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">LJGABC</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">嵌入式全栈工程师</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="ljgabc.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main">
+  
+    <article id="post-2015-12-21-让i-MX6使用Debian文件系统" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/12/21/2015-12-21-让i-MX6使用Debian文件系统/" class="article-date">
+  <time datetime="2015-12-21T05:09:35.000Z" itemprop="datePublished">2015-12-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/12/21/2015-12-21-让i-MX6使用Debian文件系统/">让i.MX6使用Debian文件系统</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>从<code>Debian 4.0</code>开始，<code>Debian</code>已经开始支持<code>ARM</code>处理器，所以在<code>i.MX6</code>上安装<code>Debian</code>文件系统并不麻烦。</p>
+<p>在i.MX6上使用<code>Debian</code>文件系统的优点有：</p>
+<ul>
+<li>所有软件包、库都经过官方筛选、打补丁</li>
+<li><code>Debian</code>一直已稳定性为人津津乐道，由于<code>ARM</code>版使用的软件包与<code>X86</code>版本是同样的源码，只是编译器不一样，所以稳定性也能够保证</li>
+<li>由于<code>ARM</code>版使用的软件包与<code>X86</code>版本是同样的版本，从<code>ARM</code>版迁移至<code>X86</code>时，不存在由于库版本不兼容导致的问题</li>
+<li>软件库丰富！！！ 基本上<code>X86</code>上有的软件包，<code>ARM</code>上都有。所以，常用的软件包不用自行编译，直接<code>apt-get install</code>安装</li>
+</ul>
+<h2 id="1-准备开发环境"><a href="#1-准备开发环境" class="headerlink" title="1. 准备开发环境"></a>1. 准备开发环境</h2><p>必须使用<code>ubuntu</code>或<code>debian</code>作为开发环境系统，并安装以下工具。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 安装必要的工具</div><div class="line">apt-get install debootstrap qemu-user-static binfmt-support</div></pre></td></tr></table></figure></p>
+<p>准备一个文件夹，用来保存生成好的文件系统<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 用来保存生成的文件系统</div><div class="line">mkdir ~/debianfs</div></pre></td></tr></table></figure></p>
+<h2 id="2-生成文件系统"><a href="#2-生成文件系统" class="headerlink" title="2. 生成文件系统"></a>2. 生成文件系统</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># 从官方镜像下载文件系统，使用`debian-8.2(jeesis)`</div><div class="line">sudo debootstrap --foreign --arch=armhf jeesie ~/debianfs</div><div class="line"></div><div class="line"># 也可以指定镜像地址（加快下载速度）</div><div class="line"># sudo debootstrap --foreign --arch=armhf jeesie ~/debianfs http://ftp.cn.debian.org/debian</div></pre></td></tr></table></figure>
+<h2 id="3-初始化文件系统"><a href="#3-初始化文件系统" class="headerlink" title="3. 初始化文件系统"></a>3. 初始化文件系统</h2><p>初始化文件系统时，需要<code>chroot</code>到文件系统中，但由于开发机一般为<code>X86</code>，所以需要用到<code>qemu-arm</code>工具<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo cp /usr/bin/qemu-arm-static ~/debianfs/usr/bin</div><div class="line">sudo chroot ~/debianfs /debootstrap/debootstrap --second-stage</div></pre></td></tr></table></figure></p>
+<h2 id="3-配置"><a href="#3-配置" class="headerlink" title="3. 配置"></a>3. 配置</h2><p>修改<code>root</code>密码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">vim ~/debian/etc/shadow</div><div class="line"># 删除代表密码域的*号</div></pre></td></tr></table></figure></p>
+<p>添加串口终端<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">echo &quot;T0:23:respawn:/sbin/getty -L ttymxc0 115200 vt100&quot; &gt;&gt; ~/debianfs/etc/inittab</div></pre></td></tr></table></figure></p>
+<p>完。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2015/12/21/2015-12-21-让i-MX6使用Debian文件系统/" data-id="civs3rczw008fyh3lacuz5u5j" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2015/12/21/2015-12-21-让i-MX6使用Debian文件系统/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Debian/">Debian</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/i-MX6/">i.MX6</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2015-11-26-制作系统linux镜像文件" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/11/26/2015-11-26-制作系统linux镜像文件/" class="article-date">
+  <time datetime="2015-11-26T02:07:36.000Z" itemprop="datePublished">2015-11-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/11/26/2015-11-26-制作系统linux镜像文件/">制作系统linux镜像文件</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="如何制作一个可以直接dd到sd卡的linux系统镜像文件"><a href="#如何制作一个可以直接dd到sd卡的linux系统镜像文件" class="headerlink" title="如何制作一个可以直接dd到sd卡的linux系统镜像文件"></a>如何制作一个可以直接dd到sd卡的linux系统镜像文件</h1><p>linux中常见的以img结尾的镜像文件,可以直接dd到sd卡或sata硬盘使用,也可以通过qemu使用,制作方法如下:</p>
+<h2 id="1-创建"><a href="#1-创建" class="headerlink" title="1 创建"></a>1 创建</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 初始化一个4G大小的系统镜像</div><div class="line">dd if=/dev/zero of=./rootfs.img bs=1M seek=4096</div></pre></td></tr></table></figure>
+<h2 id="2-制作文件系统"><a href="#2-制作文件系统" class="headerlink" title="2 制作文件系统"></a>2 制作文件系统</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 使用ext4文件系统格式化镜像</div><div class="line">mkfs.ext4 -F ./rootfs.img</div></pre></td></tr></table></figure>
+<h2 id="3-拷贝文件"><a href="#3-拷贝文件" class="headerlink" title="3 拷贝文件"></a>3 拷贝文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"># 挂载镜像</div><div class="line">sudo mount -o loop ./rootfs.img /mnt</div><div class="line"></div><div class="line"># 拷贝文件</div><div class="line">sudo cp -ar /path/to/rootfs/* /mnt</div><div class="line"></div><div class="line"># 卸载</div><div class="line">sudo umount /mnt</div></pre></td></tr></table></figure>
+<p>此时制作好的系统镜像可以拿去直接dd到sd卡使用.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2015/11/26/2015-11-26-制作系统linux镜像文件/" data-id="civs3rczq008dyh3lj7wwcyj5" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2015/11/26/2015-11-26-制作系统linux镜像文件/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2015-10-31-惠东" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/10/31/2015-10-31-惠东/" class="article-date">
+  <time datetime="2015-10-31T11:54:36.000Z" itemprop="datePublished">2015-10-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/摄影/">摄影</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/31/2015-10-31-惠东/">惠东</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/images/2015-10-31/1.jpg" alt="1"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2015/10/31/2015-10-31-惠东/" data-id="civs3rczo008ayh3l4xu013hk" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2015/10/31/2015-10-31-惠东/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2015-10-24-净月潭" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/10/24/2015-10-24-净月潭/" class="article-date">
+  <time datetime="2015-10-24T15:17:50.000Z" itemprop="datePublished">2015-10-24</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/摄影/">摄影</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/24/2015-10-24-净月潭/">净月潭</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/images/2015-10-24/1.jpg" alt="1"></p>
+<p><img src="/images/2015-10-24/2.jpg" alt="2"></p>
+<p><img src="/images/2015-10-24/3.jpg" alt="3"></p>
+<p><img src="/images/2015-10-24/4.jpg" alt="4"></p>
+<p><img src="/images/2015-10-24/5.jpg" alt="5"></p>
+<p><img src="/images/2015-10-24/6.jpg" alt="6"></p>
+<p><img src="/images/2015-10-24/7.jpg" alt="7"></p>
+<p><img src="/images/2015-10-24/8.jpg" alt="8"></p>
+<p><img src="/images/2015-10-24/9.jpg" alt="9"></p>
+<p><img src="/images/2015-10-24/10.jpg" alt="10"></p>
+<p><img src="/images/2015-10-24/11.jpg" alt="11"></p>
+<p><img src="/images/2015-10-24/12.jpg" alt="12"></p>
+<p><img src="/images/2015-10-24/13.jpg" alt="13"></p>
+<p><img src="/images/2015-10-24/14.jpg" alt="14"></p>
+<p><img src="/images/2015-10-24/15.jpg" alt="15"></p>
+<p><img src="/images/2015-10-24/16.jpg" alt="16"></p>
+<p><img src="/images/2015-10-24/17.jpg" alt="17"></p>
+<p><img src="/images/2015-10-24/18.jpg" alt="18"></p>
+<p><img src="/images/2015-10-24/19.jpg" alt="19"></p>
+<p><img src="/images/2015-10-24/20.jpg" alt="20"></p>
+<p><img src="/images/2015-10-24/21.jpg" alt="21"></p>
+<p><img src="/images/2015-10-24/22.jpg" alt="22"></p>
+<p><img src="/images/2015-10-24/23.jpg" alt="23"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2015/10/24/2015-10-24-净月潭/" data-id="civs3rczj0087yh3lvvepfs08" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2015/10/24/2015-10-24-净月潭/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2015-09-25-树莓派之lelylanled" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/09/25/2015-09-25-树莓派之lelylanled/" class="article-date">
+  <time datetime="2015-09-25T09:34:08.000Z" itemprop="datePublished">2015-09-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/硬件/">硬件</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/25/2015-09-25-树莓派之lelylanled/">树莓派之lelylanled</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>之前的网络呼吸灯里，树莓派相当于一个提供LED控制的服务器，客户端用的是curl命令行工具。客户端其用命令行、web、手机APP等都可以访问。</p>
+<p><a href="http://www.lelylan.com/" target="_blank" rel="external">lelylan</a>提供了一套开发环境和一套标准的接口，可以实现各种形式的客户端，比如<code>Device Web Component</code>、<code>Angular JS Client</code>、<code>Ruby Client</code>、<code>Node.js Client</code>、<code>Python Client</code>、<code>iOS Client</code>、<code>Android Client</code>以及<code>Lelylan Dashboard</code>等。</p>
+<p>本文准备使用<code>Lelylan Dashboard</code>，在网络呼吸灯的基础上，加上真正的使用网页控制LED。</p>
+<p>打开<a href="http://lelylan.github.io/devices-dashboard-ng/" target="_blank" rel="external">Lelylan Dashboard</a>，新建一个名为webled的Light设备。步骤如下：</p>
+<ol>
+<li><p>Step 1<br><img src="/images/2015-09-25/sadgjaw39u8ik1.png" alt="Step 1"></p>
+</li>
+<li><p>Step 2<br><img src="/images/2015-09-25/sadgjaw39u8ik2.png" alt="Step 2"></p>
+</li>
+<li><p>Step 3<br><img src="/images/2015-09-25/sadgjaw39u8ik3.png" alt="Step 3"></p>
+</li>
+<li><p>Step 4<br><img src="/images/2015-09-25/sadgjaw39u8ik4.png" alt="Step 4"></p>
+</li>
+<li><p>Step 5<br><img src="/images/2015-09-25/sadgjaw39u8ik5.png" alt="Step 5"></p>
+</li>
+</ol>
+<p><code>lelylan</code>的包每次会以<code>PUT</code>方式发送到指定的URL，包的内从可以从<code>request.json</code>中获取<code>dict</code>格式的信息，各种信息的格式如下(其中的id是lelylan自动分配的，可能有所不同)：</p>
+<p><strong>打开LED</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    u&apos;properties&apos;: [</div><div class="line">        &#123;</div><div class="line">            u&apos;id&apos;: u&apos;518be88300045e0610000008&apos;,</div><div class="line">            u&apos;value&apos;: u&apos;off&apos;</div><div class="line">        &#125;</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>关闭LED</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    u&apos;properties&apos;: [</div><div class="line">        &#123;</div><div class="line">            u&apos;id&apos;: u&apos;518be88300045e0610000008&apos;,</div><div class="line">            u&apos;value&apos;: u&apos;off&apos;</div><div class="line">        &#125;</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>设置亮度为31(可选范围0~100)</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    u&apos;properties&apos;: [</div><div class="line">        &#123;</div><div class="line">            u&apos;id&apos;: u&apos;518be8b100045e99cc000004&apos;, </div><div class="line">            u&apos;value&apos;: u&apos;31&apos;</div><div class="line">        &#125;</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>设置颜色</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    u&apos;properties&apos;: [</div><div class="line">        &#123;</div><div class="line">            u&apos;id&apos;: u&apos;518be90500045e1521000008&apos;,</div><div class="line">            u&apos;value&apos;: u&apos;#cc4c92&apos;</div><div class="line">        &#125;</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>设置闪烁频率(0.0~20)</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    u&apos;properties&apos;: [</div><div class="line">        &#123;</div><div class="line">            u&apos;id&apos;: u&apos;518be95500045e1521000009&apos;, </div><div class="line">            u&apos;value&apos;: 1</div><div class="line">        &#125;,</div><div class="line">        &#123;</div><div class="line">            u&apos;id&apos;: u&apos;518be9aa00045e0610000009&apos;,</div><div class="line">            u&apos;value&apos;: u&apos;10&apos;</div><div class="line">        &#125;</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>设置呼吸频率(ms)</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    u&apos;properties&apos;: [</div><div class="line">        &#123;</div><div class="line">            u&apos;id&apos;: u&apos;5497e32513437b4a6b000002&apos;, </div><div class="line">            u&apos;value&apos;: 10</div><div class="line">        &#125;</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>设置呼吸灯颜色</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    u&apos;properties&apos;: [</div><div class="line">        &#123;</div><div class="line">            u&apos;id&apos;: u&apos;518be90500045e1521000008&apos;,</div><div class="line">            u&apos;value&apos;: u&apos;#3d3d3d&apos;</div><div class="line">        &#125;</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>了解了<code>lalylan</code>的包格式之后，下一步就是如何在<code>Flask</code>中解析这些命令，并用来控制LED。</p>
+<p>比如，处理LED的打开和关闭事件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">@app.route(&quot;/LED&quot;, methods=[&apos;GET&apos;, &apos;PUT&apos;, &apos;POST&apos;])</div><div class="line">def LED():</div><div class="line">    if request.method == &apos;GET&apos;:</div><div class="line">        return &quot;Hello LelylanLED!&quot;</div><div class="line">    elif request.method == &apos;PUT&apos;:</div><div class="line">        # 解析lelylan发过来的参数</div><div class="line">        properties = request.json[&apos;properties&apos;]</div><div class="line">        id0 = properties[0][&apos;id&apos;]</div><div class="line">        value0 = properties[0][&apos;value&apos;]</div><div class="line"></div><div class="line">        # LED on/off 的ID</div><div class="line">        if id0 == ID_LED_ONOFF:</div><div class="line">            # 根据value值判断LED动作</div><div class="line">            if value0 == VAL_LED_ON:</div><div class="line">                breath.set(100)</div><div class="line">            elif value0 == VAL_LED_OFF:</div><div class="line">                breath.set(0)</div><div class="line">            else:</div><div class="line">                abort(404)</div><div class="line">        else:</div><div class="line">            abort(404)</div><div class="line">        return value0</div><div class="line">    else:</div><div class="line">        return abort(404)</div></pre></td></tr></table></figure></p>
+<p><a href="https://github.com/ljgabc/raspberrypi/blob/master/lelylanled.py" target="_blank" rel="external">完整代码</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2015/09/25/2015-09-25-树莓派之lelylanled/" data-id="civs3rczg0083yh3l6sbl5wqq" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2015/09/25/2015-09-25-树莓派之lelylanled/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/树莓派/">树莓派</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
+    </nav>
+  
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/11/21/2016-11-21-日出/">日出</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/20/2016-11-20-莲花山公园/">莲花山公园</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/15/2016-11-15-彩鹿/">彩鹿</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/14/2016-11-14-今晚的月亮/">今晚的月亮</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/06/2016-11-06-深圳湾夜骑/">深圳湾夜骑</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ASIC/">ASIC</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">47</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/摄影/">摄影</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂/">杂</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/硬件/">硬件</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件/">软件</a><span class="category-list-count">8</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BusyBox/" style="font-size: 10px;">BusyBox</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Catmul/" style="font-size: 10px;">Catmul</a> <a href="/tags/Centos/" style="font-size: 12.86px;">Centos</a> <a href="/tags/Debian/" style="font-size: 10px;">Debian</a> <a href="/tags/Device-Tree/" style="font-size: 10px;">Device Tree</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/DraftSight/" style="font-size: 10px;">DraftSight</a> <a href="/tags/EC/" style="font-size: 10px;">EC</a> <a href="/tags/Flask/" style="font-size: 11.43px;">Flask</a> <a href="/tags/GLES/" style="font-size: 10px;">GLES</a> <a href="/tags/GPU/" style="font-size: 10px;">GPU</a> <a href="/tags/Git/" style="font-size: 12.86px;">Git</a> <a href="/tags/HHVM/" style="font-size: 10px;">HHVM</a> <a href="/tags/I2C/" style="font-size: 10px;">I2C</a> <a href="/tags/LVM/" style="font-size: 11.43px;">LVM</a> <a href="/tags/MQTT/" style="font-size: 10px;">MQTT</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/OpenGL/" style="font-size: 10px;">OpenGL</a> <a href="/tags/OpenMP/" style="font-size: 10px;">OpenMP</a> <a href="/tags/Oprofile/" style="font-size: 12.86px;">Oprofile</a> <a href="/tags/PCB/" style="font-size: 10px;">PCB</a> <a href="/tags/PCIE/" style="font-size: 11.43px;">PCIE</a> <a href="/tags/PPTP/" style="font-size: 10px;">PPTP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/RTT/" style="font-size: 10px;">RTT</a> <a href="/tags/Recovery/" style="font-size: 10px;">Recovery</a> <a href="/tags/SVN/" style="font-size: 11.43px;">SVN</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/Typecho/" style="font-size: 10px;">Typecho</a> <a href="/tags/USB/" style="font-size: 11.43px;">USB</a> <a href="/tags/VIM/" style="font-size: 10px;">VIM</a> <a href="/tags/Verification/" style="font-size: 10px;">Verification</a> <a href="/tags/busybox/" style="font-size: 10px;">busybox</a> <a href="/tags/dropbear/" style="font-size: 10px;">dropbear</a> <a href="/tags/gprof/" style="font-size: 10px;">gprof</a> <a href="/tags/i-MX6/" style="font-size: 10px;">i.MX6</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/scp/" style="font-size: 10px;">scp</a> <a href="/tags/uboot/" style="font-size: 10px;">uboot</a> <a href="/tags/uwsgi/" style="font-size: 10px;">uwsgi</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/xterm/" style="font-size: 10px;">xterm</a> <a href="/tags/休眠/" style="font-size: 10px;">休眠</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/导航条/" style="font-size: 10px;">导航条</a> <a href="/tags/嵌入式/" style="font-size: 17.14px;">嵌入式</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/广播/" style="font-size: 10px;">广播</a> <a href="/tags/性能/" style="font-size: 11.43px;">性能</a> <a href="/tags/插值/" style="font-size: 10px;">插值</a> <a href="/tags/摄影/" style="font-size: 15.71px;">摄影</a> <a href="/tags/敏捷/" style="font-size: 11.43px;">敏捷</a> <a href="/tags/旅游/" style="font-size: 10px;">旅游</a> <a href="/tags/旅行/" style="font-size: 14.29px;">旅行</a> <a href="/tags/树莓派/" style="font-size: 14.29px;">树莓派</a> <a href="/tags/浪涌/" style="font-size: 10px;">浪涌</a> <a href="/tags/纹理/" style="font-size: 10px;">纹理</a> <a href="/tags/美食/" style="font-size: 10px;">美食</a> <a href="/tags/蓝牙/" style="font-size: 10px;">蓝牙</a> <a href="/tags/街拍/" style="font-size: 12.86px;">街拍</a> <a href="/tags/设备树/" style="font-size: 10px;">设备树</a> <a href="/tags/设计模式/" style="font-size: 18.57px;">设计模式</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">三月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">二月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">一月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">八月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03/">三月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Lee<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lijg"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"/css/bdshare.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

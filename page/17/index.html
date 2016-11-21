@@ -1,0 +1,567 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>LJGABC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="嵌入式">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LJGABC">
+<meta property="og:url" content="http://ljgabc.com/page/17/index.html">
+<meta property="og:site_name" content="LJGABC">
+<meta property="og:description" content="嵌入式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LJGABC">
+<meta name="twitter:description" content="嵌入式">
+  
+    <link rel="alternative" href="/atom.xml" title="LJGABC" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">LJGABC</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">嵌入式全栈工程师</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="ljgabc.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main">
+  
+    <article id="post-2015-02-11-交叉编译OProfile到Android步骤" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/11/2015-02-11-交叉编译OProfile到Android步骤/" class="article-date">
+  <time datetime="2015-02-11T12:15:09.000Z" itemprop="datePublished">2015-02-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/11/2015-02-11-交叉编译OProfile到Android步骤/">交叉编译OProfile到Android步骤</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-第一次编译profile"><a href="#1-第一次编译profile" class="headerlink" title="1 第一次编译profile"></a>1 第一次编译profile</h1><h2 id="1-1-编译popt-1-16"><a href="#1-1-编译popt-1-16" class="headerlink" title="1.1 编译popt-1.16"></a>1.1 编译popt-1.16</h2><h3 id="1-1-1-补丁"><a href="#1-1-1-补丁" class="headerlink" title="1.1.1 补丁"></a>1.1.1 补丁</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">--- popt-1.14/popthelp.c    2008-03-27 13:33:08.000000000 -0400</div><div class="line">+++ popt-1.14/popthelp.c    2011-02-01 21:33:21.000000000 -0500</div><div class="line">@@ -15,6 +15,11 @@</div><div class="line"> #include &lt;sys/ioctl.h&gt;</div><div class="line"> #endif</div><div class="line"> </div><div class="line">+/* needed to find the struct winsize */</div><div class="line">+#ifdef __ANDROID__</div><div class="line">+#include &lt;asm/termios.h&gt;</div><div class="line">+#endif</div><div class="line">+</div><div class="line"> #define    POPT_WCHAR_HACK</div><div class="line"> #ifdef     POPT_WCHAR_HACK</div><div class="line"> #include &lt;wchar.h&gt;         /* for mbsrtowcs */</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">--- popt-1.14/configure.ac  2008-04-02 13:17:39.000000000 -0400</div><div class="line">+++ popt-1.14/configure.ac  2011-02-01 21:33:54.000000000 -0500</div><div class="line">@@ -43,7 +43,7 @@</div><div class="line"> </div><div class="line"> AC_ISC_POSIX</div><div class="line"> AM_C_PROTOTYPES</div><div class="line">-AC_CHECK_VA_COPY</div><div class="line">+</div><div class="line"> </div><div class="line"> AC_CHECK_HEADERS(float.h glob.h langinfo.h libintl.h mcheck.h unistd.h)</div></pre></td></tr></table></figure>
+<h3 id="1-1-2编译"><a href="#1-1-2编译" class="headerlink" title="1.1.2编译"></a>1.1.2编译</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">./configure --with-kernel-support --target=arm-linux-androideabi --host=arm-linux-androideabi --enable-install-libfd --prefix=$PWD/_install</div><div class="line">make &amp;&amp; make install</div></pre></td></tr></table></figure>
+<p>由于需要静态编译，删除_install/lib目录下的所有so,so.*等文件。</p>
+<h2 id="1-2编译binutils-2-20"><a href="#1-2编译binutils-2-20" class="headerlink" title="1.2编译binutils-2.20"></a>1.2编译binutils-2.20</h2><h3 id="1-2-1-补丁"><a href="#1-2-1-补丁" class="headerlink" title="1.2.1 补丁"></a>1.2.1 补丁</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">diff -Nur binutils-2.23.2-old/libiberty/getpagesize.c binutils-2.23.2/libiberty/getpagesize.c</div><div class="line">--- binutils-2.23.2-old/libiberty/getpagesize.c 2005-03-28 04:09:01.000000000 +0200</div><div class="line">+++ binutils-2.23.2/libiberty/getpagesize.c 2013-10-24 22:45:24.000000000 +0200</div><div class="line">@@ -20,6 +20,7 @@</div><div class="line"> </div><div class="line"> */</div><div class="line"> </div><div class="line">+#ifndef ANDROID</div><div class="line"> #ifndef VMS</div><div class="line"> </div><div class="line"> #include &quot;config.h&quot;</div><div class="line">@@ -88,3 +89,4 @@</div><div class="line"> &#125;</div><div class="line"> </div><div class="line"> #endif /* VMS */</div><div class="line">+#endif /* ANDROID */</div><div class="line">diff -Nur binutils-2.23.2-old/bfd/archive.c binutils-2.23.2/bfd/archive.c</div><div class="line">--- binutils-2.23.2-old/bfd/archive.c   2013-03-25 09:06:19.000000000 +0100</div><div class="line">+++ binutils-2.23.2/bfd/archive.c   2013-10-24 21:48:30.000000000 +0200</div><div class="line">@@ -1863,7 +1863,9 @@</div><div class="line">     &#123;</div><div class="line">       /* Assume we just &quot;made&quot; the member, and fake it.  */</div><div class="line">       struct bfd_in_memory *bim = (struct bfd_in_memory *) member-&gt;iostream;</div><div class="line">-      time (&amp;status.st_mtime);</div><div class="line">+      time_t t;</div><div class="line">+      time (&amp;t);</div><div class="line">+      status.st_mtime = t;</div><div class="line">       status.st_uid = getuid ();</div><div class="line">       status.st_gid = getgid ();</div><div class="line">       status.st_mode = 0644;</div></pre></td></tr></table></figure>
+<h3 id="1-2-2-编译"><a href="#1-2-2-编译" class="headerlink" title="1.2.2 编译"></a>1.2.2 编译</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">./configure --with-kernel-support --target=arm-linux-androideabi --host=arm-linux-androideabi --enable-install-libbfd --prefix=$PWD/_install --disable-nls --enable-install-libiberty --enable-shared</div><div class="line">make &amp;&amp; make install</div></pre></td></tr></table></figure>
+<p>由于需要静态编译，删除_install/lib目录下的所有so,so.*等文件。</p>
+<h2 id="1-3编译oprofile"><a href="#1-3编译oprofile" class="headerlink" title="1.3编译oprofile"></a>1.3编译oprofile</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">CFLAGS=&quot;-I/home/lijg/popt-1.16/_install/include&quot;  CXXFLAGS=&quot;-I/home/lijg/popt-1.16/_install/include&quot; LDFLAGS=&quot;-L/home/lijg/popt-1.16/_install/lib -static&quot; ./configure --with-kernel-support --target=arm-linux-androideabi --host=arm-linux-androideabi --with-binutils=/home/lijg/binutils-2.22/_install --prefix=$PWD/_instal</div><div class="line">make &amp;&amp; make install</div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2015/02/11/2015-02-11-交叉编译OProfile到Android步骤/" data-id="civs3rcuv0040yh3l7af7vfja" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2015/02/11/2015-02-11-交叉编译OProfile到Android步骤/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Oprofile/">Oprofile</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2015-01-31-敏捷开发之计划会议" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/31/2015-01-31-敏捷开发之计划会议/" class="article-date">
+  <time datetime="2015-01-31T11:06:10.000Z" itemprop="datePublished">2015-01-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/杂/">杂</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/31/2015-01-31-敏捷开发之计划会议/">敏捷开发之计划会议</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p><code>Sprint</code>计划会议非常关键,应该算是<code>Scrum</code>中最重要的活动。要是它执行的不好,整个<code>sprint</code>甚至都会被毁掉。</p>
+</blockquote>
+<p>举办<code>Sprint</code>计划会议,是为了让团队获得足够的信息,能够在几个星期内不受干扰地工作,也是为了让产品负责人能对此有充分的信心。</p>
+<p>OK,这么说可能比较模糊。其实,Sprint 计划会议会产生一些实实在在的成果:</p>
+<ul>
+<li>sprint 目标。</li>
+<li>团队成员名单(以及他们的投入程度,如果不是100%的话)。</li>
+<li><code>backlog</code>(即<code>sprint</code>中包括的故事列表)。</li>
+<li>确定好<code>sprint</code>演示日期。</li>
+<li>确定好时间地点,供举行每日<code>scrum</code>会议</li>
+</ul>
+<h2 id="为什么产品负责人必须参加"><a href="#为什么产品负责人必须参加" class="headerlink" title="为什么产品负责人必须参加"></a>为什么产品负责人必须参加</h2><p>有时候产品负责人会不太情愿跟团队一起花上几个小时制定<code>sprint</code>计划。“嘿,小伙子们,我想要的东西已经列下来了,我没时间参加你们的计划会议。”这可是个非常严重的问题。</p>
+<p>为什么整个团队和产品负责人都必须要参加<code>sprint</code>计划会议?原因在于,每个故事都含有三个变量(范围、重要性、估算),它们两两之间都对彼此有着强烈依赖。</p>
+<p>范围(scope)和重要性(importance)由产品负责人设置。估算(estimate)由团队设置。在 sprint 计划会议上,经过团队和产品负责人面对面的对话,这三个变量会逐步得到调整优化。</p>
+<p>会议启动以后,产品负责人一般会先概括一下希望在这个<code>sprint</code>中达成的目标,还有他认为最重要的故事。接下来,团队从最重要的故事开始逐一讨论每个故事,一一估算时间。在这个过程中,他们会针对范围提出些重要问题:“‘删除用户’这个故事,需不需要遍历这个用户所有尚未执行的事务,把它们统统取消?”有时答复会让他们感到惊讶,促使他们调整估算。</p>
+<p>在某些情况下,团队对故事做出的时间估算,跟产品负责人的想法不太一样。这可能会让他调整故事的重要性;或者修改故事的范围,导致团队重新估算,然后一连串诸如此类的后续反应。</p>
+<p>这种直接的协作形式是 Scrum 的基础,也是所有敏捷软件开发的基础。</p>
+<p>如果产品负责人还是坚持没时间参加怎么办?一般我会按顺序尝试下面的策略:</p>
+<ul>
+<li>试着让产品负责人理解,为什么他的直接参与事关项目成败,希望他可以改变念头。</li>
+<li>试着在团队中找到某个人,让他在会议中充当产品负责人的代表。告诉产品负责人,“既然你没法来开会,我们这次会让 Jeff 代表你参加。他会替你在会议中行使权利,改变故事的优先级和范围。我建议,你最好在会议开始前尽可能跟他沟通到位。如果你不喜欢 Jeff 当代表,也可以推荐其他人,只要他能全程参加我们的会议就行。”</li>
+<li>试着说服管理团队为我们分配新的产品负责人。</li>
+<li>推迟 sprint 的启动日期,直到产品负责人找到时间参会为止。同时拒绝承诺任何交付。让团队每天都可以自由做他们最想做的事情。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2015/01/31/2015-01-31-敏捷开发之计划会议/" data-id="civs3rcus003yyh3lwnnka3gk" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2015/01/31/2015-01-31-敏捷开发之计划会议/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/敏捷/">敏捷</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2015-01-30-敏捷开发之BackLOG" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/30/2015-01-30-敏捷开发之BackLOG/" class="article-date">
+  <time datetime="2015-01-30T11:05:12.000Z" itemprop="datePublished">2015-01-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/杂/">杂</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/30/2015-01-30-敏捷开发之BackLOG/">敏捷开发之BackLOG</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>产品<code>Backlog</code>是<code>Scrum</code>的核心，也是一切的起源。</p>
+</blockquote>
+<p>##1 什么是Backlog</p>
+<p><code>Backlog</code>是一个需求(故事、特性)组成的列表，并按照重要性进行了排序。他应该包含以下字段：</p>
+<ul>
+<li><code>ID</code> – 统一的标识符，自增的数字。</li>
+<li><code>名称</code> – 简短的、描述性的需求(故事、特性)名。比如，“删除当前选中的文本”。它必须要含义明确，这样开发人员和产品负责人才能大致明白是什么东西，以跟其他需求(故事、特性)区分开。</li>
+<li><code>重要性</code> – 产品负责人评出的一个数值，指示这个需求(故事、特性)有多重要。比如，10或者150.数值越高越重要。</li>
+<li><code>初始估算</code> – 开发团队的初步估算完成该需求(故事、特性)所需的工作量。单位是一个“理想的人天”。<ul>
+<li>不需要保证这个估值的绝对无误(只是根据经验的分析估算出来的)，而是要尽力保证相对的正确性。即，跟另外一个需求(故事、特性)相比，如果需要的时间是它的两倍，那么这里也应该是两倍才对(同一个开发人员的情况下)。</li>
+</ul>
+</li>
+<li>如何演示(测试) – 大致描述一下在验收时，如何才能进行演示，本质就是一个简单的测试规范。“先这样做，然后那样做，就应该得到……的结果”<ul>
+<li>如果使用TDD(测试驱动开发)，那么这段描述可以作为验收测试的伪码表示。</li>
+</ul>
+</li>
+<li><code>注解</code> – 相关信息、解释说明和对其它资料的引用等等。一般都非常简短或没有。</li>
+</ul>
+<table border="2"><br>    <thead><br>        <tr><td colspan="6">一个Backlog的例子</td></tr><br>        <tr><br>            <td>ID</td><br>            <td>名称</td><br>            <td>重要性</td><br>            <td>初始估算</td><br>            <td>如何测试</td><br>            <td>注解</td><br>        </tr><br>    </thead><br>    <tbody><br>        <tr><br>            <td>1</td><br>            <td>移动鼠标到指定位置</td><br>            <td>100</td><br>            <td>2</td><br>            <td>通过JNI接口moveMouseTo(x,y),查看鼠标指针是否移动到了制定的位置</td><br>            <td></td><br>        </tr><br>        <tr><br>            <td>2</td><br>            <td>在鼠标当前所在位置模拟点击事件</td><br>            <td>80</td><br>            <td>1</td><br>            <td>通过JNI接口pressMouse(type),如果鼠标下面有按钮，应该会触发该按钮的onClick事件</td><br>            <td></td><br>        </tr><br>    <tbody><br></tbody></tbody></table>
+
+<p>##2 Backlog的要求</p>
+<blockquote>
+<p>在<code>sprint</code>计划会议之前,要确保产品<code>backlog</code>的井然有序。</p>
+</blockquote>
+<p>在一个迭代周期开始的计划会议之前，backlog需要准备好，它代表以下几个意思：</p>
+<ul>
+<li>产品<code>backlog</code>必须存在。</li>
+<li>只能有一个产品<code>backlog</code>和一个产品负责人(对于一个产品而言)。</li>
+<li>所有重要的<code>backlog</code>条目都已经根据重要性被评过分,不同的重要程度对应不同的分数。<ul>
+<li>其实,重要程度比较低的<code>backlog</code>条目,评分相同也没关系,因为它们在这次<code>sprint</code>计划会议上可能根本不会被提出来。</li>
+<li>无论任何需求(故事、特性),只要产品负责人相信它会在这一个<code>sprint</code>实现,那它就应该被划分到一个特有的重要性层次。</li>
+<li>分数只是用来根据重要性对<code>backlog</code>条目排序。假如<code>A</code>的分数是20,而<code>B</code>的分数是100,那仅仅是说明<code>B</code>比<code>A</code>重要而已,绝不意味着<code>B</code>比<code>A</code>重要五倍。如果<code>B</code>的分数是<code>21</code>而不是100,含义也是一样的!</li>
+<li>最好在分数之间留出适当间隔,以防后面出现一个<code>C</code>,比<code>A</code>重要而不如<code>B</code>重要。当然我们也可以给<code>C</code>打一个 20.5 分,但这样看上去就很难看了,所以我们还是留出间隔来!</li>
+</ul>
+</li>
+<li>产品负责人应当理解每个需求(故事、特性)的含义(通常需求都是由他来编写的,但是有的时候其他人也会添加一些请求,产品负责人对它们划分先后次序)。他不需要知道每个需求(故事、特性)具体是如何实现的,但是他要知道为什么这个需求(故事、特性)会在这里。</li>
+</ul>
+<p><strong>注意：</strong>产品负责人之外的人也可以向产品 backlog 中添加故事,但是他们不能说这个故事有多重要,这是产品负责人独有的权利。他们也不能添加时间估算,这是开发团队独有的权利。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2015/01/30/2015-01-30-敏捷开发之BackLOG/" data-id="civs3rcuk003vyh3lw845cqkp" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2015/01/30/2015-01-30-敏捷开发之BackLOG/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/敏捷/">敏捷</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2015-01-10-Centos7安装Docker备忘" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/10/2015-01-10-Centos7安装Docker备忘/" class="article-date">
+  <time datetime="2015-01-10T12:02:07.000Z" itemprop="datePublished">2015-01-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/10/2015-01-10-Centos7安装Docker备忘/">Centos7安装Docker备忘</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在Centos7上通过<code>yum install docker</code>后是不能直接使用docker的，还需要启动<code>docker</code>服务才可以。</p>
+<p>通过以下两条命令启动<code>docker</code>服务并将其加入开机启动。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">systemctl start docker.service</div><div class="line">systemctl enable docker.service</div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2015/01/10/2015-01-10-Centos7安装Docker备忘/" data-id="civs3rcuj003syh3l18lc6e5l" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2015/01/10/2015-01-10-Centos7安装Docker备忘/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Docker/">Docker</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2015-01-01-2015新年好" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/01/2015-01-01-2015新年好/" class="article-date">
+  <time datetime="2015-01-01T02:01:22.000Z" itemprop="datePublished">2015-01-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/杂/">杂</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/01/2015-01-01-2015新年好/">2015-01-01-2015新年好</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>各位2015新年快乐！</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2015/01/01/2015-01-01-2015新年好/" data-id="civs3rcug003pyh3le1oz5xog" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2015/01/01/2015-01-01-2015新年好/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/16/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><a class="extend next" rel="next" href="/page/18/">Next &raquo;</a>
+    </nav>
+  
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/11/21/2016-11-21-日出/">日出</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/20/2016-11-20-莲花山公园/">莲花山公园</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/15/2016-11-15-彩鹿/">彩鹿</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/14/2016-11-14-今晚的月亮/">今晚的月亮</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/06/2016-11-06-深圳湾夜骑/">深圳湾夜骑</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ASIC/">ASIC</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">47</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/摄影/">摄影</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂/">杂</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/硬件/">硬件</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件/">软件</a><span class="category-list-count">8</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BusyBox/" style="font-size: 10px;">BusyBox</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Catmul/" style="font-size: 10px;">Catmul</a> <a href="/tags/Centos/" style="font-size: 12.86px;">Centos</a> <a href="/tags/Debian/" style="font-size: 10px;">Debian</a> <a href="/tags/Device-Tree/" style="font-size: 10px;">Device Tree</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/DraftSight/" style="font-size: 10px;">DraftSight</a> <a href="/tags/EC/" style="font-size: 10px;">EC</a> <a href="/tags/Flask/" style="font-size: 11.43px;">Flask</a> <a href="/tags/GLES/" style="font-size: 10px;">GLES</a> <a href="/tags/GPU/" style="font-size: 10px;">GPU</a> <a href="/tags/Git/" style="font-size: 12.86px;">Git</a> <a href="/tags/HHVM/" style="font-size: 10px;">HHVM</a> <a href="/tags/I2C/" style="font-size: 10px;">I2C</a> <a href="/tags/LVM/" style="font-size: 11.43px;">LVM</a> <a href="/tags/MQTT/" style="font-size: 10px;">MQTT</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/OpenGL/" style="font-size: 10px;">OpenGL</a> <a href="/tags/OpenMP/" style="font-size: 10px;">OpenMP</a> <a href="/tags/Oprofile/" style="font-size: 12.86px;">Oprofile</a> <a href="/tags/PCB/" style="font-size: 10px;">PCB</a> <a href="/tags/PCIE/" style="font-size: 11.43px;">PCIE</a> <a href="/tags/PPTP/" style="font-size: 10px;">PPTP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/RTT/" style="font-size: 10px;">RTT</a> <a href="/tags/Recovery/" style="font-size: 10px;">Recovery</a> <a href="/tags/SVN/" style="font-size: 11.43px;">SVN</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/Typecho/" style="font-size: 10px;">Typecho</a> <a href="/tags/USB/" style="font-size: 11.43px;">USB</a> <a href="/tags/VIM/" style="font-size: 10px;">VIM</a> <a href="/tags/Verification/" style="font-size: 10px;">Verification</a> <a href="/tags/busybox/" style="font-size: 10px;">busybox</a> <a href="/tags/dropbear/" style="font-size: 10px;">dropbear</a> <a href="/tags/gprof/" style="font-size: 10px;">gprof</a> <a href="/tags/i-MX6/" style="font-size: 10px;">i.MX6</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/scp/" style="font-size: 10px;">scp</a> <a href="/tags/uboot/" style="font-size: 10px;">uboot</a> <a href="/tags/uwsgi/" style="font-size: 10px;">uwsgi</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/xterm/" style="font-size: 10px;">xterm</a> <a href="/tags/休眠/" style="font-size: 10px;">休眠</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/导航条/" style="font-size: 10px;">导航条</a> <a href="/tags/嵌入式/" style="font-size: 17.14px;">嵌入式</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/广播/" style="font-size: 10px;">广播</a> <a href="/tags/性能/" style="font-size: 11.43px;">性能</a> <a href="/tags/插值/" style="font-size: 10px;">插值</a> <a href="/tags/摄影/" style="font-size: 15.71px;">摄影</a> <a href="/tags/敏捷/" style="font-size: 11.43px;">敏捷</a> <a href="/tags/旅游/" style="font-size: 10px;">旅游</a> <a href="/tags/旅行/" style="font-size: 14.29px;">旅行</a> <a href="/tags/树莓派/" style="font-size: 14.29px;">树莓派</a> <a href="/tags/浪涌/" style="font-size: 10px;">浪涌</a> <a href="/tags/纹理/" style="font-size: 10px;">纹理</a> <a href="/tags/美食/" style="font-size: 10px;">美食</a> <a href="/tags/蓝牙/" style="font-size: 10px;">蓝牙</a> <a href="/tags/街拍/" style="font-size: 12.86px;">街拍</a> <a href="/tags/设备树/" style="font-size: 10px;">设备树</a> <a href="/tags/设计模式/" style="font-size: 18.57px;">设计模式</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">三月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">二月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">一月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">八月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03/">三月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Lee<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lijg"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"/css/bdshare.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>
