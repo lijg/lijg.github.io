@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ljgabc.com/"/>
-  <updated>2016-11-22T14:33:24.312Z</updated>
+  <updated>2016-11-23T13:30:54.370Z</updated>
   <id>http://ljgabc.com/</id>
   
   <author>
@@ -14,6 +14,73 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>使用Django和Blueimp Gallery制作照片墙</title>
+    <link href="http://ljgabc.com/2016/11/23/2016-11-23-%E4%BD%BF%E7%94%A8Django%E5%92%8CBlueimp-Gallery%E5%88%B6%E4%BD%9C%E7%85%A7%E7%89%87%E5%A2%99/"/>
+    <id>http://ljgabc.com/2016/11/23/2016-11-23-使用Django和Blueimp-Gallery制作照片墙/</id>
+    <published>2016-11-23T13:19:14.000Z</published>
+    <updated>2016-11-23T13:30:54.370Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文记述了怎么使用<code>Django</code>和<code>Blueimp Gallery</code>一步一步搭建一个照片墙。</p>
+<p>使用到的资源：</p>
+<ul>
+<li>前端: Blueimp Gallery</li>
+<li>后端: Django</li>
+<li>缩略图: easy_thumbnails</li>
+<li>部署: nginx + gunicorn + supervisor </li>
+</ul>
+<p>开发环境是Centos 7.2 + Python 2.7.5</p>
+<p>运行效果：<br><img src="/images/2016-11-23/1.png" alt="1"><br><img src="/images/2016-11-23/2.png" alt="2"></p>
+<h2 id="1-创建项目"><a href="#1-创建项目" class="headerlink" title="1 创建项目"></a>1 创建项目</h2><p>假设当前用户是<code>ljgabc</code>，当前目录是<code>/home/ljgabc</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">virtualenv django</div><div class="line">source django/bin/activate</div><div class="line">pip install django pillow easy_thumbnails gunicorn</div><div class="line">django-admin startproject websites</div><div class="line">cd websites</div><div class="line">python manage.py startapp gallery</div></pre></td></tr></table></figure></p>
+<h2 id="2-修改配置"><a href="#2-修改配置" class="headerlink" title="2 修改配置"></a>2 修改配置</h2><p>首先修改<code>websites/settings.py</code>中的<code>INSTALLED_APPS</code>，添加应用，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">INSTALLED_APPS = [</div><div class="line">    ...,</div><div class="line">    &apos;gallery.apps.GalleryConfig&apos;,</div><div class="line">    &apos;easy_thumbnails&apos;,</div><div class="line">]</div></pre></td></tr></table></figure></p>
+<p>其它配置如下：</p>
+<ul>
+<li>图片文件上传位置: <code>gallery/uploads</code></li>
+<li>图片访问地址: <code>&lt;siteurl&gt;/uploads/xxxx.jpg</code></li>
+<li>缩略图大小为<code>75x75</code></li>
+<li>最终静态文件存放地址为<code>static/</code><br>因此修改<code>websites/settings.py</code>，添加以下内容，<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">STATIC_ROOT = os.path.join(BASE_DIR, &apos;static&apos;)</div><div class="line"></div><div class="line">MEDIA_ROOT = os.path.join(BASE_DIR, &apos;gallery&apos;)</div><div class="line">MEDIA_URL = &apos;/&apos;</div><div class="line">IMAGE_PREFIX = &apos;uploads&apos;</div><div class="line"></div><div class="line">THUMBNAIL_ALIASES = &#123;</div><div class="line">  &apos;&apos;: &#123;</div><div class="line">    &apos;75x75&apos; : &#123;&apos;size&apos;: (75,75), &apos;crop&apos;:True&#125;,</div><div class="line">  &#125;,</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="3-配置URL"><a href="#3-配置URL" class="headerlink" title="3 配置URL"></a>3 配置URL</h2><p>由于我们的网站只有一页，所以需要配置的URL只有<code>/</code>、<code>/admin</code>和<code>/uploads</code>，修改<code>websites/urls.py</code>，配置如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">import os</div><div class="line">from django.conf.urls import url, include</div><div class="line">from django.contrib import admin</div><div class="line">from django.conf import settings</div><div class="line">from django.conf.urls.static import static</div><div class="line"></div><div class="line">urlpatterns = [</div><div class="line">    url(r&apos;^admin/&apos;, admin.site.urls),</div><div class="line">    url(r&apos;^$&apos;, include(&apos;gallery.urls&apos;)),</div><div class="line">]</div><div class="line"></div><div class="line">urlpatterns += static(settings.IMAGE_PREFIX, document_root=os.path.join(settings.MEDIA_ROOT, settings.IMAGE_PREFIX))</div></pre></td></tr></table></figure></p>
+<p>添加<code>gallery/urls.py</code>,<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">from django.conf.urls import url</div><div class="line">from . import views</div><div class="line"></div><div class="line">urlpatterns = [</div><div class="line">    url(r&apos;^$&apos;, views.gallery, name=&apos;gallery&apos;),</div><div class="line">]</div></pre></td></tr></table></figure></p>
+<h2 id="4-添加模型"><a href="#4-添加模型" class="headerlink" title="4 添加模型"></a>4 添加模型</h2><p>编辑<code>gallery/models.py</code>，添加<code>Image</code>模型，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">from django.db import models</div><div class="line">from django.conf import settings</div><div class="line">from django.utils.encoding import python_2_unicode_compatible</div><div class="line"></div><div class="line"># Create your models here.</div><div class="line"></div><div class="line">@python_2_unicode_compatible</div><div class="line">class Image(models.Model):</div><div class="line">    &apos;&apos;&apos;</div><div class="line">    模型包含Title、文件、创建时间等</div><div class="line">    &apos;&apos;&apos;</div><div class="line">    title = models.CharField(max_length=250, blank=True)</div><div class="line">    original = models.ImageField(upload_to=settings.IMAGE_PREFIX, default=&apos;/tmp/none.jpg&apos;)</div><div class="line">    created = models.DateTimeField(auto_now_add=True)</div><div class="line"></div><div class="line">    def __str__(self):</div><div class="line">        return self.title</div></pre></td></tr></table></figure></p>
+<h2 id="5-添加视图"><a href="#5-添加视图" class="headerlink" title="5 添加视图"></a>5 添加视图</h2><p>编辑<code>gallery/views.py</code>，配置视图，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">from django.shortcuts import render</div><div class="line">from .models import Image</div><div class="line"># Create your views here.</div><div class="line"></div><div class="line">def gallery(request):</div><div class="line">    image_list = Image.objects.all()</div><div class="line">    return render(request, &apos;gallery/index.html&apos;, &#123;</div><div class="line">        &apos;image_list&apos;: image_list</div><div class="line">        &#125;)</div></pre></td></tr></table></figure></p>
+<h2 id="6-添加静态文件"><a href="#6-添加静态文件" class="headerlink" title="6 添加静态文件"></a>6 添加静态文件</h2><p>从网上下载<code>Blueimp Gallery</code>文件，将其中的<code>css</code>、<code>img</code>和<code>js</code>文件夹放入<code>gallery/static/gallery/</code>文件夹下。</p>
+<h2 id="7-添加首页模板"><a href="#7-添加首页模板" class="headerlink" title="7 添加首页模板"></a>7 添加首页模板</h2><p>创建<code>gallery/templates/gallery/index.html</code>，内容如下：<br>
+undefined
+
+</p>
+<h2 id="8-初始化"><a href="#8-初始化" class="headerlink" title="8 初始化"></a>8 初始化</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">python manage.py makemigrations gallery</div><div class="line">python manage.py migrate</div><div class="line">python manage.py createsuperuser</div></pre></td></tr></table></figure>
+<h2 id="9-预览"><a href="#9-预览" class="headerlink" title="9 预览"></a>9 预览</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python manage.py runserver 0.0.0.0:8000</div></pre></td></tr></table></figure>
+<h2 id="10-配置supervisor"><a href="#10-配置supervisor" class="headerlink" title="10 配置supervisor"></a>10 配置<code>supervisor</code></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install supervisor</div></pre></td></tr></table></figure>
+<p>创建<code>/etc/supervisor.d/gallery.ini</code>, 添加以下内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[program:gallery]</div><div class="line">command=/home/ljgabc/django/bin/gunicorn websites.wsgi:application</div><div class="line">directory=/home/ljgabc/websites</div><div class="line">user=ljgabc</div><div class="line">autostart=true</div><div class="line">autorestart=true</div></pre></td></tr></table></figure></p>
+<p>启动supervisor，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">systemctl start supervisor</div><div class="line"># supervisorctl start gallery</div></pre></td></tr></table></figure></p>
+<p>此时访问<code>127.0.0.1:8000</code>应该可以看到应用已经启动。</p>
+<h2 id="11-配置nginx"><a href="#11-配置nginx" class="headerlink" title="11 配置nginx"></a>11 配置<code>nginx</code></h2><p>首先将所有用到的静态文件收集到<code>STATIC_ROOT</code>目录下，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python manage.py collectstatic</div></pre></td></tr></table></figure></p>
+<p>创建<code>/etc/nginx/conf.d/gallery.conf</code>,<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">    listen 80;</div><div class="line">    server_name www.your-domain-name.com;</div><div class="line"></div><div class="line">    location / &#123;</div><div class="line">        proxy_set_header X-Real-IP $remote_addr;</div><div class="line">        proxy_set_header Host $http_host;</div><div class="line">        proxy_pass http://127.0.0.1:8000;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    location /static/ &#123;</div><div class="line">        root /home/ljgabc/websites;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>启动<code>nginx</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">systemctl start nginx</div></pre></td></tr></table></figure></p>
+<p>全文丸。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文记述了怎么使用&lt;code&gt;Django&lt;/code&gt;和&lt;code&gt;Blueimp Gallery&lt;/code&gt;一步一步搭建一个照片墙。&lt;/p&gt;
+&lt;p&gt;使用到的资源：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;前端: Blueimp Gallery&lt;/li&gt;
+&lt;li&gt;后端: Django
+    
+    </summary>
+    
+      <category term="Linux" scheme="http://ljgabc.com/categories/Linux/"/>
+    
+    
+      <category term="Python" scheme="http://ljgabc.com/tags/Python/"/>
+    
+      <category term="Django" scheme="http://ljgabc.com/tags/Django/"/>
+    
+  </entry>
   
   <entry>
     <title>Django学习笔记</title>

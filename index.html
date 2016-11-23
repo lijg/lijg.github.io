@@ -74,6 +74,93 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-2016-11-23-使用Django和Blueimp-Gallery制作照片墙" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/23/2016-11-23-使用Django和Blueimp-Gallery制作照片墙/" class="article-date">
+  <time datetime="2016-11-23T13:19:14.000Z" itemprop="datePublished">2016-11-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/23/2016-11-23-使用Django和Blueimp-Gallery制作照片墙/">使用Django和Blueimp Gallery制作照片墙</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文记述了怎么使用<code>Django</code>和<code>Blueimp Gallery</code>一步一步搭建一个照片墙。</p>
+<p>使用到的资源：</p>
+<ul>
+<li>前端: Blueimp Gallery</li>
+<li>后端: Django</li>
+<li>缩略图: easy_thumbnails</li>
+<li>部署: nginx + gunicorn + supervisor </li>
+</ul>
+<p>开发环境是Centos 7.2 + Python 2.7.5</p>
+<p>运行效果：<br><img src="/images/2016-11-23/1.png" alt="1"><br><img src="/images/2016-11-23/2.png" alt="2"></p>
+<h2 id="1-创建项目"><a href="#1-创建项目" class="headerlink" title="1 创建项目"></a>1 创建项目</h2><p>假设当前用户是<code>ljgabc</code>，当前目录是<code>/home/ljgabc</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">virtualenv django</div><div class="line">source django/bin/activate</div><div class="line">pip install django pillow easy_thumbnails gunicorn</div><div class="line">django-admin startproject websites</div><div class="line">cd websites</div><div class="line">python manage.py startapp gallery</div></pre></td></tr></table></figure></p>
+<h2 id="2-修改配置"><a href="#2-修改配置" class="headerlink" title="2 修改配置"></a>2 修改配置</h2><p>首先修改<code>websites/settings.py</code>中的<code>INSTALLED_APPS</code>，添加应用，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">INSTALLED_APPS = [</div><div class="line">    ...,</div><div class="line">    &apos;gallery.apps.GalleryConfig&apos;,</div><div class="line">    &apos;easy_thumbnails&apos;,</div><div class="line">]</div></pre></td></tr></table></figure></p>
+<p>其它配置如下：</p>
+<ul>
+<li>图片文件上传位置: <code>gallery/uploads</code></li>
+<li>图片访问地址: <code>&lt;siteurl&gt;/uploads/xxxx.jpg</code></li>
+<li>缩略图大小为<code>75x75</code></li>
+<li>最终静态文件存放地址为<code>static/</code><br>因此修改<code>websites/settings.py</code>，添加以下内容，<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">STATIC_ROOT = os.path.join(BASE_DIR, &apos;static&apos;)</div><div class="line"></div><div class="line">MEDIA_ROOT = os.path.join(BASE_DIR, &apos;gallery&apos;)</div><div class="line">MEDIA_URL = &apos;/&apos;</div><div class="line">IMAGE_PREFIX = &apos;uploads&apos;</div><div class="line"></div><div class="line">THUMBNAIL_ALIASES = &#123;</div><div class="line">  &apos;&apos;: &#123;</div><div class="line">    &apos;75x75&apos; : &#123;&apos;size&apos;: (75,75), &apos;crop&apos;:True&#125;,</div><div class="line">  &#125;,</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="3-配置URL"><a href="#3-配置URL" class="headerlink" title="3 配置URL"></a>3 配置URL</h2><p>由于我们的网站只有一页，所以需要配置的URL只有<code>/</code>、<code>/admin</code>和<code>/uploads</code>，修改<code>websites/urls.py</code>，配置如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">import os</div><div class="line">from django.conf.urls import url, include</div><div class="line">from django.contrib import admin</div><div class="line">from django.conf import settings</div><div class="line">from django.conf.urls.static import static</div><div class="line"></div><div class="line">urlpatterns = [</div><div class="line">    url(r&apos;^admin/&apos;, admin.site.urls),</div><div class="line">    url(r&apos;^$&apos;, include(&apos;gallery.urls&apos;)),</div><div class="line">]</div><div class="line"></div><div class="line">urlpatterns += static(settings.IMAGE_PREFIX, document_root=os.path.join(settings.MEDIA_ROOT, settings.IMAGE_PREFIX))</div></pre></td></tr></table></figure></p>
+<p>添加<code>gallery/urls.py</code>,<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">from django.conf.urls import url</div><div class="line">from . import views</div><div class="line"></div><div class="line">urlpatterns = [</div><div class="line">    url(r&apos;^$&apos;, views.gallery, name=&apos;gallery&apos;),</div><div class="line">]</div></pre></td></tr></table></figure></p>
+<h2 id="4-添加模型"><a href="#4-添加模型" class="headerlink" title="4 添加模型"></a>4 添加模型</h2><p>编辑<code>gallery/models.py</code>，添加<code>Image</code>模型，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">from django.db import models</div><div class="line">from django.conf import settings</div><div class="line">from django.utils.encoding import python_2_unicode_compatible</div><div class="line"></div><div class="line"># Create your models here.</div><div class="line"></div><div class="line">@python_2_unicode_compatible</div><div class="line">class Image(models.Model):</div><div class="line">    &apos;&apos;&apos;</div><div class="line">    模型包含Title、文件、创建时间等</div><div class="line">    &apos;&apos;&apos;</div><div class="line">    title = models.CharField(max_length=250, blank=True)</div><div class="line">    original = models.ImageField(upload_to=settings.IMAGE_PREFIX, default=&apos;/tmp/none.jpg&apos;)</div><div class="line">    created = models.DateTimeField(auto_now_add=True)</div><div class="line"></div><div class="line">    def __str__(self):</div><div class="line">        return self.title</div></pre></td></tr></table></figure></p>
+<h2 id="5-添加视图"><a href="#5-添加视图" class="headerlink" title="5 添加视图"></a>5 添加视图</h2><p>编辑<code>gallery/views.py</code>，配置视图，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">from django.shortcuts import render</div><div class="line">from .models import Image</div><div class="line"># Create your views here.</div><div class="line"></div><div class="line">def gallery(request):</div><div class="line">    image_list = Image.objects.all()</div><div class="line">    return render(request, &apos;gallery/index.html&apos;, &#123;</div><div class="line">        &apos;image_list&apos;: image_list</div><div class="line">        &#125;)</div></pre></td></tr></table></figure></p>
+<h2 id="6-添加静态文件"><a href="#6-添加静态文件" class="headerlink" title="6 添加静态文件"></a>6 添加静态文件</h2><p>从网上下载<code>Blueimp Gallery</code>文件，将其中的<code>css</code>、<code>img</code>和<code>js</code>文件夹放入<code>gallery/static/gallery/</code>文件夹下。</p>
+<h2 id="7-添加首页模板"><a href="#7-添加首页模板" class="headerlink" title="7 添加首页模板"></a>7 添加首页模板</h2><p>创建<code>gallery/templates/gallery/index.html</code>，内容如下：<br>
+undefined
+
+</p>
+<h2 id="8-初始化"><a href="#8-初始化" class="headerlink" title="8 初始化"></a>8 初始化</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">python manage.py makemigrations gallery</div><div class="line">python manage.py migrate</div><div class="line">python manage.py createsuperuser</div></pre></td></tr></table></figure>
+<h2 id="9-预览"><a href="#9-预览" class="headerlink" title="9 预览"></a>9 预览</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python manage.py runserver 0.0.0.0:8000</div></pre></td></tr></table></figure>
+<h2 id="10-配置supervisor"><a href="#10-配置supervisor" class="headerlink" title="10 配置supervisor"></a>10 配置<code>supervisor</code></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install supervisor</div></pre></td></tr></table></figure>
+<p>创建<code>/etc/supervisor.d/gallery.ini</code>, 添加以下内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[program:gallery]</div><div class="line">command=/home/ljgabc/django/bin/gunicorn websites.wsgi:application</div><div class="line">directory=/home/ljgabc/websites</div><div class="line">user=ljgabc</div><div class="line">autostart=true</div><div class="line">autorestart=true</div></pre></td></tr></table></figure></p>
+<p>启动supervisor，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">systemctl start supervisor</div><div class="line"># supervisorctl start gallery</div></pre></td></tr></table></figure></p>
+<p>此时访问<code>127.0.0.1:8000</code>应该可以看到应用已经启动。</p>
+<h2 id="11-配置nginx"><a href="#11-配置nginx" class="headerlink" title="11 配置nginx"></a>11 配置<code>nginx</code></h2><p>首先将所有用到的静态文件收集到<code>STATIC_ROOT</code>目录下，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python manage.py collectstatic</div></pre></td></tr></table></figure></p>
+<p>创建<code>/etc/nginx/conf.d/gallery.conf</code>,<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">    listen 80;</div><div class="line">    server_name www.your-domain-name.com;</div><div class="line"></div><div class="line">    location / &#123;</div><div class="line">        proxy_set_header X-Real-IP $remote_addr;</div><div class="line">        proxy_set_header Host $http_host;</div><div class="line">        proxy_pass http://127.0.0.1:8000;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    location /static/ &#123;</div><div class="line">        root /home/ljgabc/websites;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>启动<code>nginx</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">systemctl start nginx</div></pre></td></tr></table></figure></p>
+<p>全文丸。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2016/11/23/2016-11-23-使用Django和Blueimp-Gallery制作照片墙/" data-id="civuysclz00cjz23lmsyxtkeg" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2016/11/23/2016-11-23-使用Django和Blueimp-Gallery制作照片墙/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Django/">Django</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-2016-11-22-Django学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/11/22/2016-11-22-Django学习笔记/" class="article-date">
@@ -135,7 +222,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2016/11/22/2016-11-22-Django学习笔记/" data-id="civtlgqgq00b2y43lmxnrd9bp" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2016/11/22/2016-11-22-Django学习笔记/" data-id="civuysclx00cfz23lxyi31cz3" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -185,7 +272,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2016/11/21/2016-11-21-日出/" data-id="civtlgqgn00b0y43l5cjpdwha" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2016/11/21/2016-11-21-日出/" data-id="civuysclv00ccz23lvi2pzypv" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -236,7 +323,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2016/11/20/2016-11-20-莲花山公园/" data-id="civtlgqgc00aqy43lq4v7rqo7" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2016/11/20/2016-11-20-莲花山公园/" data-id="civuysclt00c9z23lvlcsr612" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -286,7 +373,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2016/11/15/2016-11-15-彩鹿/" data-id="civtlgqgi00axy43lrnbekjie" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2016/11/15/2016-11-15-彩鹿/" data-id="civuyscna00d9z23lbree9eat" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -301,57 +388,9 @@
 
 
   
-    <article id="post-2016-11-14-今晚的月亮" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/11/14/2016-11-14-今晚的月亮/" class="article-date">
-  <time datetime="2016-11-14T14:22:26.000Z" itemprop="datePublished">2016-11-14</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/摄影/">摄影</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/14/2016-11-14-今晚的月亮/">今晚的月亮</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="/images/2016-11-14/1.jpg" alt="1"></p>
-<p><img src="/images/2016-11-14/2.jpg" alt="2"></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://ljgabc.com/2016/11/14/2016-11-14-今晚的月亮/" data-id="civtlgqgg00aty43lq005h4mv" class="article-share-link" data-share="baidu">分享到</a>
-      
-
-      
-        <a href="http://ljgabc.com/2016/11/14/2016-11-14-今晚的月亮/#ds-thread" class="article-comment-link">评论</a>
-      
-
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -363,6 +402,10 @@
     <h3 class="widget-title">近期文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/11/23/2016-11-23-使用Django和Blueimp-Gallery制作照片墙/">使用Django和Blueimp Gallery制作照片墙</a>
+          </li>
         
           <li>
             <a href="/2016/11/22/2016-11-22-Django学习笔记/">Django学习笔记</a>
@@ -380,10 +423,6 @@
             <a href="/2016/11/15/2016-11-15-彩鹿/">彩鹿</a>
           </li>
         
-          <li>
-            <a href="/2016/11/14/2016-11-14-今晚的月亮/">今晚的月亮</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -393,7 +432,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ASIC/">ASIC</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">48</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/摄影/">摄影</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂/">杂</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/硬件/">硬件</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件/">软件</a><span class="category-list-count">8</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ASIC/">ASIC</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">49</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/摄影/">摄影</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂/">杂</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/硬件/">硬件</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件/">软件</a><span class="category-list-count">8</span></li></ul>
     </div>
   </div>
 
@@ -402,7 +441,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/BusyBox/" style="font-size: 10px;">BusyBox</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Catmul/" style="font-size: 10px;">Catmul</a> <a href="/tags/Centos/" style="font-size: 12.86px;">Centos</a> <a href="/tags/Debian/" style="font-size: 10px;">Debian</a> <a href="/tags/Device-Tree/" style="font-size: 10px;">Device Tree</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/DraftSight/" style="font-size: 10px;">DraftSight</a> <a href="/tags/EC/" style="font-size: 10px;">EC</a> <a href="/tags/Flask/" style="font-size: 11.43px;">Flask</a> <a href="/tags/GLES/" style="font-size: 10px;">GLES</a> <a href="/tags/GPU/" style="font-size: 10px;">GPU</a> <a href="/tags/Git/" style="font-size: 12.86px;">Git</a> <a href="/tags/HHVM/" style="font-size: 10px;">HHVM</a> <a href="/tags/I2C/" style="font-size: 10px;">I2C</a> <a href="/tags/LVM/" style="font-size: 11.43px;">LVM</a> <a href="/tags/MQTT/" style="font-size: 10px;">MQTT</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/OpenGL/" style="font-size: 10px;">OpenGL</a> <a href="/tags/OpenMP/" style="font-size: 10px;">OpenMP</a> <a href="/tags/Oprofile/" style="font-size: 12.86px;">Oprofile</a> <a href="/tags/PCB/" style="font-size: 10px;">PCB</a> <a href="/tags/PCIE/" style="font-size: 11.43px;">PCIE</a> <a href="/tags/PPTP/" style="font-size: 10px;">PPTP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/RTT/" style="font-size: 10px;">RTT</a> <a href="/tags/Recovery/" style="font-size: 10px;">Recovery</a> <a href="/tags/SVN/" style="font-size: 11.43px;">SVN</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/Typecho/" style="font-size: 10px;">Typecho</a> <a href="/tags/USB/" style="font-size: 11.43px;">USB</a> <a href="/tags/VIM/" style="font-size: 10px;">VIM</a> <a href="/tags/Verification/" style="font-size: 10px;">Verification</a> <a href="/tags/busybox/" style="font-size: 10px;">busybox</a> <a href="/tags/dropbear/" style="font-size: 10px;">dropbear</a> <a href="/tags/gprof/" style="font-size: 10px;">gprof</a> <a href="/tags/i-MX6/" style="font-size: 10px;">i.MX6</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/scp/" style="font-size: 10px;">scp</a> <a href="/tags/uboot/" style="font-size: 10px;">uboot</a> <a href="/tags/uwsgi/" style="font-size: 10px;">uwsgi</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/xterm/" style="font-size: 10px;">xterm</a> <a href="/tags/休眠/" style="font-size: 10px;">休眠</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/导航条/" style="font-size: 10px;">导航条</a> <a href="/tags/嵌入式/" style="font-size: 17.14px;">嵌入式</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/广播/" style="font-size: 10px;">广播</a> <a href="/tags/性能/" style="font-size: 11.43px;">性能</a> <a href="/tags/插值/" style="font-size: 10px;">插值</a> <a href="/tags/摄影/" style="font-size: 15.71px;">摄影</a> <a href="/tags/敏捷/" style="font-size: 11.43px;">敏捷</a> <a href="/tags/旅游/" style="font-size: 10px;">旅游</a> <a href="/tags/旅行/" style="font-size: 14.29px;">旅行</a> <a href="/tags/树莓派/" style="font-size: 14.29px;">树莓派</a> <a href="/tags/浪涌/" style="font-size: 10px;">浪涌</a> <a href="/tags/纹理/" style="font-size: 10px;">纹理</a> <a href="/tags/美食/" style="font-size: 10px;">美食</a> <a href="/tags/蓝牙/" style="font-size: 10px;">蓝牙</a> <a href="/tags/街拍/" style="font-size: 12.86px;">街拍</a> <a href="/tags/设备树/" style="font-size: 10px;">设备树</a> <a href="/tags/设计模式/" style="font-size: 18.57px;">设计模式</a>
+      <a href="/tags/BusyBox/" style="font-size: 10px;">BusyBox</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Catmul/" style="font-size: 10px;">Catmul</a> <a href="/tags/Centos/" style="font-size: 12.86px;">Centos</a> <a href="/tags/Debian/" style="font-size: 10px;">Debian</a> <a href="/tags/Device-Tree/" style="font-size: 10px;">Device Tree</a> <a href="/tags/Django/" style="font-size: 11.43px;">Django</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/DraftSight/" style="font-size: 10px;">DraftSight</a> <a href="/tags/EC/" style="font-size: 10px;">EC</a> <a href="/tags/Flask/" style="font-size: 11.43px;">Flask</a> <a href="/tags/GLES/" style="font-size: 10px;">GLES</a> <a href="/tags/GPU/" style="font-size: 10px;">GPU</a> <a href="/tags/Git/" style="font-size: 12.86px;">Git</a> <a href="/tags/HHVM/" style="font-size: 10px;">HHVM</a> <a href="/tags/I2C/" style="font-size: 10px;">I2C</a> <a href="/tags/LVM/" style="font-size: 11.43px;">LVM</a> <a href="/tags/MQTT/" style="font-size: 10px;">MQTT</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/OpenGL/" style="font-size: 10px;">OpenGL</a> <a href="/tags/OpenMP/" style="font-size: 10px;">OpenMP</a> <a href="/tags/Oprofile/" style="font-size: 12.86px;">Oprofile</a> <a href="/tags/PCB/" style="font-size: 10px;">PCB</a> <a href="/tags/PCIE/" style="font-size: 11.43px;">PCIE</a> <a href="/tags/PPTP/" style="font-size: 10px;">PPTP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/RTT/" style="font-size: 10px;">RTT</a> <a href="/tags/Recovery/" style="font-size: 10px;">Recovery</a> <a href="/tags/SVN/" style="font-size: 11.43px;">SVN</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/Typecho/" style="font-size: 10px;">Typecho</a> <a href="/tags/USB/" style="font-size: 11.43px;">USB</a> <a href="/tags/VIM/" style="font-size: 10px;">VIM</a> <a href="/tags/Verification/" style="font-size: 10px;">Verification</a> <a href="/tags/busybox/" style="font-size: 10px;">busybox</a> <a href="/tags/dropbear/" style="font-size: 10px;">dropbear</a> <a href="/tags/gprof/" style="font-size: 10px;">gprof</a> <a href="/tags/i-MX6/" style="font-size: 10px;">i.MX6</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/scp/" style="font-size: 10px;">scp</a> <a href="/tags/uboot/" style="font-size: 10px;">uboot</a> <a href="/tags/uwsgi/" style="font-size: 10px;">uwsgi</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/xterm/" style="font-size: 10px;">xterm</a> <a href="/tags/休眠/" style="font-size: 10px;">休眠</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/导航条/" style="font-size: 10px;">导航条</a> <a href="/tags/嵌入式/" style="font-size: 17.14px;">嵌入式</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/广播/" style="font-size: 10px;">广播</a> <a href="/tags/性能/" style="font-size: 11.43px;">性能</a> <a href="/tags/插值/" style="font-size: 10px;">插值</a> <a href="/tags/摄影/" style="font-size: 15.71px;">摄影</a> <a href="/tags/敏捷/" style="font-size: 11.43px;">敏捷</a> <a href="/tags/旅游/" style="font-size: 10px;">旅游</a> <a href="/tags/旅行/" style="font-size: 14.29px;">旅行</a> <a href="/tags/树莓派/" style="font-size: 14.29px;">树莓派</a> <a href="/tags/浪涌/" style="font-size: 10px;">浪涌</a> <a href="/tags/纹理/" style="font-size: 10px;">纹理</a> <a href="/tags/美食/" style="font-size: 10px;">美食</a> <a href="/tags/蓝牙/" style="font-size: 10px;">蓝牙</a> <a href="/tags/街拍/" style="font-size: 12.86px;">街拍</a> <a href="/tags/设备树/" style="font-size: 10px;">设备树</a> <a href="/tags/设计模式/" style="font-size: 18.57px;">设计模式</a>
     </div>
   </div>
 
@@ -411,7 +450,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">三月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">二月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">一月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">八月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03/">三月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">三月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">二月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">一月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">八月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03/">三月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 

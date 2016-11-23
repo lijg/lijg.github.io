@@ -74,6 +74,62 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-2016-01-19-电容的一些注意事项" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/01/19/2016-01-19-电容的一些注意事项/" class="article-date">
+  <time datetime="2016-01-19T02:02:33.000Z" itemprop="datePublished">2016-01-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/硬件/">硬件</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/01/19/2016-01-19-电容的一些注意事项/">电容的一些注意事项</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-电容分类"><a href="#1-电容分类" class="headerlink" title="1 电容分类"></a>1 电容分类</h1><p>电容器有着各式各样的种类，以生产材料可划分为陶瓷电容器、钽电解电容器、铝电解电容器等。特别是多层陶瓷电容器，体积虽小但容量大，经常被用于去藕、电源电压的平滑化、滤波等各种电路中。<br><img src="/images/2016-02-19/10-10-39.jpg" alt="Image"></p>
+<h1 id="2-电容的等效电路"><a href="#2-电容的等效电路" class="headerlink" title="2 电容的等效电路"></a>2 电容的等效电路</h1><p>实际的电容元件不可能是理想的，存在着寄生电感和损耗，当电容运用于高频电路时，就不得不考虑这些寄生电感、损耗对电路的影响。<br>在交流下电容元件总有一定介质损耗，此外其引线也有一定电阻和分布电感。因此，实际电容元件的等效电路如下图所示（简易模型）。<br><img src="/images/2016-03-01/16-34-19.jpg" alt="Image"></p>
+<p>电阻RP代表绝缘电阻或泄漏，与标称电容C并联。第二个电阻RS(等效串联电阻或ESR)与电容串联，代表电容引脚和电容板的电阻。</p>
+<p>电感L(等效串联电感或ESL)代表引脚和电容板的电感。最后，电阻RDA和电容CDA一起构成称为电介质吸收或DA现象的简化模型。在采样保持放大器(SHA)之类精密应用中使用电容时，DA可造成误差。但在去耦应用中，电容的DA一般不重要。</p>
+<h1 id="3-电容的阻抗-频率特性"><a href="#3-电容的阻抗-频率特性" class="headerlink" title="3 电容的阻抗-频率特性"></a>3 电容的阻抗-频率特性</h1><p>理想情况下，电容的阻抗随着频率的增加而降低，利用这一点可以组成RC滤波电路，滤去电路中的高频噪声。理想情况下电容的阻抗-频率响应曲线如下图所示(0.1uf电容)。<br><img src="/images/2016-02-19/11-01-13.jpg" alt="Image"></p>
+<p>然而，考虑到实际情况，当频率大于某一特定的值时（RSL与C的谐振频率），电容器件将呈现感性，即此时，ESL起主导作用。当C=0.1uf，ESL取10nH时，谐振频率为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">f = \frac&#123;1&#125;&#123;2\pi\sqrt&#123;LC&#125;&#125; \approx 5MHz</div></pre></td></tr></table></figure></p>
+<p>仿真的实际阻抗-频率响应曲线如下图所示，与理论计算值相符。<br><img src="/images/2016-02-19/10-58-09.jpg" alt="Image"></p>
+<p>由此可见，由于<code>ESL</code>存在，电容在高频段不再表现出电容应用的特性，不同的<code>ESL</code>值对电容特性的影响如下图所示。<br><img src="/images/2016-02-19/10-59-41.jpg" alt="Image"></p>
+<p>实际上，由于不同类型的电容的工艺不同，电容的等效模型也不尽相同，不能一概而论。以村田多层陶瓷电容为例，官方给出的等效模型如下图所示。<br><img src="/images/2016-02-19/17-04-53.jpg" alt="Image"><br>阻抗-频率响应曲线如下图所示。<br><img src="/images/2016-02-19/17-07-27.jpg" alt="Image"></p>
+<p><strong>总结一下</strong>，<br><strong>低频率范围</strong>：低频率范围的阻抗曲线与理想电容器相同，都与频率呈反比趋势减少。ESR值也显示出与电介质分极延迟产生的介质损耗相应的特性。<br><strong>共振点附近</strong>：频率升高，则阻抗将受ESR影响偏离理想电容器。阻抗为最小值时的频率称为自振频率，此时阻抗=ESR。若大于自振频率，则组件特性由电容器转变为电感，阻抗转而增加。低于自振频率的范围称作容性领域，反之则称作感性领域。ESR除了受介电损耗的影响，还受电极自身抵抗行程的损耗影响。<br><strong>高频范围</strong>：共振点以上的高频率范围中的阻抗的特性由寄生电感(ESL)决定。高频范围的阻抗与频率成正比趋势增加。ESR逐渐表现出电极趋肤效应及接近效应的影响。<br>以上为实际电容器的频率特性。重要的是，频率越高，就越不能忽视寄生成分ESR或ESL的影响。随着电容器在高频领域的应用越来越多，ESR和ESL与静电容量值一样，成为表示电容器性能的重要参数。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2016/01/19/2016-01-19-电容的一些注意事项/" data-id="civuysck200a9z23lym30ntnf" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2016/01/19/2016-01-19-电容的一些注意事项/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-2016-01-04-Centos架设SVN服务器" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/01/04/2016-01-04-Centos架设SVN服务器/" class="article-date">
@@ -111,7 +167,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2016/01/04/2016-01-04-Centos架设SVN服务器/" data-id="civtlgqe0008ly43l5kw4mu6a" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2016/01/04/2016-01-04-Centos架设SVN服务器/" data-id="civuyscjz00a5z23liytdla5j" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -174,7 +230,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2015/12/21/2015-12-21-让i-MX6使用Debian文件系统/" data-id="civtlgqdx008iy43lmbr752u9" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2015/12/21/2015-12-21-让i-MX6使用Debian文件系统/" data-id="civuyscjw00a2z23l6teirprw" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -227,7 +283,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2015/11/26/2015-11-26-制作系统linux镜像文件/" data-id="civtlgqdu008fy43laf1bgbke" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2015/11/26/2015-11-26-制作系统linux镜像文件/" data-id="civuyscju009yz23l4uojy4od" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -274,7 +330,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2015/10/31/2015-10-31-惠东/" data-id="civtlgqdp008by43l91d6vo46" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2015/10/31/2015-10-31-惠东/" data-id="civuyscjs009vz23lojqr97eo" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -289,78 +345,9 @@
 
 
   
-    <article id="post-2015-10-24-净月潭" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/10/24/2015-10-24-净月潭/" class="article-date">
-  <time datetime="2015-10-24T15:17:50.000Z" itemprop="datePublished">2015-10-24</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/摄影/">摄影</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/24/2015-10-24-净月潭/">净月潭</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="/images/2015-10-24/1.jpg" alt="1"></p>
-<p><img src="/images/2015-10-24/2.jpg" alt="2"></p>
-<p><img src="/images/2015-10-24/3.jpg" alt="3"></p>
-<p><img src="/images/2015-10-24/4.jpg" alt="4"></p>
-<p><img src="/images/2015-10-24/5.jpg" alt="5"></p>
-<p><img src="/images/2015-10-24/6.jpg" alt="6"></p>
-<p><img src="/images/2015-10-24/7.jpg" alt="7"></p>
-<p><img src="/images/2015-10-24/8.jpg" alt="8"></p>
-<p><img src="/images/2015-10-24/9.jpg" alt="9"></p>
-<p><img src="/images/2015-10-24/10.jpg" alt="10"></p>
-<p><img src="/images/2015-10-24/11.jpg" alt="11"></p>
-<p><img src="/images/2015-10-24/12.jpg" alt="12"></p>
-<p><img src="/images/2015-10-24/13.jpg" alt="13"></p>
-<p><img src="/images/2015-10-24/14.jpg" alt="14"></p>
-<p><img src="/images/2015-10-24/15.jpg" alt="15"></p>
-<p><img src="/images/2015-10-24/16.jpg" alt="16"></p>
-<p><img src="/images/2015-10-24/17.jpg" alt="17"></p>
-<p><img src="/images/2015-10-24/18.jpg" alt="18"></p>
-<p><img src="/images/2015-10-24/19.jpg" alt="19"></p>
-<p><img src="/images/2015-10-24/20.jpg" alt="20"></p>
-<p><img src="/images/2015-10-24/21.jpg" alt="21"></p>
-<p><img src="/images/2015-10-24/22.jpg" alt="22"></p>
-<p><img src="/images/2015-10-24/23.jpg" alt="23"></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://ljgabc.com/2015/10/24/2015-10-24-净月潭/" data-id="civtlgqdm0088y43lb8yjvjub" class="article-share-link" data-share="baidu">分享到</a>
-      
-
-      
-        <a href="http://ljgabc.com/2015/10/24/2015-10-24-净月潭/#ds-thread" class="article-comment-link">评论</a>
-      
-
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -372,6 +359,10 @@
     <h3 class="widget-title">近期文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/11/23/2016-11-23-使用Django和Blueimp-Gallery制作照片墙/">使用Django和Blueimp Gallery制作照片墙</a>
+          </li>
         
           <li>
             <a href="/2016/11/22/2016-11-22-Django学习笔记/">Django学习笔记</a>
@@ -389,10 +380,6 @@
             <a href="/2016/11/15/2016-11-15-彩鹿/">彩鹿</a>
           </li>
         
-          <li>
-            <a href="/2016/11/14/2016-11-14-今晚的月亮/">今晚的月亮</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -402,7 +389,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ASIC/">ASIC</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">48</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/摄影/">摄影</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂/">杂</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/硬件/">硬件</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件/">软件</a><span class="category-list-count">8</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ASIC/">ASIC</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">49</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/摄影/">摄影</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂/">杂</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/硬件/">硬件</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件/">软件</a><span class="category-list-count">8</span></li></ul>
     </div>
   </div>
 
@@ -411,7 +398,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/BusyBox/" style="font-size: 10px;">BusyBox</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Catmul/" style="font-size: 10px;">Catmul</a> <a href="/tags/Centos/" style="font-size: 12.86px;">Centos</a> <a href="/tags/Debian/" style="font-size: 10px;">Debian</a> <a href="/tags/Device-Tree/" style="font-size: 10px;">Device Tree</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/DraftSight/" style="font-size: 10px;">DraftSight</a> <a href="/tags/EC/" style="font-size: 10px;">EC</a> <a href="/tags/Flask/" style="font-size: 11.43px;">Flask</a> <a href="/tags/GLES/" style="font-size: 10px;">GLES</a> <a href="/tags/GPU/" style="font-size: 10px;">GPU</a> <a href="/tags/Git/" style="font-size: 12.86px;">Git</a> <a href="/tags/HHVM/" style="font-size: 10px;">HHVM</a> <a href="/tags/I2C/" style="font-size: 10px;">I2C</a> <a href="/tags/LVM/" style="font-size: 11.43px;">LVM</a> <a href="/tags/MQTT/" style="font-size: 10px;">MQTT</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/OpenGL/" style="font-size: 10px;">OpenGL</a> <a href="/tags/OpenMP/" style="font-size: 10px;">OpenMP</a> <a href="/tags/Oprofile/" style="font-size: 12.86px;">Oprofile</a> <a href="/tags/PCB/" style="font-size: 10px;">PCB</a> <a href="/tags/PCIE/" style="font-size: 11.43px;">PCIE</a> <a href="/tags/PPTP/" style="font-size: 10px;">PPTP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/RTT/" style="font-size: 10px;">RTT</a> <a href="/tags/Recovery/" style="font-size: 10px;">Recovery</a> <a href="/tags/SVN/" style="font-size: 11.43px;">SVN</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/Typecho/" style="font-size: 10px;">Typecho</a> <a href="/tags/USB/" style="font-size: 11.43px;">USB</a> <a href="/tags/VIM/" style="font-size: 10px;">VIM</a> <a href="/tags/Verification/" style="font-size: 10px;">Verification</a> <a href="/tags/busybox/" style="font-size: 10px;">busybox</a> <a href="/tags/dropbear/" style="font-size: 10px;">dropbear</a> <a href="/tags/gprof/" style="font-size: 10px;">gprof</a> <a href="/tags/i-MX6/" style="font-size: 10px;">i.MX6</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/scp/" style="font-size: 10px;">scp</a> <a href="/tags/uboot/" style="font-size: 10px;">uboot</a> <a href="/tags/uwsgi/" style="font-size: 10px;">uwsgi</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/xterm/" style="font-size: 10px;">xterm</a> <a href="/tags/休眠/" style="font-size: 10px;">休眠</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/导航条/" style="font-size: 10px;">导航条</a> <a href="/tags/嵌入式/" style="font-size: 17.14px;">嵌入式</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/广播/" style="font-size: 10px;">广播</a> <a href="/tags/性能/" style="font-size: 11.43px;">性能</a> <a href="/tags/插值/" style="font-size: 10px;">插值</a> <a href="/tags/摄影/" style="font-size: 15.71px;">摄影</a> <a href="/tags/敏捷/" style="font-size: 11.43px;">敏捷</a> <a href="/tags/旅游/" style="font-size: 10px;">旅游</a> <a href="/tags/旅行/" style="font-size: 14.29px;">旅行</a> <a href="/tags/树莓派/" style="font-size: 14.29px;">树莓派</a> <a href="/tags/浪涌/" style="font-size: 10px;">浪涌</a> <a href="/tags/纹理/" style="font-size: 10px;">纹理</a> <a href="/tags/美食/" style="font-size: 10px;">美食</a> <a href="/tags/蓝牙/" style="font-size: 10px;">蓝牙</a> <a href="/tags/街拍/" style="font-size: 12.86px;">街拍</a> <a href="/tags/设备树/" style="font-size: 10px;">设备树</a> <a href="/tags/设计模式/" style="font-size: 18.57px;">设计模式</a>
+      <a href="/tags/BusyBox/" style="font-size: 10px;">BusyBox</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Catmul/" style="font-size: 10px;">Catmul</a> <a href="/tags/Centos/" style="font-size: 12.86px;">Centos</a> <a href="/tags/Debian/" style="font-size: 10px;">Debian</a> <a href="/tags/Device-Tree/" style="font-size: 10px;">Device Tree</a> <a href="/tags/Django/" style="font-size: 11.43px;">Django</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/DraftSight/" style="font-size: 10px;">DraftSight</a> <a href="/tags/EC/" style="font-size: 10px;">EC</a> <a href="/tags/Flask/" style="font-size: 11.43px;">Flask</a> <a href="/tags/GLES/" style="font-size: 10px;">GLES</a> <a href="/tags/GPU/" style="font-size: 10px;">GPU</a> <a href="/tags/Git/" style="font-size: 12.86px;">Git</a> <a href="/tags/HHVM/" style="font-size: 10px;">HHVM</a> <a href="/tags/I2C/" style="font-size: 10px;">I2C</a> <a href="/tags/LVM/" style="font-size: 11.43px;">LVM</a> <a href="/tags/MQTT/" style="font-size: 10px;">MQTT</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/OpenGL/" style="font-size: 10px;">OpenGL</a> <a href="/tags/OpenMP/" style="font-size: 10px;">OpenMP</a> <a href="/tags/Oprofile/" style="font-size: 12.86px;">Oprofile</a> <a href="/tags/PCB/" style="font-size: 10px;">PCB</a> <a href="/tags/PCIE/" style="font-size: 11.43px;">PCIE</a> <a href="/tags/PPTP/" style="font-size: 10px;">PPTP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/RTT/" style="font-size: 10px;">RTT</a> <a href="/tags/Recovery/" style="font-size: 10px;">Recovery</a> <a href="/tags/SVN/" style="font-size: 11.43px;">SVN</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/Typecho/" style="font-size: 10px;">Typecho</a> <a href="/tags/USB/" style="font-size: 11.43px;">USB</a> <a href="/tags/VIM/" style="font-size: 10px;">VIM</a> <a href="/tags/Verification/" style="font-size: 10px;">Verification</a> <a href="/tags/busybox/" style="font-size: 10px;">busybox</a> <a href="/tags/dropbear/" style="font-size: 10px;">dropbear</a> <a href="/tags/gprof/" style="font-size: 10px;">gprof</a> <a href="/tags/i-MX6/" style="font-size: 10px;">i.MX6</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/scp/" style="font-size: 10px;">scp</a> <a href="/tags/uboot/" style="font-size: 10px;">uboot</a> <a href="/tags/uwsgi/" style="font-size: 10px;">uwsgi</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/xterm/" style="font-size: 10px;">xterm</a> <a href="/tags/休眠/" style="font-size: 10px;">休眠</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/导航条/" style="font-size: 10px;">导航条</a> <a href="/tags/嵌入式/" style="font-size: 17.14px;">嵌入式</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/广播/" style="font-size: 10px;">广播</a> <a href="/tags/性能/" style="font-size: 11.43px;">性能</a> <a href="/tags/插值/" style="font-size: 10px;">插值</a> <a href="/tags/摄影/" style="font-size: 15.71px;">摄影</a> <a href="/tags/敏捷/" style="font-size: 11.43px;">敏捷</a> <a href="/tags/旅游/" style="font-size: 10px;">旅游</a> <a href="/tags/旅行/" style="font-size: 14.29px;">旅行</a> <a href="/tags/树莓派/" style="font-size: 14.29px;">树莓派</a> <a href="/tags/浪涌/" style="font-size: 10px;">浪涌</a> <a href="/tags/纹理/" style="font-size: 10px;">纹理</a> <a href="/tags/美食/" style="font-size: 10px;">美食</a> <a href="/tags/蓝牙/" style="font-size: 10px;">蓝牙</a> <a href="/tags/街拍/" style="font-size: 12.86px;">街拍</a> <a href="/tags/设备树/" style="font-size: 10px;">设备树</a> <a href="/tags/设计模式/" style="font-size: 18.57px;">设计模式</a>
     </div>
   </div>
 
@@ -420,7 +407,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">三月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">二月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">一月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">八月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03/">三月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">三月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">二月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">一月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">八月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03/">三月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 

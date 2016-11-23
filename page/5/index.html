@@ -74,6 +74,63 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-2016-06-18-PWM控制桥臂死区计算公式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/06/18/2016-06-18-PWM控制桥臂死区计算公式/" class="article-date">
+  <time datetime="2016-06-18T03:22:07.000Z" itemprop="datePublished">2016-06-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/杂/">杂</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/06/18/2016-06-18-PWM控制桥臂死区计算公式/">PWM控制桥臂死区计算公式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/images/2016-06-18/三相桥.PNG" alt="逆变桥"></p>
+<p>如图所示3相逆变桥其中的一个桥臂，由于从控制器发出的信号经过驱动调理最终输出到IGBT控制端的传输时间不确定，同时IGBT的打开和关短时间不确定，所以需要在关闭一个IGBT和打开另一个IGBT之间添加一个延时，这个延时时间即为死区。</p>
+<p>死区时间的计算公式如下图所示，其中：</p>
+<ul>
+<li>Td_off_max  – IGBT最大的关短时间</li>
+<li>Td_on_min – IGBT最小的打开时间</li>
+<li>Tpdd_max – 驱动信号最大的传输延时时间</li>
+<li>Tpdd_min – 驱动信号最小的传输延时时间</li>
+<li>1.2 – 安全系数，这个参数不一定精确，需要进行测量确定</li>
+</ul>
+<p><img src="/images/2016-06-18/死区计算公式.PNG" alt="死区计算公式"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2016/06/18/2016-06-18-PWM控制桥臂死区计算公式/" data-id="civuyscku00b3z23lr8avcl3r" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2016/06/18/2016-06-18-PWM控制桥臂死区计算公式/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-2016-05-13-在Centos7上安装ShaodowSocks服务" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/05/13/2016-05-13-在Centos7上安装ShaodowSocks服务/" class="article-date">
@@ -112,7 +169,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2016/05/13/2016-05-13-在Centos7上安装ShaodowSocks服务/" data-id="civtlgqf3009fy43l5cubt08u" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2016/05/13/2016-05-13-在Centos7上安装ShaodowSocks服务/" data-id="civuyscks00b0z23lch6fx6qx" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -202,7 +259,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2016/04/29/2016-04-29-树莓派之MQTT/" data-id="civtlgqf0009cy43lxuex5zd7" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2016/04/29/2016-04-29-树莓派之MQTT/" data-id="civuysckp00axz23lw23wtjfy" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -261,7 +318,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2016/04/29/2016-04-29-nginx-flask-uwsgi配置/" data-id="civtlgqex0098y43lmbct0bjz" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2016/04/29/2016-04-29-nginx-flask-uwsgi配置/" data-id="civuysckj00auz23lhya1iwdj" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -321,7 +378,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2016/04/26/2016-04-26-LVM磁盘扩容一例/" data-id="civtlgqel0096y43lelrxkfb7" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2016/04/26/2016-04-26-LVM磁盘扩容一例/" data-id="civuysckh00arz23l2q0pkmwf" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -338,107 +395,9 @@
 
 
   
-    <article id="post-2016-03-12-蓝牙入门概念" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/03/12/2016-03-12-蓝牙入门概念/" class="article-date">
-  <time datetime="2016-03-12T10:00:27.000Z" itemprop="datePublished">2016-03-12</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/硬件/">硬件</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/03/12/2016-03-12-蓝牙入门概念/">蓝牙入门概念</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>低功耗蓝牙(BLE)协议是一个多层协议，官方的介绍比较复杂，这里只挑两个必须掌握的介绍一下，GAP和GATT。</p>
-<p><img src="/images/2016-04-14/19-42-54.jpg" alt="Image"></p>
-<h1 id="1-GAP"><a href="#1-GAP" class="headerlink" title="1 GAP"></a>1 GAP</h1><p>GAP全称是通用访问规范(Generic Access Profile)，通过名字就可以猜到这个是管理底层连接的。</p>
-<p>GAP中规定了以下几个术语：</p>
-<h2 id="1-1-角色"><a href="#1-1-角色" class="headerlink" title="1.1 角色"></a>1.1 角色</h2><p>BLE可以看做是一个主从式结构，一个主机（集中器），一个设备。比如，蓝牙手环应用，手机是主机（集中器），蓝牙手环是设备。</p>
-<p>现在的手机一般都支持两种模式，既可以当主机，又可以当设备。但在某个确定的场景中，只能是一种身份。</p>
-<p>Nordic提供的协议栈中（底层库），S110是只支持设备模式，S120只支持主机模式，S130两者都支持。</p>
-<h2 id="1-2-广播"><a href="#1-2-广播" class="headerlink" title="1.2 广播"></a>1.2 广播</h2><p>广播是<code>设备</code>发起的活动。</p>
-<p>设备想要被主机搜扫到，必须发起广播。有一些参数用来设置广播的信息（如设备名等）、间隔等信息。 设备在广播时，所有可见范围内的主机都可以接收到广播信息，从而发现设备。</p>
-<p>主机接收到广播后，相当于建立起的初步联系，此时两者可以沟通以获取更多的信息，这个过程叫扫描回应。</p>
-<h2 id="1-3-扫描"><a href="#1-3-扫描" class="headerlink" title="1.3 扫描"></a>1.3 扫描</h2><p>扫描是<code>主机</code>发起的活动。扫描其实就是主机让自己出去接收广播的状态，从而发现设备。</p>
-<p>扫描一般不会一直持续下去，一般在手机上系统扫描一段时间就会自动停止。当选定某一个设备连接时也自动停止扫描。</p>
-<h2 id="1-4-连接"><a href="#1-4-连接" class="headerlink" title="1.4 连接"></a>1.4 连接</h2><p>主机想要连接到一个设备时，发起一个连接请求。</p>
-<p>之后两者根据协议建立连接，都是底层的一些协议规定，就不细讲了。</p>
-<h1 id="2-GATT"><a href="#2-GATT" class="headerlink" title="2 GATT"></a>2 GATT</h1><p>GATT全称是通用属性配置文件(Generic Attribute Profile)，是用来描述设备或主机的各种属性的。而属性就是各种可以读写的信息，主机和设备之间就靠读写这些属性来沟通。</p>
-<p>比如，一个蓝牙设备可以用一个可读写的特性（特性与属性的区别见下文）来表征一个LED的开关。当手机和蓝牙设备建立连接后可以向这个特性写入0或者1。蓝牙设备就可以通过特性的值来打开或关闭LED。</p>
-<p><img src="/images/2016-04-14/19-43-35.jpg" alt="Image"></p>
-<p>GATT中规定了以下几个术语：</p>
-<h2 id="2-1-角色"><a href="#2-1-角色" class="headerlink" title="2.1 角色"></a>2.1 角色</h2><p>GATT中也分为两个角色，GATT服务器和GATT客户端。</p>
-<p>提供属性的设备称为GATT服务器，访问GATT服务器而获得属性的设备称为GATT客户端。</p>
-<p>比如之前的例子，手机通过访问蓝牙设备的属性来控制LED，所以蓝牙设备就是GATT服务器，手机就是GATT客户端。</p>
-<h2 id="2-2-属性"><a href="#2-2-属性" class="headerlink" title="2.2 属性"></a>2.2 属性</h2><p>属性是GATT服务器中最基本的单元。GATT服务器将其所有的属性组成一个属性表。</p>
-<p>一个属性包含句柄、UUID、值：</p>
-<ul>
-<li>句柄是属性在GATT表中的索引。我们一般用不到</li>
-<li>UUID是属性的ID，包含了属性值的类型等信息</li>
-<li>可能有多个属性拥有同一个UUID</li>
-</ul>
-<h2 id="2-3-特性"><a href="#2-3-特性" class="headerlink" title="2.3 特性"></a>2.3 特性</h2><p>一个特性至少包含2个属性：一个属性用于声明(又叫描述符)，一个属性用于存放特性的值。</p>
-<p>存放特性值的属性就是真正传输的数据，声明属性用来确定该特性是否可读写、是否可以发起通知（类似于向主机发起中断）等信息。</p>
-<p>比如，LED状态就是一个特性，该特性可读写。</p>
-<h2 id="2-4-描述符"><a href="#2-4-描述符" class="headerlink" title="2.4 描述符"></a>2.4 描述符</h2><p>描述符就是用于声明的属性。 有一个特别的描述符值得特别地提起：客户端特性配置描述符(Client Characteristic Configuration Descriptor，CCCD)，这个描述符是给任何支持通知或指示功能的特性额外增加的。在CCCD中写入“1”使能通知功能，写入“2”使能指示功能，写入“0”同时禁止通知和指示功能。</p>
-<p>在S110协议栈中，对任何使能了通知功能或是指示功能的特性，协议栈将自动加入这个类型的描述符。</p>
-<h2 id="2-5-服务"><a href="#2-5-服务" class="headerlink" title="2.5 服务"></a>2.5 服务</h2><p>一个服务包含一个或多个特性，这些特性是逻辑上相关的集合体。</p>
-<p>GATT服务一般包含几块具有相关的功能，比如特定传感器的读取和设置，人机接口的输入输出。组织具有相关的特性到服务中既实用又有效，因为它使得逻辑上和用户数据上的边界变得更加清晰，同时它也有助于不同应用程序间代码的重用。</p>
-<h2 id="2-6-数据配置文件"><a href="#2-6-数据配置文件" class="headerlink" title="2.6 数据配置文件"></a>2.6 数据配置文件</h2><p>一个profile文件可以包含一个或者多个服务，一个profile文件包含需要的服务的信息或者为对等设备如何交互的配置文件的选项信息。</p>
-<p>其实就是层层封装，目的是为应用提供方便，也更好的重用。</p>
-<h1 id="3-其他"><a href="#3-其他" class="headerlink" title="3 其他"></a>3 其他</h1><h2 id="3-1-标准服务、定制服务"><a href="#3-1-标准服务、定制服务" class="headerlink" title="3.1 标准服务、定制服务"></a>3.1 标准服务、定制服务</h2><p>标准服务就是蓝牙技术联盟（SIG）事先定义好的一些服务。<br>定制服务就是你自己开发的服务。</p>
-<h2 id="3-2-UUID"><a href="#3-2-UUID" class="headerlink" title="3.2 UUID"></a>3.2 UUID</h2><p>UUID有128bit, 如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">0x00001234-0000-1000-8000-00805F9B34FB</div></pre></td></tr></table></figure></p>
-<p>一般使用的时候，会先生成一个基本UUID，比如<code>0x0000xxxx-0000-1000-8000-00805F9B34FB</code>，然后根据需要定义16bit的<code>xxxx</code>，生成完成的UUID。</p>
-<p>目的可能是为了更好的区分，比如一个公司使用相同的基本UUID，然后通过不同的<code>xxxx</code>来区分不同的服务、特性等。</p>
-<h2 id="3-3-操作类型-性质"><a href="#3-3-操作类型-性质" class="headerlink" title="3.3 操作类型(性质)"></a>3.3 操作类型(性质)</h2><p>特性的操作类型有：</p>
-<ul>
-<li>写</li>
-<li>没有回应的写</li>
-<li>读</li>
-<li>通知</li>
-<li>指示（有回应的通知）</li>
-</ul>
-<p>通过字面意思就可以理解，比如LED特性，需要写和读性质。如果设备有事件需要上报，比如按键等，就需要通知或者指示性质。通知就是上报完就没事了，指示的话还需要主机给个响应。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://ljgabc.com/2016/03/12/2016-03-12-蓝牙入门概念/" data-id="civtlgqei0092y43lg3utccq7" class="article-share-link" data-share="baidu">分享到</a>
-      
-
-      
-        <a href="http://ljgabc.com/2016/03/12/2016-03-12-蓝牙入门概念/#ds-thread" class="article-comment-link">评论</a>
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/蓝牙/">蓝牙</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -450,6 +409,10 @@
     <h3 class="widget-title">近期文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/11/23/2016-11-23-使用Django和Blueimp-Gallery制作照片墙/">使用Django和Blueimp Gallery制作照片墙</a>
+          </li>
         
           <li>
             <a href="/2016/11/22/2016-11-22-Django学习笔记/">Django学习笔记</a>
@@ -467,10 +430,6 @@
             <a href="/2016/11/15/2016-11-15-彩鹿/">彩鹿</a>
           </li>
         
-          <li>
-            <a href="/2016/11/14/2016-11-14-今晚的月亮/">今晚的月亮</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -480,7 +439,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ASIC/">ASIC</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">48</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/摄影/">摄影</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂/">杂</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/硬件/">硬件</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件/">软件</a><span class="category-list-count">8</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ASIC/">ASIC</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">49</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/摄影/">摄影</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂/">杂</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/硬件/">硬件</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件/">软件</a><span class="category-list-count">8</span></li></ul>
     </div>
   </div>
 
@@ -489,7 +448,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/BusyBox/" style="font-size: 10px;">BusyBox</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Catmul/" style="font-size: 10px;">Catmul</a> <a href="/tags/Centos/" style="font-size: 12.86px;">Centos</a> <a href="/tags/Debian/" style="font-size: 10px;">Debian</a> <a href="/tags/Device-Tree/" style="font-size: 10px;">Device Tree</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/DraftSight/" style="font-size: 10px;">DraftSight</a> <a href="/tags/EC/" style="font-size: 10px;">EC</a> <a href="/tags/Flask/" style="font-size: 11.43px;">Flask</a> <a href="/tags/GLES/" style="font-size: 10px;">GLES</a> <a href="/tags/GPU/" style="font-size: 10px;">GPU</a> <a href="/tags/Git/" style="font-size: 12.86px;">Git</a> <a href="/tags/HHVM/" style="font-size: 10px;">HHVM</a> <a href="/tags/I2C/" style="font-size: 10px;">I2C</a> <a href="/tags/LVM/" style="font-size: 11.43px;">LVM</a> <a href="/tags/MQTT/" style="font-size: 10px;">MQTT</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/OpenGL/" style="font-size: 10px;">OpenGL</a> <a href="/tags/OpenMP/" style="font-size: 10px;">OpenMP</a> <a href="/tags/Oprofile/" style="font-size: 12.86px;">Oprofile</a> <a href="/tags/PCB/" style="font-size: 10px;">PCB</a> <a href="/tags/PCIE/" style="font-size: 11.43px;">PCIE</a> <a href="/tags/PPTP/" style="font-size: 10px;">PPTP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/RTT/" style="font-size: 10px;">RTT</a> <a href="/tags/Recovery/" style="font-size: 10px;">Recovery</a> <a href="/tags/SVN/" style="font-size: 11.43px;">SVN</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/Typecho/" style="font-size: 10px;">Typecho</a> <a href="/tags/USB/" style="font-size: 11.43px;">USB</a> <a href="/tags/VIM/" style="font-size: 10px;">VIM</a> <a href="/tags/Verification/" style="font-size: 10px;">Verification</a> <a href="/tags/busybox/" style="font-size: 10px;">busybox</a> <a href="/tags/dropbear/" style="font-size: 10px;">dropbear</a> <a href="/tags/gprof/" style="font-size: 10px;">gprof</a> <a href="/tags/i-MX6/" style="font-size: 10px;">i.MX6</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/scp/" style="font-size: 10px;">scp</a> <a href="/tags/uboot/" style="font-size: 10px;">uboot</a> <a href="/tags/uwsgi/" style="font-size: 10px;">uwsgi</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/xterm/" style="font-size: 10px;">xterm</a> <a href="/tags/休眠/" style="font-size: 10px;">休眠</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/导航条/" style="font-size: 10px;">导航条</a> <a href="/tags/嵌入式/" style="font-size: 17.14px;">嵌入式</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/广播/" style="font-size: 10px;">广播</a> <a href="/tags/性能/" style="font-size: 11.43px;">性能</a> <a href="/tags/插值/" style="font-size: 10px;">插值</a> <a href="/tags/摄影/" style="font-size: 15.71px;">摄影</a> <a href="/tags/敏捷/" style="font-size: 11.43px;">敏捷</a> <a href="/tags/旅游/" style="font-size: 10px;">旅游</a> <a href="/tags/旅行/" style="font-size: 14.29px;">旅行</a> <a href="/tags/树莓派/" style="font-size: 14.29px;">树莓派</a> <a href="/tags/浪涌/" style="font-size: 10px;">浪涌</a> <a href="/tags/纹理/" style="font-size: 10px;">纹理</a> <a href="/tags/美食/" style="font-size: 10px;">美食</a> <a href="/tags/蓝牙/" style="font-size: 10px;">蓝牙</a> <a href="/tags/街拍/" style="font-size: 12.86px;">街拍</a> <a href="/tags/设备树/" style="font-size: 10px;">设备树</a> <a href="/tags/设计模式/" style="font-size: 18.57px;">设计模式</a>
+      <a href="/tags/BusyBox/" style="font-size: 10px;">BusyBox</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Catmul/" style="font-size: 10px;">Catmul</a> <a href="/tags/Centos/" style="font-size: 12.86px;">Centos</a> <a href="/tags/Debian/" style="font-size: 10px;">Debian</a> <a href="/tags/Device-Tree/" style="font-size: 10px;">Device Tree</a> <a href="/tags/Django/" style="font-size: 11.43px;">Django</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/DraftSight/" style="font-size: 10px;">DraftSight</a> <a href="/tags/EC/" style="font-size: 10px;">EC</a> <a href="/tags/Flask/" style="font-size: 11.43px;">Flask</a> <a href="/tags/GLES/" style="font-size: 10px;">GLES</a> <a href="/tags/GPU/" style="font-size: 10px;">GPU</a> <a href="/tags/Git/" style="font-size: 12.86px;">Git</a> <a href="/tags/HHVM/" style="font-size: 10px;">HHVM</a> <a href="/tags/I2C/" style="font-size: 10px;">I2C</a> <a href="/tags/LVM/" style="font-size: 11.43px;">LVM</a> <a href="/tags/MQTT/" style="font-size: 10px;">MQTT</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/OpenGL/" style="font-size: 10px;">OpenGL</a> <a href="/tags/OpenMP/" style="font-size: 10px;">OpenMP</a> <a href="/tags/Oprofile/" style="font-size: 12.86px;">Oprofile</a> <a href="/tags/PCB/" style="font-size: 10px;">PCB</a> <a href="/tags/PCIE/" style="font-size: 11.43px;">PCIE</a> <a href="/tags/PPTP/" style="font-size: 10px;">PPTP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/RTT/" style="font-size: 10px;">RTT</a> <a href="/tags/Recovery/" style="font-size: 10px;">Recovery</a> <a href="/tags/SVN/" style="font-size: 11.43px;">SVN</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/Typecho/" style="font-size: 10px;">Typecho</a> <a href="/tags/USB/" style="font-size: 11.43px;">USB</a> <a href="/tags/VIM/" style="font-size: 10px;">VIM</a> <a href="/tags/Verification/" style="font-size: 10px;">Verification</a> <a href="/tags/busybox/" style="font-size: 10px;">busybox</a> <a href="/tags/dropbear/" style="font-size: 10px;">dropbear</a> <a href="/tags/gprof/" style="font-size: 10px;">gprof</a> <a href="/tags/i-MX6/" style="font-size: 10px;">i.MX6</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/scp/" style="font-size: 10px;">scp</a> <a href="/tags/uboot/" style="font-size: 10px;">uboot</a> <a href="/tags/uwsgi/" style="font-size: 10px;">uwsgi</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/xterm/" style="font-size: 10px;">xterm</a> <a href="/tags/休眠/" style="font-size: 10px;">休眠</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/导航条/" style="font-size: 10px;">导航条</a> <a href="/tags/嵌入式/" style="font-size: 17.14px;">嵌入式</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/广播/" style="font-size: 10px;">广播</a> <a href="/tags/性能/" style="font-size: 11.43px;">性能</a> <a href="/tags/插值/" style="font-size: 10px;">插值</a> <a href="/tags/摄影/" style="font-size: 15.71px;">摄影</a> <a href="/tags/敏捷/" style="font-size: 11.43px;">敏捷</a> <a href="/tags/旅游/" style="font-size: 10px;">旅游</a> <a href="/tags/旅行/" style="font-size: 14.29px;">旅行</a> <a href="/tags/树莓派/" style="font-size: 14.29px;">树莓派</a> <a href="/tags/浪涌/" style="font-size: 10px;">浪涌</a> <a href="/tags/纹理/" style="font-size: 10px;">纹理</a> <a href="/tags/美食/" style="font-size: 10px;">美食</a> <a href="/tags/蓝牙/" style="font-size: 10px;">蓝牙</a> <a href="/tags/街拍/" style="font-size: 12.86px;">街拍</a> <a href="/tags/设备树/" style="font-size: 10px;">设备树</a> <a href="/tags/设计模式/" style="font-size: 18.57px;">设计模式</a>
     </div>
   </div>
 
@@ -498,7 +457,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">三月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">二月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">一月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">八月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03/">三月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">三月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">二月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">一月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">八月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03/">三月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 

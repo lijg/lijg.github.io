@@ -74,6 +74,60 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-2015-06-04-Python序列化模块Pickle" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/06/04/2015-06-04-Python序列化模块Pickle/" class="article-date">
+  <time datetime="2015-06-04T12:50:52.000Z" itemprop="datePublished">2015-06-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/06/04/2015-06-04-Python序列化模块Pickle/">Python序列化模块Pickle</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近在写一个基于文件计数器，脚本每执行一次记一次数，计数结果在文件中存储，用来统计开发板开关机次数。</p>
+<blockquote>
+<p><code>pickle</code>模块实现了一个简单的的Python对象序列化和反序列化的高效算法。</p>
+</blockquote>
+<p>可以方便的存储和读取Python对象到文件中。</p>
+<p>计数器代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">#!/usr/bin/python</div><div class="line"># -*- coding: utf-8 -*-</div><div class="line"></div><div class="line">import pickle</div><div class="line"></div><div class="line">FILE = r&apos;counter.pickle&apos;</div><div class="line"></div><div class="line">def counter(step):</div><div class="line">    &apos;&apos;&apos;基于文件的计数器，每调用一次，记step次数&apos;&apos;&apos;</div><div class="line"></div><div class="line">    # 如果文件存在，则从文件读出，否则counter置为0</div><div class="line">    try:</div><div class="line">        with open(FILE, &apos;rb&apos;) as f:</div><div class="line">            counter = pickle.load(f)</div><div class="line">    except IOError:</div><div class="line">        counter = 0</div><div class="line"></div><div class="line">    # 计数</div><div class="line">    counter += step</div><div class="line"></div><div class="line">    # 将counter写入文件，不存在则创建</div><div class="line">    try:</div><div class="line">        with open(FILE, &apos;wb+&apos;) as f:</div><div class="line">            pickle.dump(counter, f)</div><div class="line">    except IOError:</div><div class="line">        print &apos;Error Open &apos; + FILE + &quot; for write&quot;</div><div class="line">        return -1</div><div class="line"></div><div class="line">    return 0</div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2015/06/04/2015-06-04-Python序列化模块Pickle/" data-id="civuyschu0084z23ljy0xmuv6" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2015/06/04/2015-06-04-Python序列化模块Pickle/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-2015-05-27-NFS服务器权限" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/05/27/2015-05-27-NFS服务器权限/" class="article-date">
@@ -109,7 +163,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2015/05/27/2015-05-27-NFS服务器权限/" data-id="civtlgqbn006fy43l5wyk5uyl" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2015/05/27/2015-05-27-NFS服务器权限/" data-id="civuyscf0006hz23lin73ekg8" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -164,7 +218,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2015/05/26/2015-05-26-Python输入参数解析模块/" data-id="civtlgqbl006dy43l2kfugbox" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2015/05/26/2015-05-26-Python输入参数解析模块/" data-id="civuyscew006ez23ls47k6yfi" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -223,7 +277,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2015/05/23/2015-05-23-Typecho折腾备忘/" data-id="civtlgqbj0069y43lio3ohtwu" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2015/05/23/2015-05-23-Typecho折腾备忘/" data-id="civuysceo0063z23lgfc4nylz" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -276,7 +330,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2015/05/19/2015-05-19-Android下配置以太网IP地址/" data-id="civtlgqbg0067y43lwn0bluw9" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2015/05/19/2015-05-19-Android下配置以太网IP地址/" data-id="civuysces0068z23lh7bmecvs" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -291,90 +345,9 @@
 
 
   
-    <article id="post-2015-05-16-Python串口通信" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/05/16/2015-05-16-Python串口通信/" class="article-date">
-  <time datetime="2015-05-16T14:20:12.000Z" itemprop="datePublished">2015-05-16</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/05/16/2015-05-16-Python串口通信/">Python串口通信</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Python下进行串口通信要用到<a href="http://pyserial.sourceforge.net/" target="_blank" rel="external">pySerial</a>。</p>
-<blockquote>
-<p>This module encapsulates the access for the serial port. It provides backends for Python running on Windows, Linux, BSD (possibly any POSIX compliant system), Jython and IronPython (.NET and Mono). The module named “serial” automatically selects the appropriate backend.</p>
-<p>这个模块封装了串口操作。支持Windows、LinuxBSD（其他POSIX兼容系统）、Jython和IronPython(.NET及Mono)等。</p>
-</blockquote>
-<p>##特性</p>
-<ul>
-<li>所有平台上统一的接口</li>
-<li>通过Python属性即可配置端口</li>
-<li>支持不通的字长、停止位、校验位和基于RTSD/CTS及(或)Xon/Xoff的流控</li>
-<li>支持读取超时</li>
-<li>类文件读写API，常见的read、write等接口（也支持readline等）</li>
-<li>100% Python实现</li>
-<li>使用二进制模式传输，没有<code>NULL</code>字符及<code>CR-LF</code>等，从而兼容<code>io</code>库。<br>*</li>
-</ul>
-<p>##需求</p>
-<ul>
-<li>Python &gt;= 2.3</li>
-<li>Windows平台下需要ctypes支持(从Python 2.5开始是标准库的一部分)</li>
-<li>Java/Jython上的 “Java Communications” (JavaComm)或者兼容包</li>
-</ul>
-<p>##使用方法</p>
-<p>####1 打开串口0，模式:“9600,8,N,1”, 无超时:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import serial</div><div class="line">&gt;&gt;&gt; ser = serial.Serial(0)  # 打开串口0</div><div class="line">&gt;&gt;&gt; print ser.name          # check which port was really used</div><div class="line">&gt;&gt;&gt; ser.write(&quot;hello&quot;)      # 写字符串</div><div class="line">&gt;&gt;&gt; ser.close()             # 关闭串口</div></pre></td></tr></table></figure></p>
-<p>####2 打开特定的串口，模式：“19200,8,N,1”, 超时：1s:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; ser = serial.Serial(&apos;/dev/ttyS1&apos;, 19200, timeout=1)</div><div class="line">&gt;&gt;&gt; x = ser.read()          # 读一个字节</div><div class="line">&gt;&gt;&gt; s = ser.read(10)        # 读10个字节</div><div class="line">&gt;&gt;&gt; line = ser.readline()   # 读一行</div><div class="line">&gt;&gt;&gt; ser.close()</div></pre></td></tr></table></figure></p>
-<p>####4 打开串口1，模式：“38400,8,E,1”, non blocking HW handshaking:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; ser = serial.Serial(1, 38400, timeout=0, parity=serial.PARITY_EVEN, rtscts=1)</div><div class="line">&gt;&gt;&gt; s = ser.read(100)       # read up to one hundred bytes or as much is in the buffer</div></pre></td></tr></table></figure></p>
-<p>####5 配置串口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; ser = serial.Serial()</div><div class="line">&gt;&gt;&gt; ser.baudrate = 19200</div><div class="line">&gt;&gt;&gt; ser.port = 0</div><div class="line">&gt;&gt;&gt; ser</div><div class="line">Serial&lt;id=0xa81c10, open=False&gt;(port=&apos;COM1&apos;, baudrate=19200, bytesize=8, parity=&apos;N&apos;, stopbits=1, timeout=None, xonxoff=0, rtscts=0)</div><div class="line">&gt;&gt;&gt; ser.open()</div><div class="line">&gt;&gt;&gt; ser.isOpen()</div><div class="line">True</div><div class="line">&gt;&gt;&gt; ser.close()</div><div class="line">&gt;&gt;&gt; ser.isOpen()</div><div class="line">False</div></pre></td></tr></table></figure></p>
-<p>####6 可用方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">open()                  # 打开端口</div><div class="line">close()                 # 立即关闭端口  </div><div class="line">setBaudrate(baudrate)   # change baud rate on an open port  </div><div class="line">inWaiting()             # return the number of chars in the receive buffer  </div><div class="line">read(size=1)            # read &quot;size&quot; characters  </div><div class="line">write(s)                # 把字符串s写到该端口  </div><div class="line">flushInput()            # 清除输入缓存区，放弃所有内容</div><div class="line">flushOutput()           # 清除输出缓冲区，放弃输出  </div><div class="line">sendBreak()             # 发送中断条件  </div><div class="line">setRTS(level=1)         # set RTS line to specified logic level  </div><div class="line">setDTR(level=1)         # set DTR line to specified logic level  </div><div class="line">getCTS()                # return the state of the CTS line  </div><div class="line">getDSR()                # return the state of the DSR line  </div><div class="line">getRI()                 # return the state of the RI line  </div><div class="line">getCD()                 # return the state of the CD line</div></pre></td></tr></table></figure></p>
-<p>####7 属性<br><strong>只读</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">portstr                 # 设备名称  </div><div class="line">BAUDRATES               # list of valid baudrates  </div><div class="line">BYTESIZES               # list of valid byte sizes  </div><div class="line">PARITIES                # list of valid parities  </div><div class="line">STOPBITS                # list of valid stop bit widths</div></pre></td></tr></table></figure></p>
-<p><strong>下面属性值被更改后端口会重新配置，即使端口已经打开</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">port                    # port name/number as set by the user  </div><div class="line">baudrate                # current baud rate setting  </div><div class="line">bytesize                # byte size in bits  </div><div class="line">parity                  # parity setting  </div><div class="line">stopbits                # stop bit with (1,2)  </div><div class="line">timeout                 # timeout setting  </div><div class="line">xonxoff                 # if Xon/Xoff flow control is enabled  </div><div class="line">rtscts                  # if hardware flow control is enabled</div></pre></td></tr></table></figure></p>
-<p>####8 异常<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">serial.SerialException</div></pre></td></tr></table></figure></p>
-<p>####9 常量<br><strong>校验</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">serial.PARITY_NONE  </div><div class="line">serial.PARITY_EVEN  </div><div class="line">serial.PARITY_ODD</div></pre></td></tr></table></figure></p>
-<p><strong>停止位</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">serial.STOPBITS_ONE  </div><div class="line">serial.STOPBITS_TWO</div></pre></td></tr></table></figure></p>
-<p><strong>字长</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">serial.FIVEBITS  </div><div class="line">serial.SIXBITS  </div><div class="line">serial.SEVENBITS  </div><div class="line">serial.EIGHTBITS</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://ljgabc.com/2015/05/16/2015-05-16-Python串口通信/" data-id="civtlgqbb0061y43l32s6jrkw" class="article-share-link" data-share="baidu">分享到</a>
-      
-
-      
-        <a href="http://ljgabc.com/2015/05/16/2015-05-16-Python串口通信/#ds-thread" class="article-comment-link">评论</a>
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/嵌入式/">嵌入式</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/11/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><a class="extend next" rel="next" href="/page/13/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/11/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="extend next" rel="next" href="/page/13/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -386,6 +359,10 @@
     <h3 class="widget-title">近期文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/11/23/2016-11-23-使用Django和Blueimp-Gallery制作照片墙/">使用Django和Blueimp Gallery制作照片墙</a>
+          </li>
         
           <li>
             <a href="/2016/11/22/2016-11-22-Django学习笔记/">Django学习笔记</a>
@@ -403,10 +380,6 @@
             <a href="/2016/11/15/2016-11-15-彩鹿/">彩鹿</a>
           </li>
         
-          <li>
-            <a href="/2016/11/14/2016-11-14-今晚的月亮/">今晚的月亮</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -416,7 +389,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ASIC/">ASIC</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">48</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/摄影/">摄影</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂/">杂</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/硬件/">硬件</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件/">软件</a><span class="category-list-count">8</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ASIC/">ASIC</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">49</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/摄影/">摄影</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂/">杂</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/硬件/">硬件</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件/">软件</a><span class="category-list-count">8</span></li></ul>
     </div>
   </div>
 
@@ -425,7 +398,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/BusyBox/" style="font-size: 10px;">BusyBox</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Catmul/" style="font-size: 10px;">Catmul</a> <a href="/tags/Centos/" style="font-size: 12.86px;">Centos</a> <a href="/tags/Debian/" style="font-size: 10px;">Debian</a> <a href="/tags/Device-Tree/" style="font-size: 10px;">Device Tree</a> <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/DraftSight/" style="font-size: 10px;">DraftSight</a> <a href="/tags/EC/" style="font-size: 10px;">EC</a> <a href="/tags/Flask/" style="font-size: 11.43px;">Flask</a> <a href="/tags/GLES/" style="font-size: 10px;">GLES</a> <a href="/tags/GPU/" style="font-size: 10px;">GPU</a> <a href="/tags/Git/" style="font-size: 12.86px;">Git</a> <a href="/tags/HHVM/" style="font-size: 10px;">HHVM</a> <a href="/tags/I2C/" style="font-size: 10px;">I2C</a> <a href="/tags/LVM/" style="font-size: 11.43px;">LVM</a> <a href="/tags/MQTT/" style="font-size: 10px;">MQTT</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/OpenGL/" style="font-size: 10px;">OpenGL</a> <a href="/tags/OpenMP/" style="font-size: 10px;">OpenMP</a> <a href="/tags/Oprofile/" style="font-size: 12.86px;">Oprofile</a> <a href="/tags/PCB/" style="font-size: 10px;">PCB</a> <a href="/tags/PCIE/" style="font-size: 11.43px;">PCIE</a> <a href="/tags/PPTP/" style="font-size: 10px;">PPTP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/RTT/" style="font-size: 10px;">RTT</a> <a href="/tags/Recovery/" style="font-size: 10px;">Recovery</a> <a href="/tags/SVN/" style="font-size: 11.43px;">SVN</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/Typecho/" style="font-size: 10px;">Typecho</a> <a href="/tags/USB/" style="font-size: 11.43px;">USB</a> <a href="/tags/VIM/" style="font-size: 10px;">VIM</a> <a href="/tags/Verification/" style="font-size: 10px;">Verification</a> <a href="/tags/busybox/" style="font-size: 10px;">busybox</a> <a href="/tags/dropbear/" style="font-size: 10px;">dropbear</a> <a href="/tags/gprof/" style="font-size: 10px;">gprof</a> <a href="/tags/i-MX6/" style="font-size: 10px;">i.MX6</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/scp/" style="font-size: 10px;">scp</a> <a href="/tags/uboot/" style="font-size: 10px;">uboot</a> <a href="/tags/uwsgi/" style="font-size: 10px;">uwsgi</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/xterm/" style="font-size: 10px;">xterm</a> <a href="/tags/休眠/" style="font-size: 10px;">休眠</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/导航条/" style="font-size: 10px;">导航条</a> <a href="/tags/嵌入式/" style="font-size: 17.14px;">嵌入式</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/广播/" style="font-size: 10px;">广播</a> <a href="/tags/性能/" style="font-size: 11.43px;">性能</a> <a href="/tags/插值/" style="font-size: 10px;">插值</a> <a href="/tags/摄影/" style="font-size: 15.71px;">摄影</a> <a href="/tags/敏捷/" style="font-size: 11.43px;">敏捷</a> <a href="/tags/旅游/" style="font-size: 10px;">旅游</a> <a href="/tags/旅行/" style="font-size: 14.29px;">旅行</a> <a href="/tags/树莓派/" style="font-size: 14.29px;">树莓派</a> <a href="/tags/浪涌/" style="font-size: 10px;">浪涌</a> <a href="/tags/纹理/" style="font-size: 10px;">纹理</a> <a href="/tags/美食/" style="font-size: 10px;">美食</a> <a href="/tags/蓝牙/" style="font-size: 10px;">蓝牙</a> <a href="/tags/街拍/" style="font-size: 12.86px;">街拍</a> <a href="/tags/设备树/" style="font-size: 10px;">设备树</a> <a href="/tags/设计模式/" style="font-size: 18.57px;">设计模式</a>
+      <a href="/tags/BusyBox/" style="font-size: 10px;">BusyBox</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Catmul/" style="font-size: 10px;">Catmul</a> <a href="/tags/Centos/" style="font-size: 12.86px;">Centos</a> <a href="/tags/Debian/" style="font-size: 10px;">Debian</a> <a href="/tags/Device-Tree/" style="font-size: 10px;">Device Tree</a> <a href="/tags/Django/" style="font-size: 11.43px;">Django</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/DraftSight/" style="font-size: 10px;">DraftSight</a> <a href="/tags/EC/" style="font-size: 10px;">EC</a> <a href="/tags/Flask/" style="font-size: 11.43px;">Flask</a> <a href="/tags/GLES/" style="font-size: 10px;">GLES</a> <a href="/tags/GPU/" style="font-size: 10px;">GPU</a> <a href="/tags/Git/" style="font-size: 12.86px;">Git</a> <a href="/tags/HHVM/" style="font-size: 10px;">HHVM</a> <a href="/tags/I2C/" style="font-size: 10px;">I2C</a> <a href="/tags/LVM/" style="font-size: 11.43px;">LVM</a> <a href="/tags/MQTT/" style="font-size: 10px;">MQTT</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/OpenGL/" style="font-size: 10px;">OpenGL</a> <a href="/tags/OpenMP/" style="font-size: 10px;">OpenMP</a> <a href="/tags/Oprofile/" style="font-size: 12.86px;">Oprofile</a> <a href="/tags/PCB/" style="font-size: 10px;">PCB</a> <a href="/tags/PCIE/" style="font-size: 11.43px;">PCIE</a> <a href="/tags/PPTP/" style="font-size: 10px;">PPTP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/RTT/" style="font-size: 10px;">RTT</a> <a href="/tags/Recovery/" style="font-size: 10px;">Recovery</a> <a href="/tags/SVN/" style="font-size: 11.43px;">SVN</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/Typecho/" style="font-size: 10px;">Typecho</a> <a href="/tags/USB/" style="font-size: 11.43px;">USB</a> <a href="/tags/VIM/" style="font-size: 10px;">VIM</a> <a href="/tags/Verification/" style="font-size: 10px;">Verification</a> <a href="/tags/busybox/" style="font-size: 10px;">busybox</a> <a href="/tags/dropbear/" style="font-size: 10px;">dropbear</a> <a href="/tags/gprof/" style="font-size: 10px;">gprof</a> <a href="/tags/i-MX6/" style="font-size: 10px;">i.MX6</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/scp/" style="font-size: 10px;">scp</a> <a href="/tags/uboot/" style="font-size: 10px;">uboot</a> <a href="/tags/uwsgi/" style="font-size: 10px;">uwsgi</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/xterm/" style="font-size: 10px;">xterm</a> <a href="/tags/休眠/" style="font-size: 10px;">休眠</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/导航条/" style="font-size: 10px;">导航条</a> <a href="/tags/嵌入式/" style="font-size: 17.14px;">嵌入式</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/广播/" style="font-size: 10px;">广播</a> <a href="/tags/性能/" style="font-size: 11.43px;">性能</a> <a href="/tags/插值/" style="font-size: 10px;">插值</a> <a href="/tags/摄影/" style="font-size: 15.71px;">摄影</a> <a href="/tags/敏捷/" style="font-size: 11.43px;">敏捷</a> <a href="/tags/旅游/" style="font-size: 10px;">旅游</a> <a href="/tags/旅行/" style="font-size: 14.29px;">旅行</a> <a href="/tags/树莓派/" style="font-size: 14.29px;">树莓派</a> <a href="/tags/浪涌/" style="font-size: 10px;">浪涌</a> <a href="/tags/纹理/" style="font-size: 10px;">纹理</a> <a href="/tags/美食/" style="font-size: 10px;">美食</a> <a href="/tags/蓝牙/" style="font-size: 10px;">蓝牙</a> <a href="/tags/街拍/" style="font-size: 12.86px;">街拍</a> <a href="/tags/设备树/" style="font-size: 10px;">设备树</a> <a href="/tags/设计模式/" style="font-size: 18.57px;">设计模式</a>
     </div>
   </div>
 
@@ -434,7 +407,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">三月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">二月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">一月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">八月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03/">三月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">三月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">二月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">一月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">八月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03/">三月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
