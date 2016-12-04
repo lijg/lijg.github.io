@@ -74,6 +74,219 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-2014-11-14-Android进入Recovery模式流程分析" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/14/2014-11-14-Android进入Recovery模式流程分析/" class="article-date">
+  <time datetime="2014-11-14T11:52:14.000Z" itemprop="datePublished">2014-11-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/14/2014-11-14-Android进入Recovery模式流程分析/">Android进入Recovery模式流程分析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1 介绍"></a>1 介绍</h1><p>Recovery模式指的是一种可以对安卓机内部的数据或系统进行修改的模式，也叫工程模式。在这个模式下我们可以刷入新的安卓系统，或者对已有的系统进行备份或升级，也可以在此恢复出厂设置。在IMX6开发板上要进入Recovery模式，可以在关机时同时按下关机键+音量下进入。<br>Fastboot是一种比recovery更底层的刷机模式。就是使用USB数据线连接手机的一种刷机模式。相对于用Recovery模式卡刷来说，线刷更可靠，安全。在官方IMX6开发板上只能通过adb命令行进入（adb reboot bootloader），在此修改为在关机时同时按下关机键+音量下进入。</p>
+<h1 id="2-Bootloader"><a href="#2-Bootloader" class="headerlink" title="2 Bootloader"></a>2 Bootloader</h1><h2 id="2-1-启动流程"><a href="#2-1-启动流程" class="headerlink" title="2.1 启动流程"></a>2.1 启动流程</h2><p>进入recovery模式，这个工作是由bootloader完成。IMX6开发板使用的uboot。uboot每次启动的时候都要执行<code>uboot/lib_arm/board.c</code>的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">void start_armboot(void) &#123;</div><div class="line"></div><div class="line">...</div><div class="line">/* 省略无关代码 */</div><div class="line"></div><div class="line">#ifdef CONFIG_ANDROID_RECOVERY</div><div class="line">  check_recovery_mode();    // 检查是否进入recovery模式</div><div class="line">#endif</div><div class="line"> </div><div class="line">#if defined(CONFIG_CMD_NET)</div><div class="line">  #if defined(CONFIG_NET_MULTI)</div><div class="line">    puts (&quot;Net:   &quot;);</div><div class="line">  #endif</div><div class="line">    eth_initialize(gd-&gt;bd);</div><div class="line">  #if defined(CONFIG_RESET_PHY_R)</div><div class="line">    debug (&quot;Reset Ethernet PHY\n&quot;);</div><div class="line">    reset_phy();</div><div class="line">  #endif</div><div class="line">#endif</div><div class="line">#ifdef CONFIG_FASTBOOT</div><div class="line">  check_fastboot_mode();    // 检查是否进入fastboot模式</div><div class="line">#endif</div><div class="line"></div><div class="line">/* main_loop() can return to retry autoboot, if so just run it again. */</div><div class="line">for (;;) &#123;</div><div class="line">  main_loop ();</div><div class="line">&#125;</div><div class="line"></div><div class="line">/* NOTREACHED - no way out of command loop except booting */</div></pre></td></tr></table></figure></p>
+<p>可以看到进入recovery模式的关键是<code>check_recovery_mode();</code>函数;进入fastboot模式的关键是<code>check_fastboot_mode();</code>函数。而且进入recovery模式的优先级较高。</p>
+<h2 id="2-2-检查是否进入recovery模式"><a href="#2-2-检查是否进入recovery模式" class="headerlink" title="2.2 检查是否进入recovery模式"></a>2.2 检查是否进入recovery模式</h2><p><code>check_recovery_mode()</code>位于<code>uboot/board/freescale/common/recovery.c</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">/* export to lib_arm/board.c */</div><div class="line">void check_recovery_mode(void)</div><div class="line">&#123;</div><div class="line">    if (check_key_pressing())</div><div class="line">        setup_recovery_env();</div><div class="line">    else if (check_recovery_cmd_file()) &#123;</div><div class="line">        puts(&quot;Recovery command file founded!\n&quot;);</div><div class="line">        setup_recovery_env();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以看到有两种方法可以进入recovery模式。</p>
+<h2 id="2-3-扫描按键"><a href="#2-3-扫描按键" class="headerlink" title="2.3 扫描按键"></a>2.3 扫描按键</h2><p><code>check_key_pressing()</code>函数也在<code>uboot/board/freescale/common/recovery.c</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">#define PRESSED_VOL_DOWN    0x01</div><div class="line">#define PRESSED_POWER       0x02</div><div class="line">#define RECOVERY_KEY_MASK (PRESSED_VOL_DOWN | PRESSED_POWER)</div><div class="line"></div><div class="line">inline int test_key(int value, struct kpp_key_info *ki)</div><div class="line">&#123;</div><div class="line">    return (ki-&gt;val == value) &amp;&amp; (ki-&gt;evt == KDepress);</div><div class="line">&#125;</div><div class="line"></div><div class="line">int check_key_pressing(void)</div><div class="line">&#123;</div><div class="line">    struct kpp_key_info *key_info = NULL;</div><div class="line">    int state = 0, keys, i;</div><div class="line"></div><div class="line">    int ret = 0;</div><div class="line"></div><div class="line">    mxc_kpp_init();</div><div class="line">    /* due to glitch suppression circuit,</div><div class="line">       wait sometime to let all keys scanned. */</div><div class="line">    udelay(1000);</div><div class="line">    keys = mxc_kpp_getc(&amp;key_info);</div><div class="line"></div><div class="line">    printf(&quot;Detecting VOL_DOWN+POWER key for recovery(%d:%d) ...\n&quot;,</div><div class="line">        keys, keys ? key_info-&gt;val : 0);</div><div class="line">    if (keys &gt; 1) &#123;</div><div class="line">        for (i = 0; i &lt; keys; i++) &#123;</div><div class="line">            if (test_key(CONFIG_POWER_KEY, &amp;key_info[i]))</div><div class="line">                state |= PRESSED_POWER;</div><div class="line">            else if (test_key(CONFIG_VOL_DOWN_KEY, &amp;key_info[i]))</div><div class="line">                state |= PRESSED_VOL_DOWN;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    if ((state &amp; RECOVERY_KEY_MASK) == RECOVERY_KEY_MASK)</div><div class="line">        ret = 1;</div><div class="line">    if (key_info)</div><div class="line">        free(key_info);</div><div class="line">    return ret;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>通过代码可以看出该函数是检测POWER键和音量下键，如果同时按下则返回1;否则，返回0.</p>
+<h2 id="2-4-检查标志位和音量下"><a href="#2-4-检查标志位和音量下" class="headerlink" title="2.4 检查标志位和音量下"></a>2.4 检查标志位和音量下</h2><p><code>check_recovery_cmd_file()</code>函数位于<code>uboot/board/freescale/mx6q_sabresd/mx6q_sabresd.c</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">int check_recovery_cmd_file(void)</div><div class="line">&#123;</div><div class="line">    int button_pressed = 0; </div><div class="line">    int recovery_mode = 0; </div><div class="line"></div><div class="line">    recovery_mode = check_and_clean_recovery_flag();</div><div class="line"></div><div class="line">    /* Check Recovery Combo Button press or not. */</div><div class="line">    mxc_iomux_v3_setup_pad(MX6X_IOMUX(PAD_GPIO_5__GPIO_1_5));</div><div class="line"></div><div class="line">    gpio_direction_input(GPIO_VOL_DN_KEY);</div><div class="line"></div><div class="line">    if (gpio_get_value(GPIO_VOL_DN_KEY) == 0) &#123; /* VOL_DN key is low assert */</div><div class="line">        button_pressed = 1; </div><div class="line">        printf(&quot;Recovery key pressed\n&quot;);</div><div class="line">    &#125;    </div><div class="line"></div><div class="line">    return recovery_mode || button_pressed;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>该函数也有两种方法返回1：一种是启动是VOL_DN按键被按下;另一种是通过<code>check_and_clean_recovery_flag()</code>函数返回1.</p>
+<h2 id="2-5-检查并清空标志位"><a href="#2-5-检查并清空标志位" class="headerlink" title="2.5 检查并清空标志位"></a>2.5 检查并清空标志位</h2><p>该函数位于<code>uboot/cpu/arm_cortexa8/mx6/generic.c</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">#define ANDROID_RECOVERY_BOOT  (1 &lt;&lt; 7)</div><div class="line">/* check if the recovery bit is set by kernel, it can be set by kernel</div><div class="line"> * issue a command &apos;# reboot recovery&apos; */</div><div class="line">int check_and_clean_recovery_flag(void)</div><div class="line">&#123;</div><div class="line">    int flag_set = 0; </div><div class="line">    u32 reg; </div><div class="line">    reg = readl(SNVS_BASE_ADDR + SNVS_LPGPR);</div><div class="line"></div><div class="line">    flag_set = !!(reg &amp; ANDROID_RECOVERY_BOOT);</div><div class="line"></div><div class="line">    /* clean it in case looping infinite here.... */</div><div class="line">    if (flag_set) &#123;</div><div class="line">        reg &amp;= ~ANDROID_RECOVERY_BOOT;</div><div class="line">        writel(reg, SNVS_BASE_ADDR + SNVS_LPGPR);</div><div class="line">    &#125;    </div><div class="line"></div><div class="line">    return flag_set;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以看出，该函数通过读取<code>SNVS_BASE_ADDR+SNVS_LPGPR</code>寄存器的第7位来判断。如果是1,则将其置零并返回1.注释中可以看到，是kernel将其置1.</p>
+<h2 id="2-6-进入recovery模式流程图"><a href="#2-6-进入recovery模式流程图" class="headerlink" title="2.6 进入recovery模式流程图"></a>2.6 进入recovery模式流程图</h2><p>至此，进入recovery模式的流程已完成，流程图如下：<br><img src="http://192.168.1.15/usr/uploads/2015/06/705603735.png" alt="流程图1"></p>
+<h2 id="2-7-设置Recovery环境变量"><a href="#2-7-设置Recovery环境变量" class="headerlink" title="2.7 设置Recovery环境变量"></a>2.7 设置Recovery环境变量</h2><p>下面分析一下<code>setup_recovery_env()</code>，看一下设置Recovery环境究竟进行了哪些动作，该函数位于<code>uboot/board/freescale/common/recovery.c</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">extern struct reco_envs supported_reco_envs[];</div><div class="line"></div><div class="line">void setup_recovery_env(void)</div><div class="line">&#123;</div><div class="line">    char *env, *boot_cmd;</div><div class="line">    int bootdev = get_boot_device();</div><div class="line"></div><div class="line">    printf(&quot;recovery on bootdev: %d\n&quot;, bootdev);</div><div class="line">    boot_cmd = supported_reco_envs[bootdev].cmd;</div><div class="line"></div><div class="line">    if (boot_cmd == NULL) &#123;</div><div class="line">        printf(&quot;Unsupported bootup device for recovery: dev: %d\n&quot;, bootdev);</div><div class="line">        return;</div><div class="line">    &#125;   </div><div class="line"></div><div class="line">    printf(&quot;setup env for recovery..\n&quot;);</div><div class="line"></div><div class="line">    env = getenv(&quot;bootcmd_android_recovery&quot;);</div><div class="line">    if (!env)</div><div class="line">        setenv(&quot;bootcmd_android_recovery&quot;, boot_cmd);</div><div class="line">    setenv(&quot;bootcmd&quot;, &quot;run bootcmd_android_recovery&quot;);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>从函数中可知，当用户设置了<code>bootcmd_android_recovery</code>环境变量后，使用用户自定义的变量;否则，使用supported_reco_envs[bootdev].cmd作为默认值。<br>现在追踪一下默认值是什么，<code>get_boot_device();</code>函数位于<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">## 2.8 获取启动设备</div></pre></td></tr></table></figure></p>
+<p>static inline void setup_boot_device(void)<br>{<br>    uint soc_sbmr = readl(SRC_BASE_ADDR + 0x4);<br>    uint bt_mem_ctl = (soc_sbmr &amp; 0x000000FF) &gt;&gt; 4 ;<br>    uint bt_mem_type = (soc_sbmr &amp; 0x00000008) &gt;&gt; 3;</p>
+<pre><code>switch (bt_mem_ctl) {
+case 0x0: 
+    if (bt_mem_type)
+        boot_dev = ONE_NAND_BOOT;
+    else 
+        boot_dev = WEIM_NOR_BOOT;
+    break;
+case 0x2: 
+        boot_dev = SATA_BOOT;
+    break;
+case 0x3: 
+    if (bt_mem_type)
+        boot_dev = I2C_BOOT;
+    else 
+        boot_dev = SPI_NOR_BOOT;
+    break;
+case 0x4: 
+case 0x5: 
+    boot_dev = SD_BOOT;
+    break;
+case 0x6: 
+case 0x7: 
+    boot_dev = MMC_BOOT;
+    break;
+case 0x8 ... 0xf: 
+    boot_dev = NAND_BOOT;
+    break;
+default:
+    boot_dev = UNKNOWN_BOOT;
+    break;
+}    
+</code></pre><p>}</p>
+<p>enum boot_device get_boot_device(void)<br>{<br>    return boot_dev;<br>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">其中``SD_BOOT``等定义位于``uboot/include/asm-arm/arch-mx6/mx6.h``：</div></pre></td></tr></table></figure></p>
+<p>enum boot_device {<br>    WEIM_NOR_BOOT,<br>    ONE_NAND_BOOT,<br>    PATA_BOOT,<br>    SATA_BOOT,<br>    I2C_BOOT,<br>    SPI_NOR_BOOT,<br>    SD_BOOT,<br>    MMC_BOOT,<br>    NAND_BOOT,<br>    UNKNOWN_BOOT,<br>    BOOT_DEV_NUM = UNKNOWN_BOOT,<br>};<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">因此，当使用SD卡启动时，``get_boot_device() == 6``;MMC启动时，``get_boot_device() == 7``.</div><div class="line">## 2.9 默认环境变量</div><div class="line">返回``setup_recovery_env()``函数中，``supported_reco_envs``的定义位于:``/uboot/cpu/arm_cortexa8/mx6/generic.c``:</div></pre></td></tr></table></figure></p>
+<p>struct reco_envs supported_reco_envs[BOOT_DEV_NUM] = {<br>    {<br>        .cmd = CONFIG_ANDROID_RECOVERY_BOOTCMD_MMC,<br>        .args = CONFIG_ANDROID_RECOVERY_BOOTARGS_MMC,<br>    },<br>    {<br>        .cmd = NULL,<br>        .args = NULL,<br>    },<br>    {<br>        .cmd = NULL,<br>        .args = NULL,<br>    },<br>    {<br>        .cmd = NULL,<br>        .args = NULL,<br>    },<br>    {<br>        .cmd = CONFIG_ANDROID_RECOVERY_BOOTCMD_MMC,<br>        .args = CONFIG_ANDROID_RECOVERY_BOOTARGS_MMC,<br>    },<br>    {<br>        .cmd = CONFIG_ANDROID_RECOVERY_BOOTCMD_MMC,<br>        .args = CONFIG_ANDROID_RECOVERY_BOOTARGS_MMC,<br>    },<br>    {<br>        .cmd = CONFIG_ANDROID_RECOVERY_BOOTCMD_SD,<br>        .args = CONFIG_ANDROID_RECOVERY_BOOTARGS_MMC,<br>    },<br>    {<br>        .cmd = CONFIG_ANDROID_RECOVERY_BOOTCMD_MMC,<br>        .args = CONFIG_ANDROID_RECOVERY_BOOTARGS_MMC,<br>    },   </p>
+<p>#ifdef CONFIG_CMD_NAND<br>    {<br>        .cmd = CONFIG_ANDROID_RECOVERY_BOOTCMD_NAND,<br>        .args = CONFIG_ANDROID_RECOVERY_BOOTARGS_NAND,<br>    },   </p>
+<p>#else<br>    {<br>        .cmd = NULL,<br>        .args = NULL,<br>    },   </p>
+<p>#endif<br>};<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">可以看出，从SD卡启动时，cmd返回``CONFIG_ANDROID_RECOVERY_BOOTCMD_SD``，该宏定义位于``include/configs/mx6q_sabresd_android.h``：</div></pre></td></tr></table></figure></p>
+<p>#define CONFIG_ANDROID_RECOVERY_BOOTCMD_MMC  \<br>    “booti mmc3 recovery”</p>
+<p>#define CONFIG_ANDROID_RECOVERY_BOOTCMD_SD  \<br>    “booti mmc2 recovery”<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">## 2.10 设置Recovery环境流程图</div><div class="line">设置Recovery启动环境的流程图如下所示：</div><div class="line">![流程图2](http://192.168.1.15/usr/uploads/2015/06/579893692.png)</div><div class="line"></div><div class="line"># 3 内核</div><div class="line">在uboot中，启动时会检查SNVS_LPGPR[7]是否为1。如果是则将其清空并进入Recovery模式。</div><div class="line">## 3.1 SNVS_LGPR读写</div><div class="line">SNVS(Secure Non-Volatile Storage, 安全非易失存储)是IMX6中的一部分非易失的存储器，即使系统掉电也可以保存。正好适合用来防治这个标志位。在IMX6的datasheet中关于该位的介绍如下：</div><div class="line">&gt; The SNVS _LP General Purpose Register provides a 32 bit read write register, which can</div><div class="line">be used by any application for retaining 32 bit data during a power-down mode.</div><div class="line"></div><div class="line">SNVS_LPGPR[7]是由kernel在需要时置1的，代码位于``kernel/arch/arm/mach-mx6/system.c``：</div></pre></td></tr></table></figure></p>
+<p>#define ANDROID_RECOVERY_BOOT  (1 &lt;&lt; 7)</p>
+<p>#define ANDROID_FASTBOOT_BOOT  (1 &lt;&lt; 8)<br>void do_switch_recovery(void)<br>{<br>    u32 reg;</p>
+<pre><code>reg = __raw_readl(MX6Q_SNVS_BASE_ADDR + SNVS_LPGPR);
+reg |= ANDROID_RECOVERY_BOOT;
+__raw_writel(reg, MX6Q_SNVS_BASE_ADDR + SNVS_LPGPR);
+</code></pre><p>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">从函数可以看出，调用时会将SNVS_LPGPR[7]置1.</div><div class="line">## 3.2 重启流程</div><div class="line">当用户输入reboot命令重启时，会使用系统调用``sys_reboot``，位于``kernel/kernel/sys.c``：</div></pre></td></tr></table></figure></p>
+<p>/*</p>
+<ul>
+<li>Reboot system call: for obvious reasons only root may call it,</li>
+<li>and even root needs to set up some magic numbers in the registers</li>
+<li>so that some mistake won’t make this reboot the whole machine.</li>
+<li>You can also set the meaning of the ctrl-alt-del-key here.<br>*</li>
+<li><p>reboot doesn’t sync: do that yourself before calling this.<br>*/<br>SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,</p>
+<pre><code>void __user *, arg)
+</code></pre><p>{<br> char buffer[256];<br> int ret = 0;</p>
+<p> /<em> We only trust the superuser with rebooting the system. </em>/<br> if (!capable(CAP_SYS_BOOT))</p>
+<pre><code>return -EPERM;
+</code></pre><p> /<em> For safety, we require “magic” arguments. </em>/<br> if (magic1 != LINUX_REBOOT_MAGIC1 ||</p>
+<pre><code>(magic2 != LINUX_REBOOT_MAGIC2 &amp;&amp;
+            magic2 != LINUX_REBOOT_MAGIC2A &amp;&amp;
+    magic2 != LINUX_REBOOT_MAGIC2B &amp;&amp;
+            magic2 != LINUX_REBOOT_MAGIC2C))
+return -EINVAL;
+</code></pre><p> /* Instead of trying to make the power_off code look like</p>
+<ul>
+<li><p>halt when pm_power_off is not set do it the easy way.<br>*/<br>if ((cmd == LINUX_REBOOT_CMD_POWER_OFF) &amp;&amp; !pm_power_off)<br> cmd = LINUX_REBOOT_CMD_HALT;</p>
+<p>mutex_lock(&amp;reboot_mutex);<br>switch (cmd) {<br>case LINUX_REBOOT_CMD_RESTART:<br> kernel_restart(NULL);<br> break;</p>
+<p>case LINUX_REBOOT_CMD_CAD_ON:<br> C_A_D = 1;<br> break;</p>
+<p>case LINUX_REBOOT_CMD_CAD_OFF:<br> C_A_D = 0;<br> break;</p>
+<p>case LINUX_REBOOT_CMD_HALT:<br> kernel_halt();<br> do_exit(0);<br> panic(“cannot halt”);</p>
+<p>case LINUX_REBOOT_CMD_POWER_OFF:<br> kernel_power_off();<br> do_exit(0);<br> break;</p>
+<p>case LINUX_REBOOT_CMD_RESTART2:<br> if (strncpy_from_user(&amp;buffer[0], arg, sizeof(buffer) - 1) &lt; 0) {</p>
+<pre><code>ret = -EFAULT;
+break;
+</code></pre><p> }<br> buffer[sizeof(buffer) - 1] = ‘\0’;</p>
+<p> kernel_restart(buffer);<br> break;</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>#ifdef CONFIG_KEXEC<br>    case LINUX_REBOOT_CMD_KEXEC:<br>        ret = kernel_kexec();<br>        break;</p>
+<p>#endif</p>
+<p>#ifdef CONFIG_HIBERNATION<br>    case LINUX_REBOOT_CMD_SW_SUSPEND:<br>        ret = hibernate();<br>        break;</p>
+<p>#endif</p>
+<pre><code>default:
+    ret = -EINVAL;
+    break;
+}
+mutex_unlock(&amp;reboot_mutex);
+return ret;
+</code></pre><p>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">从函数可以看出，当用户输入reboot recovery时，会调用``kernel_restart(&quot;recovery&quot;)``.</div><div class="line">``kernel_restart``又调用``machine_restart()``：</div></pre></td></tr></table></figure></p>
+<p>/**</p>
+<ul>
+<li>kernel_restart - reboot the system</li>
+<li>@cmd: pointer to buffer containing command to execute for restart</li>
+<li>or %NULL<br>*</li>
+<li>Shutdown everything and perform a clean reboot.</li>
+<li>This is not safe to call in interrupt context.<br><em>/<br>void kernel_restart(char </em>cmd)<br>{<br>kernel_restart_prepare(cmd);<br>if (!cmd)<pre><code>printk(KERN_EMERG &quot;Restarting system.\n&quot;);
+</code></pre>else <pre><code>printk(KERN_EMERG &quot;Restarting system with command &apos;%s&apos;.\n&quot;, cmd);
+</code></pre>kmsg_dump(KMSG_DUMP_RESTART);<br>machine_restart(cmd);<br>}<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">``kernel_restart()``调用``machine_restart``,位于``kernel/arch/arm/kernel/process.c``:</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>void arm_machine_restart(char mode, const char <em>cmd)<br>{<br>    /</em> Flush the console to make sure all the relevant messages make it</p>
+<pre><code> * out to the console drivers */
+arm_machine_flush_console();
+
+/* Disable interrupts first */
+local_irq_disable();
+local_fiq_disable();
+
+/*  
+ * Tell the mm system that we are going to reboot -
+ * we may need it to insert some 1:1 mappings so that
+ * soft boot works.
+ */
+setup_mm_for_reboot(mode);
+
+/* Clean and invalidate caches */
+flush_cache_all();
+
+/* Turn off caching */
+cpu_proc_fin();
+
+/* Push out any further dirty data, and ensure cache is empty */
+flush_cache_all();
+
+/*  
+ * Now call the architecture specific reboot code.
+ */
+arch_reset(mode, cmd);
+
+/*  
+ * Whoops - the architecture was unable to reboot.
+ * Tell the user!
+ */
+mdelay(1000);
+printk(&quot;Reboot failed -- System halted\n&quot;);
+while (1);
+</code></pre><p>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">在这里调用了``arch_reset(mode, cmd=“recovery”)``，位于``kernel/arch/arm/plat-mxc/system.c``:</div></pre></td></tr></table></figure></p>
+<p>static void arch_reset_special_mode(char mode, const char *cmd)<br>{<br>    if (strcmp(cmd, “download”) == 0)<br>        do_switch_mfgmode();<br>    else if (strcmp(cmd, “recovery”) == 0)<br>        do_switch_recovery();<br>    else if (strcmp(cmd, “fastboot”) == 0)<br>        do_switch_fastboot();<br>}</p>
+<p>/*</p>
+<ul>
+<li><p>Reset the system. It is called by machine_restart().<br><em>/<br>void arch_reset(char mode, const char </em>cmd)<br>{<br> unsigned int wcr_enable;</p>
+<p> arch_reset_special_mode(mode, cmd);</p>
+<p> …<br> /<em> 省略无关代码 </em>/<br>}<br><code>`
+在这里，终于调用到了</code>do_switch_recovery()``，将SNVS_LGPR[7]置为1.</p>
+<h2 id="3-3-调用关系"><a href="#3-3-调用关系" class="headerlink" title="3.3 调用关系"></a>3.3 调用关系</h2><p><img src="http://192.168.1.15/usr/uploads/2015/06/2967304704.png" alt="流程图3"></p>
+</li>
+</ul>
+<p>完。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2014/11/14/2014-11-14-Android进入Recovery模式流程分析/" data-id="ciwa7xxhc0040wb3l4k1a4503" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2014/11/14/2014-11-14-Android进入Recovery模式流程分析/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Recovery/">Recovery</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-2014-07-28-Linux内核设计的艺术笔记" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2014/07/28/2014-07-28-Linux内核设计的艺术笔记/" class="article-date">
@@ -123,7 +336,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2014/07/28/2014-07-28-Linux内核设计的艺术笔记/" data-id="civwia6m6003kx43ls4afi3we" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2014/07/28/2014-07-28-Linux内核设计的艺术笔记/" data-id="ciwa7xxgr003iwb3l9xz0f2sc" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -184,7 +397,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2014/03/20/2014-03-20-Android广播用法简介/" data-id="civwia6li003ax43le7jmuhno" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2014/03/20/2014-03-20-Android广播用法简介/" data-id="ciwa7xxgp003fwb3lnjpa2tv6" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -238,7 +451,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2014/03/09/2014-03-09-Stanford-University/" data-id="civwia6lp003gx43ldx9zm9ab" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2014/03/09/2014-03-09-Stanford-University/" data-id="ciwa7xxgn003cwb3l0n2px8nc" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -287,7 +500,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2014/03/08/2014-03-08-西海岸/" data-id="civwia6lm003ex43lf223qw3g" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2014/03/08/2014-03-08-西海岸/" data-id="ciwa7xxgl0039wb3ltrfumjqu" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -296,66 +509,6 @@
 
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/摄影/">摄影</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/旅行/">旅行</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2014-03-04-美国生活" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/03/04/2014-03-04-美国生活/" class="article-date">
-  <time datetime="2014-03-04T06:26:10.000Z" itemprop="datePublished">2014-03-04</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/杂/">杂</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/03/04/2014-03-04-美国生活/">美国生活</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>来美国一周多了，时差还是没有倒过来，每天夜里2点准时醒，真叫人无奈。。。 </p>
-<p>作晚按照惯例又醒了，好的是，这次倒没有一直到天亮都每睡着，起来到客厅上了会儿网，4点多又回去睡了，一觉到9点~~</p>
-<p>说一下在这边的感受吧</p>
-<p>1 人少、车多</p>
-<p>我们虽然说没有住在市中心，但这里起码是大名鼎鼎的IT圣地——硅谷啊，人也太少了。。。</p>
-<p>在大街上走，基本看不到人影，除了飞奔在路上的车里的。美国人民习惯了出门就开车，基本没有走路的。（市中心的街上有，我们这算是郊区，但比起国内，人确实少多了）</p>
-<p>街上没有小商小贩，因为没有人在街上走，都是开车。。。。</p>
-<p>2 空气好</p>
-<p>虽然深圳也是沿海城市，但跟这里比起来，空气还是差一些</p>
-<p>3 楼矮</p>
-<p>基本没有高层，我住这附近3层算很高的了，基本都是1、2层的，连办公的地方都只有两层。。。</p>
-<p>美国的house基本都是带院的小别墅，国内的估计只能叫公寓了。。。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://ljgabc.com/2014/03/04/2014-03-04-美国生活/" data-id="civwia6kv002yx43loslgli9x" class="article-share-link" data-share="baidu">分享到</a>
-      
-
-      
-        <a href="http://ljgabc.com/2014/03/04/2014-03-04-美国生活/#ds-thread" class="article-comment-link">评论</a>
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/旅游/">旅游</a></li></ul>
 
     </footer>
   </div>
@@ -380,6 +533,10 @@
       <ul>
         
           <li>
+            <a href="/2016/12/04/2016-12-04-做一碗好吃的蒸面/">做一碗好吃的蒸面</a>
+          </li>
+        
+          <li>
             <a href="/2016/11/23/2016-11-23-使用Django和Blueimp-Gallery制作照片墙/">使用Django和Blueimp Gallery制作照片墙</a>
           </li>
         
@@ -395,10 +552,6 @@
             <a href="/2016/11/20/2016-11-20-莲花山公园/">莲花山公园</a>
           </li>
         
-          <li>
-            <a href="/2016/11/15/2016-11-15-彩鹿/">彩鹿</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -408,7 +561,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ASIC/">ASIC</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">49</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/摄影/">摄影</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂/">杂</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/硬件/">硬件</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件/">软件</a><span class="category-list-count">8</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ASIC/">ASIC</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">49</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/摄影/">摄影</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂/">杂</a><span class="category-list-count">27</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/硬件/">硬件</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件/">软件</a><span class="category-list-count">8</span></li></ul>
     </div>
   </div>
 
@@ -417,7 +570,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/BusyBox/" style="font-size: 10px;">BusyBox</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Catmul/" style="font-size: 10px;">Catmul</a> <a href="/tags/Centos/" style="font-size: 12.86px;">Centos</a> <a href="/tags/Debian/" style="font-size: 10px;">Debian</a> <a href="/tags/Device-Tree/" style="font-size: 10px;">Device Tree</a> <a href="/tags/Django/" style="font-size: 11.43px;">Django</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/DraftSight/" style="font-size: 10px;">DraftSight</a> <a href="/tags/EC/" style="font-size: 10px;">EC</a> <a href="/tags/Flask/" style="font-size: 11.43px;">Flask</a> <a href="/tags/GLES/" style="font-size: 10px;">GLES</a> <a href="/tags/GPU/" style="font-size: 10px;">GPU</a> <a href="/tags/Git/" style="font-size: 12.86px;">Git</a> <a href="/tags/HHVM/" style="font-size: 10px;">HHVM</a> <a href="/tags/I2C/" style="font-size: 10px;">I2C</a> <a href="/tags/LVM/" style="font-size: 11.43px;">LVM</a> <a href="/tags/MQTT/" style="font-size: 10px;">MQTT</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/OpenGL/" style="font-size: 10px;">OpenGL</a> <a href="/tags/OpenMP/" style="font-size: 10px;">OpenMP</a> <a href="/tags/Oprofile/" style="font-size: 12.86px;">Oprofile</a> <a href="/tags/PCB/" style="font-size: 10px;">PCB</a> <a href="/tags/PCIE/" style="font-size: 11.43px;">PCIE</a> <a href="/tags/PPTP/" style="font-size: 10px;">PPTP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/RTT/" style="font-size: 10px;">RTT</a> <a href="/tags/Recovery/" style="font-size: 10px;">Recovery</a> <a href="/tags/SVN/" style="font-size: 11.43px;">SVN</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/Typecho/" style="font-size: 10px;">Typecho</a> <a href="/tags/USB/" style="font-size: 11.43px;">USB</a> <a href="/tags/VIM/" style="font-size: 10px;">VIM</a> <a href="/tags/Verification/" style="font-size: 10px;">Verification</a> <a href="/tags/busybox/" style="font-size: 10px;">busybox</a> <a href="/tags/dropbear/" style="font-size: 10px;">dropbear</a> <a href="/tags/gprof/" style="font-size: 10px;">gprof</a> <a href="/tags/i-MX6/" style="font-size: 10px;">i.MX6</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/scp/" style="font-size: 10px;">scp</a> <a href="/tags/uboot/" style="font-size: 10px;">uboot</a> <a href="/tags/uwsgi/" style="font-size: 10px;">uwsgi</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/xterm/" style="font-size: 10px;">xterm</a> <a href="/tags/休眠/" style="font-size: 10px;">休眠</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/导航条/" style="font-size: 10px;">导航条</a> <a href="/tags/嵌入式/" style="font-size: 17.14px;">嵌入式</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/广播/" style="font-size: 10px;">广播</a> <a href="/tags/性能/" style="font-size: 11.43px;">性能</a> <a href="/tags/插值/" style="font-size: 10px;">插值</a> <a href="/tags/摄影/" style="font-size: 15.71px;">摄影</a> <a href="/tags/敏捷/" style="font-size: 11.43px;">敏捷</a> <a href="/tags/旅游/" style="font-size: 10px;">旅游</a> <a href="/tags/旅行/" style="font-size: 14.29px;">旅行</a> <a href="/tags/树莓派/" style="font-size: 14.29px;">树莓派</a> <a href="/tags/浪涌/" style="font-size: 10px;">浪涌</a> <a href="/tags/纹理/" style="font-size: 10px;">纹理</a> <a href="/tags/美食/" style="font-size: 10px;">美食</a> <a href="/tags/蓝牙/" style="font-size: 10px;">蓝牙</a> <a href="/tags/街拍/" style="font-size: 12.86px;">街拍</a> <a href="/tags/设备树/" style="font-size: 10px;">设备树</a> <a href="/tags/设计模式/" style="font-size: 18.57px;">设计模式</a>
+      <a href="/tags/BusyBox/" style="font-size: 10px;">BusyBox</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Catmul/" style="font-size: 10px;">Catmul</a> <a href="/tags/Centos/" style="font-size: 12.86px;">Centos</a> <a href="/tags/Debian/" style="font-size: 10px;">Debian</a> <a href="/tags/Device-Tree/" style="font-size: 10px;">Device Tree</a> <a href="/tags/Django/" style="font-size: 11.43px;">Django</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/DraftSight/" style="font-size: 10px;">DraftSight</a> <a href="/tags/EC/" style="font-size: 10px;">EC</a> <a href="/tags/Flask/" style="font-size: 11.43px;">Flask</a> <a href="/tags/GLES/" style="font-size: 10px;">GLES</a> <a href="/tags/GPU/" style="font-size: 10px;">GPU</a> <a href="/tags/Git/" style="font-size: 12.86px;">Git</a> <a href="/tags/HHVM/" style="font-size: 10px;">HHVM</a> <a href="/tags/I2C/" style="font-size: 10px;">I2C</a> <a href="/tags/LVM/" style="font-size: 11.43px;">LVM</a> <a href="/tags/MQTT/" style="font-size: 10px;">MQTT</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/OpenGL/" style="font-size: 10px;">OpenGL</a> <a href="/tags/OpenMP/" style="font-size: 10px;">OpenMP</a> <a href="/tags/Oprofile/" style="font-size: 12.86px;">Oprofile</a> <a href="/tags/PCB/" style="font-size: 10px;">PCB</a> <a href="/tags/PCIE/" style="font-size: 11.43px;">PCIE</a> <a href="/tags/PPTP/" style="font-size: 10px;">PPTP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/RTT/" style="font-size: 10px;">RTT</a> <a href="/tags/Recovery/" style="font-size: 10px;">Recovery</a> <a href="/tags/SVN/" style="font-size: 11.43px;">SVN</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/Typecho/" style="font-size: 10px;">Typecho</a> <a href="/tags/USB/" style="font-size: 11.43px;">USB</a> <a href="/tags/VIM/" style="font-size: 10px;">VIM</a> <a href="/tags/Verification/" style="font-size: 10px;">Verification</a> <a href="/tags/busybox/" style="font-size: 10px;">busybox</a> <a href="/tags/dropbear/" style="font-size: 10px;">dropbear</a> <a href="/tags/gprof/" style="font-size: 10px;">gprof</a> <a href="/tags/i-MX6/" style="font-size: 10px;">i.MX6</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/scp/" style="font-size: 10px;">scp</a> <a href="/tags/uboot/" style="font-size: 10px;">uboot</a> <a href="/tags/uwsgi/" style="font-size: 10px;">uwsgi</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/xterm/" style="font-size: 10px;">xterm</a> <a href="/tags/休眠/" style="font-size: 10px;">休眠</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/吃/" style="font-size: 10px;">吃</a> <a href="/tags/导航条/" style="font-size: 10px;">导航条</a> <a href="/tags/嵌入式/" style="font-size: 17.14px;">嵌入式</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/广播/" style="font-size: 10px;">广播</a> <a href="/tags/性能/" style="font-size: 11.43px;">性能</a> <a href="/tags/插值/" style="font-size: 10px;">插值</a> <a href="/tags/摄影/" style="font-size: 15.71px;">摄影</a> <a href="/tags/敏捷/" style="font-size: 11.43px;">敏捷</a> <a href="/tags/旅游/" style="font-size: 10px;">旅游</a> <a href="/tags/旅行/" style="font-size: 14.29px;">旅行</a> <a href="/tags/树莓派/" style="font-size: 14.29px;">树莓派</a> <a href="/tags/浪涌/" style="font-size: 10px;">浪涌</a> <a href="/tags/纹理/" style="font-size: 10px;">纹理</a> <a href="/tags/美食/" style="font-size: 10px;">美食</a> <a href="/tags/蓝牙/" style="font-size: 10px;">蓝牙</a> <a href="/tags/街拍/" style="font-size: 12.86px;">街拍</a> <a href="/tags/设备树/" style="font-size: 10px;">设备树</a> <a href="/tags/设计模式/" style="font-size: 18.57px;">设计模式</a>
     </div>
   </div>
 
@@ -426,7 +579,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">三月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">二月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">一月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">八月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03/">三月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">三月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">二月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">一月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">八月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03/">三月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 

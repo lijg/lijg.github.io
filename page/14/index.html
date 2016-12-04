@@ -74,6 +74,64 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-2015-05-08-在ext4中保存uboot环境变量及uImage" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/05/08/2015-05-08-在ext4中保存uboot环境变量及uImage/" class="article-date">
+  <time datetime="2015-05-08T14:19:57.000Z" itemprop="datePublished">2015-05-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/05/08/2015-05-08-在ext4中保存uboot环境变量及uImage/">在ext4中保存uboot环境变量及uImage</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在上一篇文章<a href="/post/zhi-zuo-qian-ru-shi-linuxxi-tong-sdqia">《制作嵌入式Linux系统SD卡》</a>中，uImage、DTB及uboot的env都是通过dd烧录到sd卡上的，而不是在ext4分区中。这样每次升级uImage或dtb的时候，都需要拔下sd卡再烧录，稍显麻烦。如果uImage和dtb等都可以放在ext4分区中，就可以直接在启动后修改文件来升级内核或设备树了。</p>
+<p>查看了一下uboot的源码，发现uboot是支持ext4文件系统的，而imx6的默认配置没有打开此选项，在mx6_sabresd.h中添加<code>CONFIG_FS_EXT4</code>选项，可以打开ext4文件系统支持。</p>
+<p>之后在uboot命令行多了两个命令可以执行:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ext2ls - list files in a directory (default /)                                  </div><div class="line">                                                                                </div><div class="line">Usage:                                                                          </div><div class="line">ext2ls &lt;interface&gt; &lt;dev[:part]&gt; [directory]                                     </div><div class="line">    - list files from &apos;dev&apos; on &apos;interface&apos; in a &apos;directory&apos;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">ext2load - load binary file from a Ext2 filesystem                              </div><div class="line">                                                                                </div><div class="line">Usage:                                                                          </div><div class="line">ext2load &lt;interface&gt; &lt;dev[:part]&gt; [addr] [filename] [bytes]                     </div><div class="line">    - load binary file &apos;filename&apos; from &apos;dev&apos; on &apos;interface&apos;                     </div><div class="line">      to address &apos;addr&apos; from ext2 filesystem.</div></pre></td></tr></table></figure>
+<p>通过以下命令查看ext4分区的内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">=&gt; ext2ls mmc 0:1 /                                                             </div><div class="line">&lt;DIR&gt;       4096 .                                                              </div><div class="line">&lt;DIR&gt;       4096 ..                                                             </div><div class="line">&lt;DIR&gt;      16384 lost+found                                                     </div><div class="line">&lt;DIR&gt;       4096 bin                                                            </div><div class="line">&lt;DIR&gt;       4096 dev                                                            </div><div class="line">&lt;DIR&gt;       4096 etc                                                            </div><div class="line">&lt;DIR&gt;       4096 home                                                           </div><div class="line">&lt;SYM&gt;         11 init                                                           </div><div class="line">&lt;DIR&gt;       4096 lib                                                            </div><div class="line">&lt;DIR&gt;       4096 mnt                                                            </div><div class="line">&lt;DIR&gt;       4096 opt                                                            </div><div class="line">&lt;DIR&gt;       4096 proc                                                           </div><div class="line">&lt;DIR&gt;       4096 root                                                           </div><div class="line">&lt;DIR&gt;       4096 sbin                                                           </div><div class="line">&lt;DIR&gt;       4096 sys                                                            </div><div class="line">&lt;DIR&gt;       4096 tmp                                                            </div><div class="line">&lt;DIR&gt;       4096 usr                                                            </div><div class="line">&lt;DIR&gt;       4096 var                                                            </div><div class="line">&lt;DIR&gt;       4096 boot</div></pre></td></tr></table></figure></p>
+<p>通过以下命令将/boot/uImage和/boot/imx6q-sabresd-ldo.dtb加载到内存<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ext2load mmc 0:1 $&#123;loadaddr&#125; /boot/uImage_4.4.3</div><div class="line">ext2load mmc 0:1 $&#123;dtbloadaddr&#125; /boot/imx6q-sabresd-ldo.dtb</div></pre></td></tr></table></figure></p>
+<p>之后就跟正常启动一样了。</p>
+<p>其实，不止是uImage和dtb，设置uboot的env都可以在ext4分区中设置。比如，在ext4中创建<code>/boot/uENV.txt</code>文件，添加以下内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">loadaddr=0x12000000</div><div class="line">dtbloadaddr=0x18000000</div><div class="line">bootargs=console=ttymxc0,115200 init=/init rw root=/dev/mmcblk1p1</div><div class="line">bootcmd=ext2load mmc 0:1 $&#123;loadaddr&#125; /boot/uImage_4.4.3;ext2load mmc 0:1 $&#123;dtbloadaddr&#125; /boot/imx6q-sabresd-ldo.dtb;bootm $&#123;loadaddr&#125; - $&#123;dtbloadaddr&#125;</div></pre></td></tr></table></figure></p>
+<p>保存后，在uboot中设置如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setenv bootcmd &apos;ext2load mmc 0:1 0x12000000 /boot/uENV.txt;env import -t 0x12000000;boot&apos;</div></pre></td></tr></table></figure></p>
+<p>在启动时，uboot会自动使用uENV.txt中的内容覆盖启动变量，从ext4分区加载uImage和dtb，然后启动。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://ljgabc.com/2015/05/08/2015-05-08-在ext4中保存uboot环境变量及uImage/" data-id="ciwa7xxin005mwb3lb2il4x0i" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://ljgabc.com/2015/05/08/2015-05-08-在ext4中保存uboot环境变量及uImage/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/uboot/">uboot</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-2015-05-07-VIM交叉编译注意事项" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/05/07/2015-05-07-VIM交叉编译注意事项/" class="article-date">
@@ -108,7 +166,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2015/05/07/2015-05-07-VIM交叉编译注意事项/" data-id="civwia7ah005ux43lr6xcue35" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2015/05/07/2015-05-07-VIM交叉编译注意事项/" data-id="ciwa7xxir005pwb3llsa8rmcm" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -159,7 +217,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2015/05/06/2015-05-06-Dropbear远程无法登陆问题/" data-id="civwia7ae005rx43l297r7vps" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2015/05/06/2015-05-06-Dropbear远程无法登陆问题/" data-id="ciwa7xxiv005vwb3ll61jxh6b" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -283,7 +341,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2015/04/30/2015-04-30-Linux-Device-Tree/" data-id="civwia79u005ox43l3tl3adif" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2015/04/30/2015-04-30-Linux-Device-Tree/" data-id="ciwa7xxij005iwb3lp17qm58f" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -348,7 +406,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://ljgabc.com/2015/04/24/2015-04-24-交叉编译Python-3-4-2/" data-id="civwia791005bx43lemialcw5" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://ljgabc.com/2015/04/24/2015-04-24-交叉编译Python-3-4-2/" data-id="ciwa7xxih005fwb3lzkbm4ayq" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -357,59 +415,6 @@
 
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/嵌入式/">嵌入式</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2015-04-23-Android隐藏导航条" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/04/23/2015-04-23-Android隐藏导航条/" class="article-date">
-  <time datetime="2015-04-23T14:51:52.000Z" itemprop="datePublished">2015-04-23</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Android/">Android</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/04/23/2015-04-23-Android隐藏导航条/">Android隐藏导航条</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>目的：实现程序控制隐藏和显示Android导航条</p>
-<p>适用版本: Android 4.2+</p>
-<p>涉及文件: <code>(AndroidSrc)/framework/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java</code></p>
-<p>修改内容:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div></pre></td><td class="code"><pre><div class="line">--- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java</div><div class="line">+++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java</div><div class="line">@@ -153,6 +153,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode &#123;</div><div class="line">     private float mFlingGestureMaxOutputVelocityPx; // how fast can it really go? (should be a little</div><div class="line">                                                     // faster than mSelfCollapseVelocityPx)</div><div class="line"> </div><div class="line">+    private boolean isDisplayNavBar;</div><div class="line">+</div><div class="line">     PhoneStatusBarPolicy mIconPolicy;</div><div class="line"> </div><div class="line">     // These are no longer handled by the policy, because we need custom strategies for them</div><div class="line">@@ -349,6 +351,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode &#123;</div><div class="line">         super.start(); // calls createAndAddWindows()</div><div class="line"> </div><div class="line">         addNavigationBar();</div><div class="line">+        isDisplayNavBar = true;</div><div class="line"> </div><div class="line">         // Lastly, call to the icon policy to install/update all the icons.</div><div class="line">         mIconPolicy = new PhoneStatusBarPolicy(mContext);</div><div class="line">@@ -645,6 +648,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode &#123;</div><div class="line">         filter.addAction(ACTION_DEMO);</div><div class="line">         context.registerReceiver(mBroadcastReceiver, filter);</div><div class="line"> </div><div class="line">+        IntentFilter filter1 = new IntentFilter();</div><div class="line">+        filter1.addAction(&quot;ACTION_STATUS_BAR_CTRL&quot;);</div><div class="line">+        context.registerReceiver(mBroadcastReceiver1, filter1);</div><div class="line">+</div><div class="line">         // listen for USER_SETUP_COMPLETE setting (per-user)</div><div class="line">         resetUserSetupObserver();</div><div class="line"> </div><div class="line">@@ -806,6 +813,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode &#123;</div><div class="line">         mWindowManager.addView(mNavigationBarView, getNavigationBarLayoutParams());</div><div class="line">     &#125;</div><div class="line"> </div><div class="line">+    private void removeNavigationBar() &#123;</div><div class="line">+        if(mNavigationBarView == null) return;</div><div class="line">+        mWindowManager.removeView(mNavigationBarView);</div><div class="line">+    &#125;</div><div class="line">+</div><div class="line">     private void repositionNavigationBar() &#123;</div><div class="line">         if (mNavigationBarView == null || !mNavigationBarView.isAttachedToWindow()) return;</div><div class="line"> </div><div class="line">@@ -2443,6 +2455,26 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode &#123;</div><div class="line">         &#125;</div><div class="line">     &#125;;</div><div class="line"> </div><div class="line">+    private BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver() &#123;</div><div class="line">+        public void onReceive(Context context, Intent intent) &#123;</div><div class="line">+            String action = intent.getAction();</div><div class="line">+            if (isOrderedBroadcast()) &#123;  </div><div class="line">+                if (action.equals(&quot;ACTION_STATUS_BAR_CTRL&quot;)) &#123;  </div><div class="line">+                    String cmd = intent.getStringExtra(&quot;cmd&quot;);</div><div class="line">+                    if(cmd.equals(&quot;hide&quot;) &amp;&amp; isDisplayNavBar ) &#123;  </div><div class="line">+                        isDisplayNavBar=false;  </div><div class="line">+                        removeNavigationBar();</div><div class="line">+                    &#125; else if(cmd.equals(&quot;show&quot;)&amp;&amp;!isDisplayNavBar)&#123;  </div><div class="line">+                        isDisplayNavBar=true;  </div><div class="line">+                        addNavigationBar();</div><div class="line">+                    &#125;</div><div class="line">+                &#125;</div><div class="line">+                this.abortBroadcast();</div><div class="line">+            &#125;</div><div class="line">+        &#125;</div><div class="line">+    &#125;;</div><div class="line">+      </div><div class="line">+</div><div class="line">     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() &#123;</div><div class="line">         public void onReceive(Context context, Intent intent) &#123;</div><div class="line">             if (DEBUG) Log.v(TAG, &quot;onReceive: &quot; + intent);</div></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://ljgabc.com/2015/04/23/2015-04-23-Android隐藏导航条/" data-id="civwia794005fx43ldhxvpi1e" class="article-share-link" data-share="baidu">分享到</a>
-      
-
-      
-        <a href="http://ljgabc.com/2015/04/23/2015-04-23-Android隐藏导航条/#ds-thread" class="article-comment-link">评论</a>
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/导航条/">导航条</a></li></ul>
 
     </footer>
   </div>
@@ -434,6 +439,10 @@
       <ul>
         
           <li>
+            <a href="/2016/12/04/2016-12-04-做一碗好吃的蒸面/">做一碗好吃的蒸面</a>
+          </li>
+        
+          <li>
             <a href="/2016/11/23/2016-11-23-使用Django和Blueimp-Gallery制作照片墙/">使用Django和Blueimp Gallery制作照片墙</a>
           </li>
         
@@ -449,10 +458,6 @@
             <a href="/2016/11/20/2016-11-20-莲花山公园/">莲花山公园</a>
           </li>
         
-          <li>
-            <a href="/2016/11/15/2016-11-15-彩鹿/">彩鹿</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -462,7 +467,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ASIC/">ASIC</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">49</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/摄影/">摄影</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂/">杂</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/硬件/">硬件</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件/">软件</a><span class="category-list-count">8</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ASIC/">ASIC</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">49</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/摄影/">摄影</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂/">杂</a><span class="category-list-count">27</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/硬件/">硬件</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件/">软件</a><span class="category-list-count">8</span></li></ul>
     </div>
   </div>
 
@@ -471,7 +476,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/BusyBox/" style="font-size: 10px;">BusyBox</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Catmul/" style="font-size: 10px;">Catmul</a> <a href="/tags/Centos/" style="font-size: 12.86px;">Centos</a> <a href="/tags/Debian/" style="font-size: 10px;">Debian</a> <a href="/tags/Device-Tree/" style="font-size: 10px;">Device Tree</a> <a href="/tags/Django/" style="font-size: 11.43px;">Django</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/DraftSight/" style="font-size: 10px;">DraftSight</a> <a href="/tags/EC/" style="font-size: 10px;">EC</a> <a href="/tags/Flask/" style="font-size: 11.43px;">Flask</a> <a href="/tags/GLES/" style="font-size: 10px;">GLES</a> <a href="/tags/GPU/" style="font-size: 10px;">GPU</a> <a href="/tags/Git/" style="font-size: 12.86px;">Git</a> <a href="/tags/HHVM/" style="font-size: 10px;">HHVM</a> <a href="/tags/I2C/" style="font-size: 10px;">I2C</a> <a href="/tags/LVM/" style="font-size: 11.43px;">LVM</a> <a href="/tags/MQTT/" style="font-size: 10px;">MQTT</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/OpenGL/" style="font-size: 10px;">OpenGL</a> <a href="/tags/OpenMP/" style="font-size: 10px;">OpenMP</a> <a href="/tags/Oprofile/" style="font-size: 12.86px;">Oprofile</a> <a href="/tags/PCB/" style="font-size: 10px;">PCB</a> <a href="/tags/PCIE/" style="font-size: 11.43px;">PCIE</a> <a href="/tags/PPTP/" style="font-size: 10px;">PPTP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/RTT/" style="font-size: 10px;">RTT</a> <a href="/tags/Recovery/" style="font-size: 10px;">Recovery</a> <a href="/tags/SVN/" style="font-size: 11.43px;">SVN</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/Typecho/" style="font-size: 10px;">Typecho</a> <a href="/tags/USB/" style="font-size: 11.43px;">USB</a> <a href="/tags/VIM/" style="font-size: 10px;">VIM</a> <a href="/tags/Verification/" style="font-size: 10px;">Verification</a> <a href="/tags/busybox/" style="font-size: 10px;">busybox</a> <a href="/tags/dropbear/" style="font-size: 10px;">dropbear</a> <a href="/tags/gprof/" style="font-size: 10px;">gprof</a> <a href="/tags/i-MX6/" style="font-size: 10px;">i.MX6</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/scp/" style="font-size: 10px;">scp</a> <a href="/tags/uboot/" style="font-size: 10px;">uboot</a> <a href="/tags/uwsgi/" style="font-size: 10px;">uwsgi</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/xterm/" style="font-size: 10px;">xterm</a> <a href="/tags/休眠/" style="font-size: 10px;">休眠</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/导航条/" style="font-size: 10px;">导航条</a> <a href="/tags/嵌入式/" style="font-size: 17.14px;">嵌入式</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/广播/" style="font-size: 10px;">广播</a> <a href="/tags/性能/" style="font-size: 11.43px;">性能</a> <a href="/tags/插值/" style="font-size: 10px;">插值</a> <a href="/tags/摄影/" style="font-size: 15.71px;">摄影</a> <a href="/tags/敏捷/" style="font-size: 11.43px;">敏捷</a> <a href="/tags/旅游/" style="font-size: 10px;">旅游</a> <a href="/tags/旅行/" style="font-size: 14.29px;">旅行</a> <a href="/tags/树莓派/" style="font-size: 14.29px;">树莓派</a> <a href="/tags/浪涌/" style="font-size: 10px;">浪涌</a> <a href="/tags/纹理/" style="font-size: 10px;">纹理</a> <a href="/tags/美食/" style="font-size: 10px;">美食</a> <a href="/tags/蓝牙/" style="font-size: 10px;">蓝牙</a> <a href="/tags/街拍/" style="font-size: 12.86px;">街拍</a> <a href="/tags/设备树/" style="font-size: 10px;">设备树</a> <a href="/tags/设计模式/" style="font-size: 18.57px;">设计模式</a>
+      <a href="/tags/BusyBox/" style="font-size: 10px;">BusyBox</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Catmul/" style="font-size: 10px;">Catmul</a> <a href="/tags/Centos/" style="font-size: 12.86px;">Centos</a> <a href="/tags/Debian/" style="font-size: 10px;">Debian</a> <a href="/tags/Device-Tree/" style="font-size: 10px;">Device Tree</a> <a href="/tags/Django/" style="font-size: 11.43px;">Django</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/DraftSight/" style="font-size: 10px;">DraftSight</a> <a href="/tags/EC/" style="font-size: 10px;">EC</a> <a href="/tags/Flask/" style="font-size: 11.43px;">Flask</a> <a href="/tags/GLES/" style="font-size: 10px;">GLES</a> <a href="/tags/GPU/" style="font-size: 10px;">GPU</a> <a href="/tags/Git/" style="font-size: 12.86px;">Git</a> <a href="/tags/HHVM/" style="font-size: 10px;">HHVM</a> <a href="/tags/I2C/" style="font-size: 10px;">I2C</a> <a href="/tags/LVM/" style="font-size: 11.43px;">LVM</a> <a href="/tags/MQTT/" style="font-size: 10px;">MQTT</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/OpenGL/" style="font-size: 10px;">OpenGL</a> <a href="/tags/OpenMP/" style="font-size: 10px;">OpenMP</a> <a href="/tags/Oprofile/" style="font-size: 12.86px;">Oprofile</a> <a href="/tags/PCB/" style="font-size: 10px;">PCB</a> <a href="/tags/PCIE/" style="font-size: 11.43px;">PCIE</a> <a href="/tags/PPTP/" style="font-size: 10px;">PPTP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/RTT/" style="font-size: 10px;">RTT</a> <a href="/tags/Recovery/" style="font-size: 10px;">Recovery</a> <a href="/tags/SVN/" style="font-size: 11.43px;">SVN</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/Typecho/" style="font-size: 10px;">Typecho</a> <a href="/tags/USB/" style="font-size: 11.43px;">USB</a> <a href="/tags/VIM/" style="font-size: 10px;">VIM</a> <a href="/tags/Verification/" style="font-size: 10px;">Verification</a> <a href="/tags/busybox/" style="font-size: 10px;">busybox</a> <a href="/tags/dropbear/" style="font-size: 10px;">dropbear</a> <a href="/tags/gprof/" style="font-size: 10px;">gprof</a> <a href="/tags/i-MX6/" style="font-size: 10px;">i.MX6</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/scp/" style="font-size: 10px;">scp</a> <a href="/tags/uboot/" style="font-size: 10px;">uboot</a> <a href="/tags/uwsgi/" style="font-size: 10px;">uwsgi</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/xterm/" style="font-size: 10px;">xterm</a> <a href="/tags/休眠/" style="font-size: 10px;">休眠</a> <a href="/tags/内核/" style="font-size: 10px;">内核</a> <a href="/tags/吃/" style="font-size: 10px;">吃</a> <a href="/tags/导航条/" style="font-size: 10px;">导航条</a> <a href="/tags/嵌入式/" style="font-size: 17.14px;">嵌入式</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/广播/" style="font-size: 10px;">广播</a> <a href="/tags/性能/" style="font-size: 11.43px;">性能</a> <a href="/tags/插值/" style="font-size: 10px;">插值</a> <a href="/tags/摄影/" style="font-size: 15.71px;">摄影</a> <a href="/tags/敏捷/" style="font-size: 11.43px;">敏捷</a> <a href="/tags/旅游/" style="font-size: 10px;">旅游</a> <a href="/tags/旅行/" style="font-size: 14.29px;">旅行</a> <a href="/tags/树莓派/" style="font-size: 14.29px;">树莓派</a> <a href="/tags/浪涌/" style="font-size: 10px;">浪涌</a> <a href="/tags/纹理/" style="font-size: 10px;">纹理</a> <a href="/tags/美食/" style="font-size: 10px;">美食</a> <a href="/tags/蓝牙/" style="font-size: 10px;">蓝牙</a> <a href="/tags/街拍/" style="font-size: 12.86px;">街拍</a> <a href="/tags/设备树/" style="font-size: 10px;">设备树</a> <a href="/tags/设计模式/" style="font-size: 18.57px;">设计模式</a>
     </div>
   </div>
 
@@ -480,7 +485,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">三月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">二月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">一月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">八月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03/">三月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">三月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">二月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">一月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">八月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03/">三月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ljgabc.com/"/>
-  <updated>2016-11-23T13:30:54.370Z</updated>
+  <updated>2016-12-04T05:39:22.074Z</updated>
   <id>http://ljgabc.com/</id>
   
   <author>
@@ -14,6 +14,36 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>做一碗好吃的蒸面</title>
+    <link href="http://ljgabc.com/2016/12/04/2016-12-04-%E5%81%9A%E4%B8%80%E7%A2%97%E5%A5%BD%E5%90%83%E7%9A%84%E8%92%B8%E9%9D%A2/"/>
+    <id>http://ljgabc.com/2016/12/04/2016-12-04-做一碗好吃的蒸面/</id>
+    <published>2016-12-04T05:32:02.000Z</published>
+    <updated>2016-12-04T05:39:22.074Z</updated>
+    
+    <content type="html"><![CDATA[<p>做一碗家乡的蒸面。</p>
+<p><img src="/images/2016-12-04/1.jpg" alt="1"></p>
+<p><img src="/images/2016-12-04/2.jpg" alt="2"></p>
+<p><img src="/images/2016-12-04/3.jpg" alt="3"></p>
+<p><img src="/images/2016-12-04/4.jpg" alt="4"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;做一碗家乡的蒸面。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/2016-12-04/1.jpg&quot; alt=&quot;1&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/2016-12-04/2.jpg&quot; alt=&quot;2&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/image
+    
+    </summary>
+    
+      <category term="杂" scheme="http://ljgabc.com/categories/%E6%9D%82/"/>
+    
+    
+      <category term="吃" scheme="http://ljgabc.com/tags/%E5%90%83/"/>
+    
+  </entry>
   
   <entry>
     <title>使用Django和Blueimp Gallery制作照片墙</title>
